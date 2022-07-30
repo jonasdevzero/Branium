@@ -24,6 +24,18 @@
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
-    "react/function-component-definition": "off"
+    "react/prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   }
 }
