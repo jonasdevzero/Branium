@@ -38,4 +38,14 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
     border: 0;
   }
+
+  ::-moz-selection {
+    color: #FFF;
+    background: #7DDE99;
+  }
+
+  ::selection {
+    color: #FFF;
+    background: #7DDE99;
+  }
 `;
