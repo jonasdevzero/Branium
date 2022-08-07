@@ -123,6 +123,22 @@ export const Form = styled.form`
     box-shadow: none;
   }
 
+  .submit__loading {
+    padding: 0.75rem 0;
+
+    @keyframes loadingAnimation {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    svg {
+      font-size: 1.5rem;
+
+      animation: loadingAnimation 0.5s infinite linear;
+    }
+  }
+
   .form__link {
     font-size: 0.875rem;
     text-decoration: underline;

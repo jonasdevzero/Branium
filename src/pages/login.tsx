@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 
 import { FiUser, FiKey, FiAlertCircle } from 'react-icons/fi';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { Header } from '@/components/Header';
 import { Container, Main, Center } from '@/styles/utils/layout';
@@ -12,7 +13,7 @@ import { useFormik } from 'formik';
 import { loginValidator } from '@/validators';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { hasAuthTokens } from '@/utils/authTokens';
 
 const formInitialValues = {
@@ -21,16 +22,21 @@ const formInitialValues = {
 };
 
 const Login: NextPage = () => {
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
   const auth = useAuth();
   const router = useRouter();
 
   async function handleSubmit(data: typeof formInitialValues) {
+    if (isSubmitLoading) return;
+
+    setIsSubmitLoading(true);
+
     auth
       .signIn(data)
       .then(() => router.replace('/branium'))
-      .catch((error: Error) =>
-        toast.error(error.message, { position: 'top-center' }),
-      );
+      .catch((error: Error) => toast.error(error.message))
+      .finally(() => setIsSubmitLoading(false));
   }
 
   const formik = useFormik({
@@ -115,8 +121,14 @@ const Login: NextPage = () => {
               </div>
             </label>
 
-            <button type="submit" className="form__submit">
-              SignIn
+            <button
+              type="submit"
+              className={`
+                form__submit
+                ${isSubmitLoading && 'submit__loading'}
+              `}
+            >
+              {isSubmitLoading ? <AiOutlineLoading3Quarters /> : 'SignIn'}
             </button>
 
             <Link href="/subscribe">

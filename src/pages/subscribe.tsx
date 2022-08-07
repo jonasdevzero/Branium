@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 
 import { FiUser, FiKey, FiAlertCircle } from 'react-icons/fi';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { Header } from '@/components/Header';
 import { Container, Main, Center } from '@/styles/utils/layout';
@@ -13,6 +14,7 @@ import { subscribeValidator } from '@/validators';
 import { userService } from '@/services/userService';
 import { useRouter } from 'next/router';
 import { setAuthTokens } from '@/utils/authTokens';
+import { useState } from 'react';
 
 const formInitialValues = {
   username: '',
@@ -20,18 +22,23 @@ const formInitialValues = {
 };
 
 const Subscribe: NextPage = () => {
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
   const router = useRouter();
 
   function handleSubmit(data: typeof formInitialValues) {
+    if (isSubmitLoading) return;
+
+    setIsSubmitLoading(true);
+
     userService
       .subscribe(data)
       .then((tokens) => {
         setAuthTokens(tokens);
         router.replace('/branium');
       })
-      .catch((error: Error) =>
-        toast.error(error.message, { position: 'top-center' }),
-      );
+      .catch((error: Error) => toast.error(error.message))
+      .finally(() => setIsSubmitLoading(false));
   }
 
   const formik = useFormik({
@@ -112,8 +119,14 @@ const Subscribe: NextPage = () => {
               </div>
             </label>
 
-            <button type="submit" className="form__submit">
-              SignUp
+            <button
+              type="submit"
+              className={`
+                form__submit
+                ${isSubmitLoading && 'submit__loading'}
+              `}
+            >
+              {isSubmitLoading ? <AiOutlineLoading3Quarters /> : 'SignUp'}
             </button>
 
             <Link href="/login">
