@@ -52,10 +52,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signOut = useCallback(
-    (replaceTo = '/') => {
-      setStatus('unauthenticated');
-      clearAuthTokens();
-      router.replace(replaceTo);
+    (redirectTo = '/') => {
+      router.push(redirectTo).then(() => {
+        setStatus('unauthenticated');
+        clearAuthTokens();
+        setUser({} as User);
+      });
     },
     [router],
   );
