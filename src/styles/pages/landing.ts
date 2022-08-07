@@ -22,18 +22,19 @@ export const Inner = styled.div`
     border-radius: 0.25rem;
 
     transition: opacity 0.3s linear;
-    box-shadow: 3px 4px ${({ theme }) => theme.buttonColorDark};
 
     cursor: pointer;
   }
 
   .main__subscribe:hover {
     bottom: 0.25rem;
+    box-shadow: 3px 3px ${({ theme }) => theme.buttonColorDark};
     opacity: 0.8;
   }
 
   .main__subscribe:active {
     bottom: 0;
+    box-shadow: none;
   }
 
   @media (max-width: 1460px) {
