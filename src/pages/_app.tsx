@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyle />
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
 
       <AuthProvider>
         <Component {...pageProps} />

@@ -32,13 +32,16 @@ export const hasAuthTokens = () => {
 export const setAuthTokens = (tokens: AuthTokens) => {
   const { accessToken, refreshToken } = tokens;
 
+  const expires = new Date();
+  expires.setDate(new Date().getDate() + 30);
+
   setCookie(null, accessTokenName, accessToken, {
     path: '/',
-    expires: undefined,
+    expires,
   });
   setCookie(null, refreshTokenName, refreshToken, {
     path: '/',
-    expires: undefined,
+    expires,
   });
 
   updateApiAccessToken();
