@@ -23,6 +23,7 @@
   },
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "rules": {
+    "no-unused-expressions": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
