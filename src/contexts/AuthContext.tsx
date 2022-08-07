@@ -13,6 +13,7 @@ import {
   clearAuthTokens,
   hasAuthTokens,
   setAuthTokens,
+  updateApiAccessToken,
 } from '@/utils/authTokens';
 import { LoadingContainer } from '@/components/LoadingContainer';
 
@@ -45,45 +46,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = useCallback(async (data: LoginUser) => {
     const tokens = await userService.login(data);
+
     setAuthTokens(tokens);
     setStatus('authenticated');
   }, []);
 
   const signOut = useCallback(
-    (replacePath = '/') => {
+    (replaceTo = '/') => {
       setStatus('unauthenticated');
       clearAuthTokens();
-      router.replace(replacePath);
+      router.replace(replaceTo);
     },
     [router],
   );
 
   const auth = useCallback(async () => {
+    updateApiAccessToken();
+
     try {
       const authUser = await userService.auth();
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      });
 
       setUser(authUser);
       setStatus('authenticated');
     } catch (error) {
       signOut('/login');
     }
-  }, [signOut, setUser, setStatus]);
+  }, [signOut]);
 
   useEffect(() => {
-    isProtectedPage() && hasAuthTokens() && !user.id ? auth() : null;
-  }, [auth, user, isProtectedPage]);
-
-  useEffect(() => {
-    isProtectedPage() && !hasAuthTokens() ? router.replace('/login') : null;
-
-    isProtectedPage() && status === 'unauthenticated'
-      ? router.push('/login')
+    isProtectedPage() && hasAuthTokens() && (!user.id || status === 'loading')
+      ? auth()
       : null;
-  }, [router, status, isProtectedPage]);
+
+    isProtectedPage() && (!hasAuthTokens() || status === 'unauthenticated')
+      ? router.replace('/login')
+      : null;
+  }, [auth, user, isProtectedPage, status, router]);
 
   const context = useMemo(
     () => ({ status, user, signIn, signOut }),

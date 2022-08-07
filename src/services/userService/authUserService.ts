@@ -1,5 +1,7 @@
 import { User } from '@/@types/user';
+import { api } from '../api';
 
 export const authUserService = async () => {
-  return { id: '123456789', username: 'devzero' } as User;
+  const response = await api.post<User>('/user/auth');
+  return response.data;
 };
