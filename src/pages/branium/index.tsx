@@ -1,17 +1,19 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 
+import { Sidebar } from '@/components/Sidebar';
+
+import { Container } from '@/styles/pages/branium';
+
 const Branium: NextPage = () => {
   return (
-    <div>
+    <Container>
       <Head>
         <title>Branium</title>
       </Head>
 
-      <main>
-        <h1>Branium - Welcome</h1>
-      </main>
-    </div>
+      <Sidebar />
+    </Container>
   );
 };
 
