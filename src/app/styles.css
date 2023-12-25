@@ -1,0 +1,35 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 2rem;
+}
+
+#messages {
+  display: flex;
+  flex-direction: column;
+  width: 50rem;
+  height: 30rem;
+
+  border: var(--secondary-0) thin solid;
+}
+
+form {
+  display: flex;
+  gap: 1rem;
+}
+
+.message {
+  width: fit-content;
+  color: var(--primary-900);
+
+  background-color: var(--secondary-0);
+  margin: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+
+.message--me {
+  align-self: self-end;
+}
