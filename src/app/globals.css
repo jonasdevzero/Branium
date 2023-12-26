@@ -45,6 +45,16 @@ body {
   background-color: var(--primary-900);
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  gap: 2.5rem;
+}
+
 body,
 input,
 textarea,
@@ -79,19 +89,39 @@ h6 {
   font-weight: 400;
 }
 
-h1 {
-  font-size: 3.5rem;
-  line-height: 4.25rem;
+.title {
+  font-size: 4.5rem;
+  line-height: 5rem;
 }
 
-h2 {
+.header1 {
+  font-size: 3.5rem;
+  line-height: 4rem;
+}
+
+.header2 {
+  font-size: 2.5rem;
+  line-height: 3.5rem;
+}
+
+.header3 {
   font-size: 2rem;
   line-height: 2.5rem;
 }
 
-h4 {
+.header4 {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.description {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 button {
