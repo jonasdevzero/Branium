@@ -19,7 +19,11 @@ export const Footer: React.FC = () => {
       <div className="references">
         <p className="text">© Copyright - jonasdevzero</p>
 
-        <a href="#">
+        <a
+          href="https://github.com/jonasdevzero"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <Image
             src={"/icons/github.svg"}
             width={32}
@@ -28,7 +32,11 @@ export const Footer: React.FC = () => {
           />
         </a>
 
-        <a href="#">
+        <a
+          href="https://www.linkedin.com/in/jonasdevzero/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <Image
             src={"/icons/linkedin.svg"}
             width={32}
