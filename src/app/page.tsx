@@ -1,4 +1,4 @@
-"use client";
+import Link from "next/link";
 import "./styles.css";
 
 export default function Home() {
@@ -16,13 +16,13 @@ export default function Home() {
       </p>
 
       <div className="actions">
-        <a href="#" className="header4">
+        <Link href="#" className="header4">
           Entrar
-        </a>
+        </Link>
 
-        <a href="#" className="header4">
+        <Link href="/register" className="header4">
           Cadastrar
-        </a>
+        </Link>
       </div>
     </>
   );
