@@ -1,5 +1,6 @@
 import Image from "next/image";
 import "./styles.css";
+import Link from "next/link";
 
 export const Footer: React.FC = () => {
   return (
@@ -7,13 +8,13 @@ export const Footer: React.FC = () => {
       <h6 className="header4">Branium</h6>
 
       <nav>
-        <a href="#" className="text">
+        <Link href="/terms" className="text">
           Termos
-        </a>
+        </Link>
 
-        <a href="#" className="text">
+        <Link href="/terms#privacy" className="text">
           Privacidade
-        </a>
+        </Link>
       </nav>
 
       <div className="references">

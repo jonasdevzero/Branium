@@ -1,4 +1,10 @@
-import { Form } from "../../components";
+import { Form } from "@/components";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Branium | Login",
+  description: "The WebChat with 'E2E'",
+};
 
 export default function Login() {
   return (

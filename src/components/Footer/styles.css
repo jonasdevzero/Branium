@@ -5,8 +5,10 @@ footer {
   justify-content: space-between;
   width: 100%;
   height: 7.5rem;
+  min-height: 7.5rem;
 
   background-color: var(--primary-850);
+  margin-top: 2rem;
   padding: 0 6%;
 }
 
