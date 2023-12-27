@@ -1,5 +1,6 @@
 import { Form } from "@/components";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Branium | Login",
@@ -8,12 +9,18 @@ export const metadata: Metadata = {
 
 export default function Login() {
   return (
-    <Form title="Entrar" submitLabel="entrar">
+    <Form title="Entrar">
       <fieldset>
         <Form.Input field="username" name="username" />
 
         <Form.Input field="senha" name="password" />
       </fieldset>
+
+      <button type="submit" className="text">
+        entrar
+      </button>
+
+      <Link href={"/recover-password"}>Esqueceu a senha?</Link>
     </Form>
   );
 }

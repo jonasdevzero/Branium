@@ -44,6 +44,10 @@ label > input {
   outline: none;
 }
 
+form > a {
+  text-align: center;
+}
+
 form > button[type="submit"] {
   padding: 1rem;
   border-radius: 0.5rem;
