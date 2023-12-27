@@ -16,7 +16,7 @@ export default function Home() {
       </p>
 
       <div className="actions">
-        <Link href="#" className="header4">
+        <Link href="/login" className="header4">
           Entrar
         </Link>
 
