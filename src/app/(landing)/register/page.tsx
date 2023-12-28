@@ -1,5 +1,6 @@
 import { Form } from "@/components";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Branium | Cadastro",
@@ -15,6 +16,15 @@ export default function Register() {
         <Form.Input field="email" name="email" />
 
         <Form.Input field="senha" name="password" />
+
+        <Form.Checkbox name="terms" required>
+          <em className="description">
+            Aceitar{" "}
+            <Link href={"/terms"} className="description">
+              Termos de Uso
+            </Link>
+          </em>
+        </Form.Checkbox>
       </fieldset>
 
       <button type="submit" className="text">

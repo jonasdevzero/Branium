@@ -52,3 +52,20 @@ form > button[type="submit"] {
   padding: 1rem;
   border-radius: 0.5rem;
 }
+
+.form__checkbox {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  color: var(--secondary-0);
+}
+
+.form__checkbox > input {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.form__checkbox a {
+  text-decoration: underline;
+}

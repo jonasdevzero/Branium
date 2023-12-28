@@ -23,7 +23,20 @@ Form.Input = function Input({ field, ...props }: InputProps) {
   return (
     <label htmlFor={props.name}>
       {field}
-      <input {...props} />
+      <input id={props.name} {...props} />
+    </label>
+  );
+};
+
+type CheckboxProps = Omit<InputProps, "field"> & {
+  children: React.ReactNode;
+};
+
+Form.Checkbox = function Checkbox({ children, ...props }: CheckboxProps) {
+  return (
+    <label htmlFor={props.name} className="form__checkbox">
+      <input id={props.name} {...props} type="checkbox" />
+      {children}
     </label>
   );
 };
