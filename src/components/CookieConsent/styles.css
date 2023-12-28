@@ -1,0 +1,28 @@
+.cookie__container {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: var(--primary-750);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.cookie__container > P > a {
+  text-decoration: underline;
+}
+
+.cookie__container > .container__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  margin-top: 0.5rem;
+}
+.cookie__container > .container__actions > button {
+  padding: 0.5rem 1rem;
+}
