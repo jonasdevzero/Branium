@@ -40,3 +40,12 @@ Form.Checkbox = function Checkbox({ children, ...props }: CheckboxProps) {
     </label>
   );
 };
+
+Form.Photo = function Photo({ field, ...props }: InputProps) {
+  return (
+    <label htmlFor={props.name}>
+      {field}
+      <input id={props.name} {...props} type="file" hidden />
+    </label>
+  );
+};
