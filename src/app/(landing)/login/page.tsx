@@ -1,4 +1,4 @@
-import { Form } from "@/components";
+import { Form } from "@/ui/components";
 import { Metadata } from "next";
 import Link from "next/link";
 

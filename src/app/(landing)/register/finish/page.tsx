@@ -1,5 +1,5 @@
 "use client";
-import { Form } from "@/components";
+import { Form } from "@/ui/components";
 import { notFound, useSearchParams } from "next/navigation";
 
 export default function FinishRegister() {

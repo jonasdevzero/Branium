@@ -18,7 +18,8 @@ html {
   --secondary-200: #c0c0c0;
 
   --success: #44cf6c;
-  --danger: #ff220c;
+  --danger-500: #dc3545;
+  --danger-600: #d02536;
   --info: #623cea;
 }
 
@@ -145,4 +146,19 @@ button {
 
 button:is(:hover, :focus) {
   background-color: var(--secondary-200);
+}
+
+.message__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 27rem;
+
+  padding: 0 1rem;
+}
+
+.message__container > P {
+  text-align: center;
 }

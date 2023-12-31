@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
-import "@/css/globals.css";
-import { CookieConsent, Footer, Header } from "@/components";
+import "@/ui/css/globals.css";
+import { CookieConsent, Footer, Header } from "@/ui/components";
+import { Toaster } from "@/ui/modules";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={nunitoSans.className}>
+        <Toaster />
         <Header />
         <CookieConsent />
 
