@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
+import "react-material-symbols/outlined";
 import "@/ui/css/globals.css";
 import { CookieConsent, Footer, Header } from "@/ui/components";
 import { Toaster } from "@/ui/modules";

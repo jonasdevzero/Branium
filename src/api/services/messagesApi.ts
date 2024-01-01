@@ -12,19 +12,19 @@ const agent = new https.Agent({
   ca: ENV.CA,
 });
 
-export const authenticationApi = axios.create({
-  baseURL: ENV.AUTHENTICATION_URL,
+export const messagesApi = axios.create({
+  baseURL: ENV.MESSAGES_URL,
   httpsAgent: agent,
 });
 
-authenticationApi.interceptors.response.use(
+messagesApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const status = error.response?.status || 500;
     const body: any = error.response?.data || {};
 
     const baseError = new BaseError(body.message, status, body?.meta);
-    baseError.name = "[Authentication] API error";
+    baseError.name = "[Messages] API error";
 
     return Promise.reject(baseError);
   }

@@ -8,6 +8,7 @@ export const adaptRoute = (controller: Controller) => {
 
     const httpRequest: HttpRequest = {
       body: {},
+      files: {},
       user: { id: "" },
     };
 
@@ -25,8 +26,19 @@ export const adaptRoute = (controller: Controller) => {
       Object.assign(httpRequest, { body });
     }
 
-    if (contentType === "multipart/form-data") {
-      httpRequest.formData = await request.formData();
+    if (contentType?.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const files: Record<string, Blob[]> = {};
+
+      formData.forEach((value, key) => {
+        if (value instanceof File) {
+          files[key] ? files[key].push(value) : (files[key] = [value]);
+          return;
+        }
+        httpRequest.body[key] = value;
+      });
+
+      Object.assign(httpRequest, { files });
     }
 
     const httpResponse = await controller.handle(httpRequest);

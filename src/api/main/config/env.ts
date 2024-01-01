@@ -3,7 +3,8 @@ import z from "zod";
 
 const envSchema = z.object({
   AUTHENTICATION_URL: z.string().url().default("https://localhost:5001"),
-  AUTHENTICATION_PASSPHRASE: z.string(),
+  MESSAGES_URL: z.string().url().default("https://localhost:4000"),
+  KEY_EXCHANGE_URL: z.string().url().default("https://localhost:4040"),
 
   CERT: z.string(),
   KEY: z.string(),

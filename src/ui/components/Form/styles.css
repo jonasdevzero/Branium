@@ -81,3 +81,42 @@ form > button[type="submit"] {
   color: var(--secondary-150);
   font-weight: 400;
 }
+
+.photo__wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.photo__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 6.25rem;
+  height: 6.25rem;
+  position: relative;
+
+  border: solid var(--secondary-0) thin;
+  border-radius: 3.125rem;
+}
+
+.photo__container > img {
+  border-radius: 3.125rem;
+}
+
+.remove__photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+
+  background-color: var(--secondary-50);
+  padding: 0;
+  border: solid var(--primary-850) 2px;
+  border-radius: 100%;
+}

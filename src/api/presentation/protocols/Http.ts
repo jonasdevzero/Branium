@@ -1,6 +1,6 @@
 export interface HttpRequest {
   body?: any;
-  formData?: FormData;
+  files: Record<string, Blob[]>;
   user: {
     id: string;
   };

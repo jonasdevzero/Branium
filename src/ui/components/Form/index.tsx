@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
+import { FormPhoto } from "./components";
 import "./styles.css";
-import React from "react";
 
 type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   title: string;
@@ -57,11 +57,4 @@ Form.Checkbox = function Checkbox({ children, ...props }: CheckboxProps) {
   );
 };
 
-Form.Photo = function Photo({ field, ...props }: InputProps) {
-  return (
-    <label htmlFor={props.name}>
-      {field}
-      <input id={props.name} {...props} type="file" hidden />
-    </label>
-  );
-};
+Form.Photo = FormPhoto;

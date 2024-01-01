@@ -12,19 +12,19 @@ const agent = new https.Agent({
   ca: ENV.CA,
 });
 
-export const authenticationApi = axios.create({
-  baseURL: ENV.AUTHENTICATION_URL,
+export const keyExchangeApi = axios.create({
+  baseURL: ENV.KEY_EXCHANGE_URL,
   httpsAgent: agent,
 });
 
-authenticationApi.interceptors.response.use(
+keyExchangeApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const status = error.response?.status || 500;
     const body: any = error.response?.data || {};
 
     const baseError = new BaseError(body.message, status, body?.meta);
-    baseError.name = "[Authentication] API error";
+    baseError.name = "[Key Exchange] API error";
 
     return Promise.reject(baseError);
   }

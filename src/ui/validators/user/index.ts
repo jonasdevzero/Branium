@@ -1,1 +1,2 @@
-export * from "./registerUserValidator";
+export * from "./registerUserSchema";
+export * from "./finishRegisterUserSchema";
