@@ -6,7 +6,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 
 interface AuthContextProps {
   status: AuthStatus;
-  user?: User;
+  user: User;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -33,12 +33,22 @@ export function AuthProvider({ children }: Props) {
 
     if (!access) return logout();
 
+    const response = await fetch("/api/auth");
+    const data = await response.json();
+
+    if (!response.ok) return logout();
+
+    setUser(data);
     setAuthStatus("authenticated");
   }, [authStatus, logout]);
 
   useEffect(() => {
     auth();
   }, [auth]);
+
+  if (!user) {
+    return "loading...";
+  }
 
   return (
     <AuthContext.Provider value={{ user, status: authStatus }}>

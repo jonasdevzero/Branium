@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "The WebChat with 'E2E'",
 };
 
-export default function RootLayout({
+export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode;

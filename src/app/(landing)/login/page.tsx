@@ -5,14 +5,19 @@ import { ApiError } from "@/domain/models";
 import { Form } from "@/ui/components";
 import { toast } from "@/ui/modules";
 import { authenticationService } from "@/ui/services";
+import { hasCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (hasCookie("access")) router.replace("/channels");
+  }, [router]);
 
   const {
     register,
