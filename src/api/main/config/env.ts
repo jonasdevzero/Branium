@@ -4,7 +4,7 @@ import z from "zod";
 const envSchema = z.object({
   AUTHENTICATION_URL: z.string().url().default("https://localhost:5001"),
   MESSAGES_URL: z.string().url().default("https://localhost:4000"),
-  KEY_EXCHANGE_URL: z.string().url().default("https://localhost:4040"),
+  KEY_EXCHANGE_URL: z.string().url().default("https://localhost:4040/key-pair"),
 
   CERT: z.string(),
   KEY: z.string(),

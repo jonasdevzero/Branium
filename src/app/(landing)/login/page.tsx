@@ -1,22 +1,58 @@
-import { Form } from "@/ui/components";
-import { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Branium | Login",
-  description: "The WebChat with 'E2E'",
-};
+import { LoginUserDTO } from "@/domain/dtos";
+import { ApiError } from "@/domain/models";
+import { Form } from "@/ui/components";
+import { toast } from "@/ui/modules";
+import { authenticationService } from "@/ui/services";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function Login() {
-  return (
-    <Form title="Entrar">
-      <fieldset>
-        <Form.Input field="username" name="username" />
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-        <Form.Input field="senha" name="password" />
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginUserDTO>();
+
+  const onSubmit = useCallback(
+    async (data: LoginUserDTO) => {
+      if (isLoading) return;
+      setIsLoading(true);
+
+      try {
+        await authenticationService.login(data);
+        router.replace("/channels");
+      } catch (e) {
+        const error = e as ApiError;
+
+        if (error.status >= 400 && error.status < 500)
+          toast.error("username ou senha inválida");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoading, router]
+  );
+
+  return (
+    <Form title="Entrar" onSubmit={handleSubmit(onSubmit)}>
+      <fieldset>
+        <Form.Input
+          field="username"
+          error={errors.username?.message}
+          {...register("username")}
+        />
+
+        <Form.Input field="senha" {...register("password")} type="password" />
       </fieldset>
 
-      <button type="submit" className="text">
+      <button type="submit" className="text" disabled={isLoading}>
         entrar
       </button>
 

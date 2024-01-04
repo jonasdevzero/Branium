@@ -1,9 +1,10 @@
 import { BaseError } from "@/api/presentation/errors";
-import { HttpResponse } from "../protocols";
+import { HttpResponse, HttpResponseOptions } from "../protocols";
 
-const ok = (body?: any): HttpResponse => ({
+const ok = (body?: any, options?: HttpResponseOptions): HttpResponse => ({
   statusCode: 200,
   body,
+  options: options,
 });
 
 const noContent = (): HttpResponse => ({
@@ -32,6 +33,7 @@ const error = (error: Error): HttpResponse => {
     statusCode: err.statusCode,
     body: {
       error: err.name,
+      status: err.statusCode,
       message: err.message,
       meta: err.meta,
     },

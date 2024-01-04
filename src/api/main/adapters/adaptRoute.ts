@@ -1,5 +1,6 @@
 import { Controller, HttpRequest } from "@/api/presentation/protocols";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const adaptRoute = (controller: Controller) => {
   return async (request: Request) => {
@@ -43,10 +44,29 @@ export const adaptRoute = (controller: Controller) => {
 
     const httpResponse = await controller.handle(httpRequest);
 
-    const response = new Response(
+    const response = new NextResponse(
       httpResponse.body ? JSON.stringify(httpResponse.body) : null,
       { status: httpResponse.statusCode }
     );
+
+    const responseHeaders = httpResponse.options?.headers || {};
+    const responseCookies = httpResponse.options?.cookies || {};
+
+    for (const [key, value] of Object.entries(responseHeaders)) {
+      if (!value) continue;
+
+      response.headers.set(key, value.toString());
+    }
+
+    for (const [key, value] of Object.entries(responseCookies)) {
+      if (!value) continue;
+
+      response.cookies.set(key, value.toString(), {
+        secure: true,
+        sameSite: true,
+        path: "/",
+      });
+    }
 
     return response;
   };
