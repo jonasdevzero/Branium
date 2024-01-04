@@ -1,0 +1,12 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 18.75rem;
+  min-width: 18.75rem;
+  height: 100%;
+  gap: 1rem;
+
+  background-color: var(--primary-850);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+}

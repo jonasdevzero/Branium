@@ -1,15 +1,16 @@
 "use client";
 
-import { useAuth } from "@/ui/services/hooks";
+import { Form, Header } from "@/ui/components/Chat";
+import "./styles.css";
 
 export default function Channels() {
-  const { user } = useAuth();
-
   return (
-    <>
-      <h1>Channels page</h1>
+    <div className="container">
+      <Header name="DevZero" />
 
-      <p>Welcome {user.name}</p>
-    </>
+      <div className="messages"></div>
+
+      <Form />
+    </div>
   );
 }

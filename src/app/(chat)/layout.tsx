@@ -1,8 +1,9 @@
 import { AuthProvider } from "@/ui/contexts";
-import "@/ui/css/globals.css";
+import "./globals.css";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "react-material-symbols/outlined";
+import { Sidebar } from "@/ui/components";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 
@@ -20,7 +21,10 @@ export default function ChatLayout({
     <html lang="pt-BR">
       <body className={nunitoSans.className}>
         <main>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Sidebar />
+            {children}
+          </AuthProvider>
         </main>
       </body>
     </html>
