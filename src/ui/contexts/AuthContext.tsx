@@ -1,6 +1,6 @@
 "use client";
 import { AuthStatus, User } from "@/domain/models";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -22,6 +22,9 @@ export function AuthProvider({ children }: Props) {
   const router = useRouter();
 
   const logout = useCallback(() => {
+    deleteCookie("access", { path: "/" });
+    deleteCookie("refresh", { path: "/" });
+
     setAuthStatus("unauthenticated");
     router.replace("/login");
   }, [router]);
@@ -34,9 +37,10 @@ export function AuthProvider({ children }: Props) {
     if (!access) return logout();
 
     const response = await fetch("/api/auth");
-    const data = await response.json();
 
     if (!response.ok) return logout();
+
+    const data = await response.json();
 
     setUser(data);
     setAuthStatus("authenticated");
