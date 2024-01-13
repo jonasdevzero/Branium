@@ -15,22 +15,3 @@
   display: flex;
   gap: 1rem;
 }
-
-.chat__header > .user__info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.chat__header > .user__info > .user__image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.125rem;
-  height: 3.125rem;
-  position: relative;
-
-  background-color: var(--primary-800);
-  border-radius: 100%;
-  user-select: none;
-}

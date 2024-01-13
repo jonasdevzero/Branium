@@ -10,3 +10,15 @@
   padding: 0.75rem;
   border-radius: 0.75rem;
 }
+
+.sidebar__divisor {
+  width: 100%;
+
+  border-color: var(--primary-750);
+}
+
+.sidebar__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

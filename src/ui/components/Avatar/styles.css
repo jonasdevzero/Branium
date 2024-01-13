@@ -1,0 +1,26 @@
+.avatar__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.125rem;
+  height: 3.125rem;
+  min-width: 3.125rem;
+  min-height: 3.125rem;
+
+  border-radius: 50%;
+}
+
+.avatar__name {
+  width: 100%;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.avatar__primary {
+  background-color: var(--primary-850);
+}
+
+.avatar__secondary {
+  background-color: var(--primary-800);
+}
