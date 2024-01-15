@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 0.5rem;
+
+  padding: 0.75rem 1rem;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 0.625rem;
+
+  overflow-y: scroll;
+
+  padding: 1.5rem;
+}
+
+.button__icon {
+  background-color: transparent !important;
+  padding: 0;
+}
+
+.button__icon > span {
+  font-size: 1.5rem;
+  color: var(--secondary-100);
+
+  transition: color 0.3s ease;
+}
+
+.button__icon:is(:hover, :focus) > span {
+  color: var(--secondary-200);
+}

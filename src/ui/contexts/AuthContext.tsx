@@ -3,6 +3,7 @@ import { AuthStatus, User } from "@/domain/models";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
+import { Sidebar } from "../components";
 
 interface AuthContextProps {
   status: AuthStatus;
@@ -56,6 +57,7 @@ export function AuthProvider({ children }: Props) {
 
   return (
     <AuthContext.Provider value={{ user, status: authStatus }}>
+      <Sidebar onSearch={() => null} />
       {children}
     </AuthContext.Provider>
   );

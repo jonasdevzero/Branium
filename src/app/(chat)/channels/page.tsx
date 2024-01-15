@@ -1,16 +1,13 @@
 "use client";
-
-import { Form, Header } from "@/ui/components/Chat";
 import "./styles.css";
 
 export default function Channels() {
   return (
     <div className="container">
-      <Header name="DevZero" />
-
-      <div className="messages"></div>
-
-      <Form />
+      <h1 className="header2">Branium</h1>
+      <p className="text channels__description">
+        Selecione um canal ou convide alguém para iniciar uma conversa
+      </p>
     </div>
   );
 }

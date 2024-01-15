@@ -9,3 +9,21 @@
   padding: 0 1rem;
   border-radius: 0.5rem;
 }
+
+.card__container--action {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.card__container--action:is(:hover, :focus) {
+  opacity: 0.8;
+}
+
+.card__container--small {
+  height: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.card__container > .icon {
+  color: var(--secondary-200);
+}

@@ -17,6 +17,17 @@ main {
   overflow: hidden;
 }
 
+input {
+  width: 100%;
+  height: 100%;
+
+  color: var(--secondary-0);
+
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
 @media (min-width: 2000px) {
   main {
     min-width: 2000px;
