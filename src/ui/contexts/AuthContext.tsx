@@ -4,6 +4,7 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
 import { Sidebar } from "../components";
+import { Loading } from "../components/Loading";
 
 interface AuthContextProps {
   status: AuthStatus;
@@ -52,7 +53,7 @@ export function AuthProvider({ children }: Props) {
   }, [auth]);
 
   if (!user) {
-    return "loading...";
+    return <Loading />;
   }
 
   return (
