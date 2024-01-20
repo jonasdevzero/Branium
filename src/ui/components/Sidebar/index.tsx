@@ -3,7 +3,7 @@ import useDebounce from "@/ui/hooks/useDebounce";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { Card, Room } from "..";
+import { Card, Dropdown, Room } from "..";
 import "./styles.css";
 
 interface Props {
@@ -20,6 +20,31 @@ export function Sidebar({ onSearch }: Props) {
     <aside className="sidebar">
       <Card>
         <Room name="Dev Zero" username="devzero" type="primary" />
+
+        <Dropdown
+          options={[
+            {
+              label: "convidar usuário",
+              icon: <MaterialSymbol icon="person_add" size={24} />,
+              onClick: () => null,
+            },
+            {
+              label: "novo grupo",
+              icon: <MaterialSymbol icon="group_add" size={24} />,
+              onClick: () => null,
+            },
+            {
+              label: "editar conta",
+              icon: <MaterialSymbol icon="edit" size={24} />,
+              onClick: () => null,
+            },
+            {
+              label: "sair",
+              icon: <MaterialSymbol icon="logout" size={24} />,
+              onClick: () => null,
+            },
+          ]}
+        />
       </Card>
 
       <label

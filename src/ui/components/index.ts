@@ -6,3 +6,4 @@ export * from "./Sidebar";
 export * from "./Avatar";
 export * from "./Room";
 export * from "./Card";
+export * from "./Dropdown";
