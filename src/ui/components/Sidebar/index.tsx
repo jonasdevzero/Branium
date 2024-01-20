@@ -1,10 +1,10 @@
 "use client";
+import useDebounce from "@/ui/hooks/useDebounce";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { MaterialSymbol } from "react-material-symbols";
 import { Card, Room } from "..";
 import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
-import { useState } from "react";
-import useDebounce from "@/ui/hooks/useDebounce";
 
 interface Props {
   onSearch(text: string): void;

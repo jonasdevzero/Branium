@@ -2,12 +2,18 @@
 import { AuthStatus, User } from "@/domain/models";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { createContext, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Sidebar } from "../components";
 import { Loading } from "../components/Loading";
+import { Socket, websocketUrl } from "../services";
 
 interface AuthContextProps {
-  status: AuthStatus;
   user: User;
 }
 
@@ -18,8 +24,9 @@ interface Props {
 }
 
 export function AuthProvider({ children }: Props) {
+  const socket = useMemo(() => new Socket(websocketUrl, "chat"), []);
   const [user, setUser] = useState<User>();
-  const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
+  const [status, setStatus] = useState<AuthStatus>("loading");
 
   const router = useRouter();
 
@@ -27,12 +34,13 @@ export function AuthProvider({ children }: Props) {
     deleteCookie("access", { path: "/" });
     deleteCookie("refresh", { path: "/" });
 
-    setAuthStatus("unauthenticated");
+    setStatus("unauthenticated");
+    socket.disconnect();
     router.replace("/login");
-  }, [router]);
+  }, [router, socket]);
 
   const auth = useCallback(async () => {
-    if (authStatus !== "loading") return;
+    if (status !== "loading") return;
 
     const access = getCookie("access", { path: "/" });
 
@@ -45,19 +53,32 @@ export function AuthProvider({ children }: Props) {
     const data = await response.json();
 
     setUser(data);
-    setAuthStatus("authenticated");
-  }, [authStatus, logout]);
+    setStatus("authenticated");
+  }, [status, logout]);
 
   useEffect(() => {
     auth();
   }, [auth]);
+
+  useEffect(() => {
+    socket.on("message", (data) => console.log("message:", data));
+
+    if (status === "authenticated" && !socket.isConnected) {
+      socket.connect().catch(() => null);
+    }
+
+    return () => {
+      socket.off("message");
+      socket.disconnect();
+    };
+  }, [socket, status]);
 
   if (!user) {
     return <Loading />;
   }
 
   return (
-    <AuthContext.Provider value={{ user, status: authStatus }}>
+    <AuthContext.Provider value={{ user }}>
       <Sidebar onSearch={() => null} />
       {children}
     </AuthContext.Provider>

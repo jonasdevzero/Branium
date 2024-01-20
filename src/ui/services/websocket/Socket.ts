@@ -3,7 +3,9 @@ const kAttachEvents = Symbol("kAttachEvents");
 
 type SocketFn = (...args: any[]) => void;
 
-export default class Socket {
+const maxReconnectionAttempts = 5;
+
+export class Socket {
   raw!: WebSocket;
   url: string;
   protocol: string;
@@ -11,6 +13,7 @@ export default class Socket {
 
   isConnected = false;
   isConnecting = false;
+  lostConnection = false;
 
   constructor(url: string, protocol: string) {
     this.url = url;
@@ -24,7 +27,7 @@ export default class Socket {
     return new Promise<void>((resolve, reject) => {
       this.raw = new WebSocket(this.url, this.protocol);
 
-      this.raw.onerror = () => {
+      this.raw.onerror = (e) => {
         this.isConnecting = false;
         this.isConnected = false;
         reject("Error during the connection!");
@@ -41,6 +44,8 @@ export default class Socket {
   }
 
   [kAttachEvents]() {
+    this.lostConnection = false;
+
     this.raw.onmessage = (e) => {
       let { event, message } = JSON.parse(e.data);
 
@@ -60,6 +65,22 @@ export default class Socket {
 
     this.raw.onclose = (e) => {
       this.isConnected = false;
+
+      let reconnectionAttempts = 0;
+
+      const interval = setInterval(async () => {
+        try {
+          await this.connect();
+          clearInterval(interval);
+        } catch (error) {
+          reconnectionAttempts++;
+
+          if (reconnectionAttempts >= maxReconnectionAttempts) {
+            this.lostConnection = true;
+            clearInterval(interval);
+          }
+        }
+      }, 3000);
     };
   }
 
@@ -100,7 +121,7 @@ export default class Socket {
   }
 
   disconnect() {
-    if (!this.isConnected || !this.isConnecting) return;
+    if (!this.raw) return;
 
     this.isConnected = false;
     this.isConnecting = false;

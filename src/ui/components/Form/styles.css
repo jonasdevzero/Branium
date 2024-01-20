@@ -102,6 +102,7 @@ form > button[type="submit"] {
 }
 
 .photo__container > img {
+  object-fit: cover;
   border-radius: 3.125rem;
 }
 
