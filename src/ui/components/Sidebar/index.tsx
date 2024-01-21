@@ -1,10 +1,11 @@
 "use client";
 import useDebounce from "@/ui/hooks/useDebounce";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { Card, Dropdown, Room } from "..";
+import { Card, Dropdown, DropdownItem, Room } from "..";
 import "./styles.css";
+import { useAuth } from "@/ui/services/hooks";
 
 interface Props {
   onSearch(text: string): void;
@@ -14,37 +15,42 @@ export function Sidebar({ onSearch }: Props) {
   const [search, setSearch] = useState("");
   const router = useRouter();
 
+  const { logout } = useAuth();
+
   useDebounce(() => onSearch(search), [search], 500);
+
+  const dropdownOptions = useMemo<DropdownItem[]>(
+    () => [
+      {
+        label: "convidar usuário",
+        icon: <MaterialSymbol icon="person_add" size={24} />,
+        onClick: () => router.push("/invites"),
+      },
+      {
+        label: "novo grupo",
+        icon: <MaterialSymbol icon="group_add" size={24} />,
+        onClick: () => null,
+      },
+      {
+        label: "editar conta",
+        icon: <MaterialSymbol icon="edit" size={24} />,
+        onClick: () => null,
+      },
+      {
+        label: "sair",
+        icon: <MaterialSymbol icon="logout" size={24} />,
+        onClick: logout,
+      },
+    ],
+    [logout, router]
+  );
 
   return (
     <aside className="sidebar">
       <Card>
         <Room name="Dev Zero" username="devzero" type="primary" />
 
-        <Dropdown
-          options={[
-            {
-              label: "convidar usuário",
-              icon: <MaterialSymbol icon="person_add" size={24} />,
-              onClick: () => null,
-            },
-            {
-              label: "novo grupo",
-              icon: <MaterialSymbol icon="group_add" size={24} />,
-              onClick: () => null,
-            },
-            {
-              label: "editar conta",
-              icon: <MaterialSymbol icon="edit" size={24} />,
-              onClick: () => null,
-            },
-            {
-              label: "sair",
-              icon: <MaterialSymbol icon="logout" size={24} />,
-              onClick: () => null,
-            },
-          ]}
-        />
+        <Dropdown options={dropdownOptions} />
       </Card>
 
       <label

@@ -15,6 +15,7 @@ import { Socket, websocketUrl } from "../services";
 
 interface AuthContextProps {
   user: User;
+  logout(): void;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: Props) {
   const router = useRouter();
 
   const logout = useCallback(() => {
+    setUser(undefined);
     deleteCookie("access", { path: "/" });
     deleteCookie("refresh", { path: "/" });
 
@@ -78,7 +80,7 @@ export function AuthProvider({ children }: Props) {
   }
 
   return (
-    <AuthContext.Provider value={{ user }}>
+    <AuthContext.Provider value={{ user, logout }}>
       <Sidebar onSearch={() => null} />
       {children}
     </AuthContext.Provider>

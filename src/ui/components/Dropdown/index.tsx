@@ -1,14 +1,17 @@
+"use client";
 import { useRef, useState } from "react";
 import "./styles.css";
 import { MaterialSymbol } from "react-material-symbols";
 import useOutsideClick from "@/ui/hooks/useOutsideClick";
 
+export interface DropdownItem {
+  icon?: React.ReactNode;
+  label: string;
+  onClick(): void;
+}
+
 interface Props {
-  options: Array<{
-    icon?: React.ReactNode;
-    label: string;
-    onClick(): void;
-  }>;
+  options: Array<DropdownItem>;
 }
 
 export function Dropdown({ options }: Props) {
@@ -32,7 +35,14 @@ export function Dropdown({ options }: Props) {
       {isOpen && (
         <div className="dropdown__list">
           {options.map((option) => (
-            <div key={option.label} className="dropdown__item">
+            <div
+              key={option.label}
+              className="dropdown__item"
+              onClick={() => {
+                setIsOpen(false);
+                option.onClick();
+              }}
+            >
               {option.icon}
               {option.label}
             </div>
