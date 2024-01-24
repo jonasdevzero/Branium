@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import "./styles.css";
 import { minifyName } from "@/ui/helpers";

@@ -1,6 +1,6 @@
 import { useEffect, EffectCallback } from "react";
 
-export default function useDebounce(
+export function useDebounce(
   fn: EffectCallback,
   deps: any[] = [],
   time: number = 500
@@ -10,5 +10,5 @@ export default function useDebounce(
 
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, fn, time]);
+  }, deps);
 }

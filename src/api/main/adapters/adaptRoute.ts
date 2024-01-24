@@ -7,8 +7,16 @@ export const adaptRoute = (controller: Controller) => {
     const { method } = request;
     const headersList = headers();
 
+    let query = new URLSearchParams();
+
+    if (method.toLowerCase() === "get") {
+      const { searchParams } = new URL(request.url);
+      query = searchParams;
+    }
+
     const httpRequest: HttpRequest = {
       body: {},
+      query,
       files: {},
       user: { id: "" },
     };

@@ -1,14 +1,33 @@
 "use client";
 
+import { User } from "@/domain/models";
 import { Card, Room } from "@/ui/components";
-import useDebounce from "@/ui/hooks/useDebounce";
-import { useState } from "react";
+import { useDebounce } from "@/ui/hooks";
+import { messagesService } from "@/ui/services";
+import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
 export default function Invites() {
+  const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
 
-  useDebounce(() => {}, [search], 500);
+  const listUsers = useCallback(async (search?: string) => {
+    try {
+      const { content } = await messagesService.profile.list({ search });
+
+      setUsers(content);
+    } catch (e) {
+      // ...
+    }
+  }, []);
+
+  useDebounce(
+    () => {
+      listUsers(search);
+    },
+    [search],
+    500
+  );
 
   return (
     <div className="invites__container">
@@ -39,11 +58,20 @@ export default function Invites() {
       <hr />
 
       <div className="invites__list">
-        <Card>
-          <Room name="Dev Zero" username="devzero" type="secondary" />
+        {users.map((user) => (
+          <Card key={user.id}>
+            <Room
+              name={user.name}
+              username={user.username}
+              image={user.image}
+              type="secondary"
+            />
 
-          <button className="invite__action">convidar</button>
-        </Card>
+            <button type="button" className="invite__action">
+              convidar
+            </button>
+          </Card>
+        ))}
       </div>
     </div>
   );

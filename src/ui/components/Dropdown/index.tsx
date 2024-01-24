@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import "./styles.css";
 import { MaterialSymbol } from "react-material-symbols";
-import useOutsideClick from "@/ui/hooks/useOutsideClick";
+import { useOutsideClick } from "@/ui/hooks";
 
 export interface DropdownItem {
   icon?: React.ReactNode;

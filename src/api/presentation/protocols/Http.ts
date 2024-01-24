@@ -2,6 +2,7 @@ import { OutgoingHttpHeaders } from "http";
 
 export interface HttpRequest {
   body?: any;
+  query: URLSearchParams;
   files: Record<string, Blob[]>;
   user: {
     id: string;
