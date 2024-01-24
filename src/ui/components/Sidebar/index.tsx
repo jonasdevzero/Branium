@@ -15,7 +15,7 @@ export function Sidebar({ onSearch }: Props) {
   const [search, setSearch] = useState("");
   const router = useRouter();
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   useDebounce(() => onSearch(search), [search], 500);
 
@@ -48,7 +48,12 @@ export function Sidebar({ onSearch }: Props) {
   return (
     <aside className="sidebar">
       <Card>
-        <Room name="Dev Zero" username="devzero" type="primary" />
+        <Room
+          name={user.name}
+          username={user.username}
+          image={user.image}
+          type="primary"
+        />
 
         <Dropdown options={dropdownOptions} />
       </Card>

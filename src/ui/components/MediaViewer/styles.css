@@ -1,0 +1,26 @@
+.media__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background-color: #00000030;
+  z-index: 1000;
+}
+
+.media__container > .media__close {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 1002;
+}
+
+.media__container > img {
+  z-index: 1001;
+  object-fit: contain;
+}

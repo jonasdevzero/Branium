@@ -8,3 +8,4 @@ export * from "./Room";
 export * from "./Card";
 export * from "./Dropdown";
 export * from "./NavigationHeader";
+export * from "./MediaViewer";
