@@ -5,6 +5,7 @@ import { MaterialSymbol } from "react-material-symbols";
 import { Card, Dropdown, DropdownItem, Room } from "..";
 import "./styles.css";
 import { useAuth, useDebounce } from "@/ui/hooks";
+import { toast } from "@/ui/modules";
 
 interface Props {
   onSearch(text: string): void;
@@ -28,7 +29,8 @@ export function Sidebar({ onSearch }: Props) {
       {
         label: "novo grupo",
         icon: <MaterialSymbol icon="group_add" size={24} />,
-        onClick: () => null,
+        onClick: () =>
+          toast.info("Em breve estará disponível!", { id: "soon-available" }),
       },
       {
         label: "editar conta",

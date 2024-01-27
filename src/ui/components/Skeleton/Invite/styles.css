@@ -1,0 +1,67 @@
+.skeleton__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.skeleton__wrap.card {
+  flex-direction: row;
+  align-items: center;
+  height: var(--card-height);
+  min-height: var(--card-height);
+  gap: 0.75rem;
+
+  background-color: var(--primary-750);
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+
+  animation: 1s skeleton_loading ease-out infinite;
+}
+
+.skeleton__wrap.room {
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  gap: 0.75rem;
+}
+
+.skeleton__box {
+  background-color: var(--primary-800);
+  border-radius: 0.25rem;
+}
+
+.skeleton__box.avatar {
+  width: 3.125rem;
+  height: 3.125rem;
+  min-width: 3.125rem;
+  min-height: 3.125rem;
+
+  border-radius: 50%;
+}
+
+.skeleton__box.text {
+  width: 12rem;
+  height: 1.5rem;
+}
+
+.skeleton__box.description {
+  width: 7rem;
+  height: 1rem;
+}
+
+.skeleton__box.button {
+  width: 6.25rem;
+  height: 2rem;
+}
+
+@keyframes skeleton_loading {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

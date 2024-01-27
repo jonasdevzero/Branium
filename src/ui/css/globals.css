@@ -21,6 +21,8 @@ html {
   --danger-500: #dc3545;
   --danger-600: #d02536;
   --info: #623cea;
+
+  --card-height: 4rem;
 }
 
 html,
@@ -161,4 +163,38 @@ button:is(:hover, :focus) {
 
 .message__container > P {
   text-align: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 998;
+
+  background-color: #00000090;
+}
+
+.overlay--closed {
+  display: none;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 0.75rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-700);
+  border-radius: 0.75rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondary-200);
 }

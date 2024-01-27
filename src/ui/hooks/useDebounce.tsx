@@ -1,7 +1,7 @@
 import { useEffect, EffectCallback } from "react";
 
 export function useDebounce(
-  fn: EffectCallback,
+  fn: Function,
   deps: any[] = [],
   time: number = 500
 ) {
