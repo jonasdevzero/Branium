@@ -1,5 +1,3 @@
-import "./styles.css";
-
 interface CardProps {
   onClick?: () => void;
   children: React.ReactNode;
@@ -16,8 +14,15 @@ export function Card({ onClick, children }: CardProps) {
   );
 }
 
-Card.Small = function CardSmall({ children }: CardProps) {
+Card.Small = function CardSmall({ children, onClick }: CardProps) {
   return (
-    <div className="card__container card__container--small">{children}</div>
+    <div
+      className={`card__container card__container--small ${
+        !!onClick && "card__container--action"
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </div>
   );
 };

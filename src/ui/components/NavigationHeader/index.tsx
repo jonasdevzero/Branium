@@ -17,7 +17,7 @@ export function NavigationHeader({ title, links, onClose }: Props) {
   const pathname = usePathname();
 
   return (
-    <header className="card navigation__header">
+    <header className="card__container navigation__header">
       <h2 className="text">{title}</h2>
 
       <div className="divisor"></div>
