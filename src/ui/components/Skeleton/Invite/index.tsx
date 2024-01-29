@@ -1,6 +1,10 @@
 import "./styles.css";
 
-export function InviteSkeleton() {
+interface Props {
+  buttons?: number;
+}
+
+export function InviteSkeleton({ buttons = 1 }: Props) {
   return (
     <div className="skeleton__wrap card">
       <div className="skeleton__wrap room">
@@ -12,7 +16,9 @@ export function InviteSkeleton() {
         </div>
       </div>
 
-      <span className="skeleton__box button"></span>
+      {new Array(buttons).fill("").map((_, i) => (
+        <span key={i} className="skeleton__box button"></span>
+      ))}
     </div>
   );
 }

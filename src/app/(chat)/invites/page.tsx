@@ -57,6 +57,9 @@ export default function Invites() {
     if (isLoading)
       return new Array(20).fill("").map((_, i) => <InviteSkeleton key={i} />);
 
+    if (users.length === 0 && search.length === 0)
+      return <p className="text">Nenhum usuário disponível para convite</p>;
+
     if (users.length === 0)
       return <p className="text">Nenhum usuário encontrado</p>;
 
@@ -78,7 +81,7 @@ export default function Invites() {
         </button>
       </Card>
     ));
-  }, [isLoading, users]);
+  }, [isLoading, search.length, users]);
 
   return (
     <div className="invites__container">

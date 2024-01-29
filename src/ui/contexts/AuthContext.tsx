@@ -9,8 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Sidebar } from "../components";
-import { Loading } from "../components/Loading";
+import { Sidebar, LoadingContainer } from "../components";
 import { Socket, websocketUrl } from "../services";
 
 interface AuthContextProps {
@@ -80,7 +79,7 @@ export function AuthProvider({ children }: Props) {
   }, [socket, status]);
 
   if (!user) {
-    return <Loading />;
+    return <LoadingContainer />;
   }
 
   return (

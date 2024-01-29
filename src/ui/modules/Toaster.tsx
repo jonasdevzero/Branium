@@ -19,4 +19,7 @@ export const toast = {
 
   info: (message: string, options?: ToastOptions) =>
     toastSonner.info(message, options),
+
+  success: (message: string, options?: ToastOptions) =>
+    toastSonner.success(message, options),
 };

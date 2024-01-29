@@ -26,6 +26,7 @@
 
   border: solid 1px var(--primary-750);
 }
+
 .invites__list {
   display: flex;
   flex-direction: column;
@@ -57,6 +58,10 @@
   height: fit-content;
 
   padding: 0.25rem 0.75rem;
+}
+
+.invites__list > .loading__spin {
+  margin: 0 auto;
 }
 
 .invite__message {
