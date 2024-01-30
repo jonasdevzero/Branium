@@ -101,7 +101,7 @@ export default function Invites() {
           id="search_user"
           type="text"
           className="description"
-          placeholder="pesquisar..."
+          placeholder="username..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -127,8 +127,12 @@ export default function Invites() {
             id="invite_message"
             placeholder="Diga algo :)"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.slice(0, 120);
+              setMessage(value);
+            }}
           />
+          <span className="description">{message.length}/120 caracteres</span>
         </label>
 
         <div className="modal__actions">

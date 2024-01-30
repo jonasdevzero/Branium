@@ -1,17 +1,29 @@
 "use client";
 
 import { Invite } from "@/domain/models";
-import { Card, InviteSkeleton, LoadingSpinner, Room } from "@/ui/components";
+import {
+  Card,
+  InviteSkeleton,
+  LoadingSpinner,
+  Modal,
+  Room,
+} from "@/ui/components";
 import { useAuth, useDebounce, useScrollEnd } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { messagesService } from "@/ui/services";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
+const SkeletonLoading = new Array(20)
+  .fill("")
+  .map((_, i) => <InviteSkeleton key={i} buttons={2} />);
+
 export default function InvitesPending() {
   const listRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [invites, setInvites] = useState<Invite[]>([]);
+
+  const [selectedInvite, setSelectedInvite] = useState<Invite>();
 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,6 +80,8 @@ export default function InvitesPending() {
 
   const responseInvite = useCallback(
     async (inviteId: string, accept: boolean) => {
+      setSelectedInvite(undefined);
+
       try {
         await messagesService.invite.response({ inviteId, accept });
 
@@ -83,10 +97,9 @@ export default function InvitesPending() {
   );
 
   const renderInvites = useCallback(() => {
-    if (isLoading && currentPage === 0)
-      return new Array(20)
-        .fill("")
-        .map((_, i) => <InviteSkeleton key={i} buttons={2} />);
+    const isFirstLoading = isLoading && currentPage === 0;
+
+    if (isFirstLoading) return SkeletonLoading;
 
     if (invites.length === 0 && search.length === 0)
       return <p className="text">Nenhum convite pendente</p>;
@@ -106,21 +119,13 @@ export default function InvitesPending() {
         <button
           type="button"
           className="invite__action"
-          onClick={() => responseInvite(invite.id, false)}
+          onClick={() => setSelectedInvite(invite)}
         >
-          rejeitar
-        </button>
-
-        <button
-          type="button"
-          className="invite__action"
-          onClick={() => responseInvite(invite.id, true)}
-        >
-          aceitar
+          responder
         </button>
       </Card>
     ));
-  }, [isLoading, currentPage, invites, search.length, responseInvite]);
+  }, [isLoading, currentPage, invites, search.length]);
 
   return (
     <div className="invites__container">
@@ -161,6 +166,35 @@ export default function InvitesPending() {
 
         {isLoading && currentPage > 0 && <LoadingSpinner />}
       </div>
+
+      <Modal
+        title={`Convite de @${selectedInvite?.sender.username}`}
+        isOpen={typeof selectedInvite !== "undefined"}
+        close={() => setSelectedInvite(undefined)}
+      >
+        {!!selectedInvite?.message && (
+          <div className="invite__message">
+            <p className="text">mensagem:</p>
+            <p className="text">{selectedInvite.message}</p>
+          </div>
+        )}
+
+        <div className="modal__actions">
+          <button
+            type="button"
+            onClick={() => responseInvite(selectedInvite!.id, false)}
+          >
+            rejeitar
+          </button>
+
+          <button
+            type="button"
+            onClick={() => responseInvite(selectedInvite!.id, true)}
+          >
+            aceitar
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
