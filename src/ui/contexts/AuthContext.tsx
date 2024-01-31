@@ -83,7 +83,7 @@ export function AuthProvider({ children }: Props) {
   return (
     <AuthContext.Provider value={{ user, socket, logout }}>
       <InvitesProvider>
-        <Sidebar onSearch={() => null} />
+        <Sidebar />
         {children}
       </InvitesProvider>
     </AuthContext.Provider>

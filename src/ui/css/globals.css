@@ -146,6 +146,13 @@ button {
   transition: background-color 0.2s ease;
 }
 
+button.button__small {
+  width: fit-content;
+  height: fit-content;
+
+  padding: 0.25rem 1rem;
+}
+
 button:is(:hover, :focus) {
   background-color: var(--secondary-200);
 }

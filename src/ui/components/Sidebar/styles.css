@@ -22,3 +22,29 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.sidebar__group > .text {
+  text-align: center;
+  color: var(--secondary-200);
+}
+
+.sidebar__group > button {
+  margin: 0 auto;
+}
+
+.sidebar__group > .loading_spin {
+  margin: 0 auto;
+}
+
+.sidebar__group.room__list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.sidebar__group.room__list::-webkit-scrollbar {
+  width: 0;
+}

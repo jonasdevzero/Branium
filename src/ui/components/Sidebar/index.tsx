@@ -1,52 +1,20 @@
 "use client";
+import { useAuth, useInvites } from "@/ui/hooks";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { Card, Dropdown, DropdownItem, Room } from "..";
+import { Card, Room } from "..";
+import { SidebarContacts, SidebarDropdown } from "./components";
 import "./styles.css";
-import { useAuth, useDebounce, useInvites } from "@/ui/hooks";
-import { toast } from "@/ui/modules";
 
-interface Props {
-  onSearch(text: string): void;
-}
-
-export function Sidebar({ onSearch }: Props) {
+export function Sidebar() {
   const [search, setSearch] = useState("");
+
   const router = useRouter();
   const pathname = usePathname();
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const invitesContext = useInvites();
-
-  useDebounce(() => onSearch(search), [search], 500);
-
-  const dropdownOptions = useMemo<DropdownItem[]>(
-    () => [
-      {
-        label: "convidar usuário",
-        icon: <MaterialSymbol icon="person_add" size={24} />,
-        onClick: () => router.push("/invites"),
-      },
-      {
-        label: "novo grupo",
-        icon: <MaterialSymbol icon="group_add" size={24} />,
-        onClick: () =>
-          toast.info("Em breve estará disponível!", { id: "soon-available" }),
-      },
-      {
-        label: "editar conta",
-        icon: <MaterialSymbol icon="edit" size={24} />,
-        onClick: () => null,
-      },
-      {
-        label: "sair",
-        icon: <MaterialSymbol icon="logout" size={24} />,
-        onClick: logout,
-      },
-    ],
-    [logout, router]
-  );
 
   const renderExtraGroup = useCallback(() => {
     const canShow = pathname !== "/invites/pending" && invitesContext.count > 0;
@@ -73,7 +41,7 @@ export function Sidebar({ onSearch }: Props) {
           type="primary"
         />
 
-        <Dropdown options={dropdownOptions} />
+        <SidebarDropdown />
       </Card>
 
       <label
@@ -96,15 +64,7 @@ export function Sidebar({ onSearch }: Props) {
 
       <hr className="sidebar__divisor" />
 
-      <div className="sidebar__group">
-        <Card onClick={() => router.push("/channels/contact/1")}>
-          <Room name="Developer One" username="devone" type="primary" />
-        </Card>
-
-        <Card onClick={() => router.push("/channels/contact/1")}>
-          <Room name="Branium Squad" type="primary" />
-        </Card>
-      </div>
+      <SidebarContacts search={search} />
     </aside>
   );
 }

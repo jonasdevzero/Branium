@@ -1,4 +1,4 @@
-import "./styles.css";
+import "@/ui/css/components/skeleton.css";
 
 interface Props {
   buttons?: number;
