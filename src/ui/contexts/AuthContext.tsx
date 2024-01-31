@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Sidebar, LoadingContainer } from "../components";
 import { Socket, websocketUrl } from "../services";
+import { InvitesProvider } from "./InvitesContext";
 
 interface AuthContextProps {
   user: User;
@@ -65,15 +66,12 @@ export function AuthProvider({ children }: Props) {
   useEffect(() => {
     socket.on("message", (data) => console.log("message:", data));
 
-    socket.on("invite:new", (data) => console.log("new invite:", data));
-
     if (status === "authenticated" && !socket.isConnected) {
       socket.connect().catch(() => null);
     }
 
     return () => {
       socket.off("message");
-      socket.off("incite:new");
       socket.disconnect();
     };
   }, [socket, status]);
@@ -84,8 +82,10 @@ export function AuthProvider({ children }: Props) {
 
   return (
     <AuthContext.Provider value={{ user, socket, logout }}>
-      <Sidebar onSearch={() => null} />
-      {children}
+      <InvitesProvider>
+        <Sidebar onSearch={() => null} />
+        {children}
+      </InvitesProvider>
     </AuthContext.Provider>
   );
 }

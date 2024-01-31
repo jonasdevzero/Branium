@@ -1,10 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { Card, Dropdown, DropdownItem, Room } from "..";
 import "./styles.css";
-import { useAuth, useDebounce } from "@/ui/hooks";
+import { useAuth, useDebounce, useInvites } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 
 interface Props {
@@ -14,8 +14,10 @@ interface Props {
 export function Sidebar({ onSearch }: Props) {
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
 
   const { user, logout } = useAuth();
+  const invitesContext = useInvites();
 
   useDebounce(() => onSearch(search), [search], 500);
 
@@ -46,6 +48,21 @@ export function Sidebar({ onSearch }: Props) {
     [logout, router]
   );
 
+  const renderExtraGroup = useCallback(() => {
+    const canShow = pathname !== "/invites/pending" && invitesContext.count > 0;
+
+    if (!canShow) return;
+
+    return (
+      <div className="sidebar__group">
+        <Card.Small onClick={() => router.push("/invites/pending")}>
+          <MaterialSymbol icon="mail" size={24} color="#fff" />
+          {invitesContext.count} novo(s) convite(s)
+        </Card.Small>
+      </div>
+    );
+  }, [invitesContext.count, pathname, router]);
+
   return (
     <aside className="sidebar">
       <Card>
@@ -74,6 +91,8 @@ export function Sidebar({ onSearch }: Props) {
 
         <MaterialSymbol className="icon" icon="search" size={16} />
       </label>
+
+      {renderExtraGroup()}
 
       <hr className="sidebar__divisor" />
 

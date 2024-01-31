@@ -1,9 +1,9 @@
 import { AuthProvider } from "@/ui/contexts";
+import { Toaster } from "@/ui/modules";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "react-material-symbols/outlined";
 import "./globals.css";
-import { Toaster } from "@/ui/modules";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 

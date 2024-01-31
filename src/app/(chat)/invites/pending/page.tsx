@@ -8,7 +8,7 @@ import {
   Modal,
   Room,
 } from "@/ui/components";
-import { useAuth, useDebounce, useScrollEnd } from "@/ui/hooks";
+import { useDebounce, useInvites, useScrollEnd } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { messagesService } from "@/ui/services";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -29,7 +29,7 @@ export default function InvitesPending() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pages, setPages] = useState(0);
 
-  const { socket } = useAuth();
+  const invitesContext = useInvites();
 
   const listInvites = useCallback(async (search?: string, page?: number) => {
     setIsLoading(true);
@@ -49,12 +49,14 @@ export default function InvitesPending() {
   }, []);
 
   useEffect(() => {
-    socket.on("invite:new", (invite) => setInvites((i) => [invite, ...i]));
+    const onNewInvite = (invite: Invite) => setInvites((i) => [invite, ...i]);
+
+    invitesContext.event.on("invite:new", onNewInvite);
 
     return () => {
-      socket.off("invite:new");
+      invitesContext.event.off("invite:new", onNewInvite);
     };
-  }, [socket]);
+  }, [invitesContext.event]);
 
   useDebounce(
     () => {
@@ -89,11 +91,12 @@ export default function InvitesPending() {
 
         toast.success(message);
         setInvites((i) => i.filter((invite) => invite.id !== inviteId));
+        invitesContext.event.emit("invite:answered");
       } finally {
         // ...
       }
     },
-    []
+    [invitesContext.event]
   );
 
   const renderInvites = useCallback(() => {

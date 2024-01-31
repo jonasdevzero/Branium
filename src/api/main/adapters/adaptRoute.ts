@@ -53,7 +53,9 @@ export const adaptRoute = (controller: Controller) => {
     const httpResponse = await controller.handle(httpRequest);
 
     const response = new NextResponse(
-      httpResponse.body ? JSON.stringify(httpResponse.body) : null,
+      typeof httpResponse.body !== "undefined"
+        ? JSON.stringify(httpResponse.body)
+        : null,
       { status: httpResponse.statusCode }
     );
 
