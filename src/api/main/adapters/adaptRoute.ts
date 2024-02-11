@@ -2,8 +2,12 @@ import { Controller, HttpRequest } from "@/api/presentation/protocols";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
+interface Params {
+  params: Record<string, string>;
+}
+
 export const adaptRoute = (controller: Controller) => {
-  return async (request: Request) => {
+  return async (request: Request, params: Params) => {
     const { method } = request;
     const headersList = headers();
 
@@ -17,6 +21,7 @@ export const adaptRoute = (controller: Controller) => {
     const httpRequest: HttpRequest = {
       body: {},
       query,
+      params: params.params,
       files: {},
       user: { id: "" },
     };

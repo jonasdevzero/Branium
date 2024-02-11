@@ -1,5 +1,6 @@
 import { LoginUserDTO } from "@/domain/dtos";
 import { toast } from "@/ui/modules";
+import { KeyPairStorage } from "@/ui/utils";
 
 export async function login(data: LoginUserDTO) {
   const response = await fetch("/api/login", {
@@ -19,5 +20,9 @@ export async function login(data: LoginUserDTO) {
     );
   }
 
-  if (!response.ok) throw await response.json();
+  const result = await response.json();
+
+  if (!response.ok) throw result;
+
+  KeyPairStorage.set(result);
 }

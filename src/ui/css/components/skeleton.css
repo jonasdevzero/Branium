@@ -25,6 +25,11 @@
   gap: 0.75rem;
 }
 
+.skeleton__wrap.actions {
+  flex-direction: row;
+  gap: 1rem;
+}
+
 .skeleton__box {
   background-color: var(--primary-800);
   border-radius: 0.25rem;
@@ -52,6 +57,11 @@
 .skeleton__box.button {
   width: 6.25rem;
   height: 2rem;
+}
+
+.skeleton__box.icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 @keyframes skeleton_loading {

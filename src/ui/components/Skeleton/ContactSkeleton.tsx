@@ -1,6 +1,10 @@
 import "@/ui/css/components/skeleton.css";
 
-export function ContactSkeleton({}: {}) {
+interface Props {
+  actions?: number;
+}
+
+export function ContactSkeleton({ actions = 0 }: Props) {
   return (
     <div className="skeleton__wrap card">
       <div className="skeleton__wrap room">
@@ -11,6 +15,14 @@ export function ContactSkeleton({}: {}) {
           <span className="skeleton__box description"></span>
         </div>
       </div>
+
+      {actions > 0 && (
+        <div className="skeleton__wrap actions">
+          {new Array(actions).fill("").map((_, i) => (
+            <span key={i} className="skeleton__box icon"></span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

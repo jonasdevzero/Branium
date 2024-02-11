@@ -2,8 +2,14 @@ import "./styles.css";
 import { MaterialSymbol } from "react-material-symbols";
 
 export function Form() {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    ///...
+  };
+
   return (
-    <form className="chat__form">
+    <form className="chat__form" onSubmit={onSubmit}>
       <button type="button" className="button__icon">
         <MaterialSymbol icon="mood" />
       </button>

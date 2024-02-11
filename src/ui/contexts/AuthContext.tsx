@@ -12,6 +12,7 @@ import {
 import { Sidebar, LoadingContainer } from "../components";
 import { Socket, websocketUrl } from "../services";
 import { InvitesProvider } from "./InvitesContext";
+import { KeyPairStorage } from "../utils";
 
 interface AuthContextProps {
   user: User;
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: Props) {
     setUser(undefined);
     deleteCookie("access", { path: "/" });
     deleteCookie("refresh", { path: "/" });
+    KeyPairStorage.clear();
 
     setStatus("unauthenticated");
     socket.disconnect();
