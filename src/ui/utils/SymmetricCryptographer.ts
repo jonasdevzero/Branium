@@ -1,3 +1,5 @@
+"client-only";
+
 export class SymmetricCryptographer {
   private static ALGORITHM = "AES-GCM";
 
