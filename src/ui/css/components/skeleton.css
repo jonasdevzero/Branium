@@ -18,6 +18,20 @@
   animation: 1s skeleton_loading ease-out infinite;
 }
 
+.skeleton__wrap.message {
+  flex-direction: row;
+  animation: 1s skeleton_loading ease-out infinite;
+}
+
+.skeleton__wrap.message + .skeleton__wrap.message {
+  margin-top: 1.5rem;
+}
+
+.skeleton__wrap.message__info {
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
 .skeleton__wrap.room {
   flex-direction: row;
   align-items: center;
@@ -35,6 +49,10 @@
   border-radius: 0.25rem;
 }
 
+.skeleton__wrap.message *.skeleton__box {
+  background-color: var(--primary-850);
+}
+
 .skeleton__box.avatar {
   width: 3.125rem;
   height: 3.125rem;
@@ -47,6 +65,14 @@
 .skeleton__box.text {
   width: 12rem;
   height: 1.5rem;
+}
+
+.skeleton__wrap.message__info > .skeleton__box.text.username {
+  width: 4.5rem;
+}
+
+.skeleton__wrap.message__info > .skeleton__box.text.timestamp {
+  width: 8rem;
 }
 
 .skeleton__box.description {
@@ -62,6 +88,18 @@
 .skeleton__box.icon {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.skeleton__box.message__content {
+  width: 20rem;
+  height: 1.5rem;
+}
+
+.skeleton__box.message__content--image {
+  height: 8rem;
+}
+.skeleton__box.message__content--file {
+  height: 4rem;
 }
 
 @keyframes skeleton_loading {

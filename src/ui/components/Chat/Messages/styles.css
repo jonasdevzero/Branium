@@ -1,0 +1,10 @@
+.messages {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  height: 100%;
+
+  overflow-y: scroll;
+
+  padding: 0 1.5rem;
+}

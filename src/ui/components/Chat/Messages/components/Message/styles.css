@@ -1,0 +1,43 @@
+.message {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.message--full + .message--full {
+  margin-bottom: 1.5rem;
+}
+
+.message--short {
+  padding-left: 56px;
+}
+
+.message__content {
+  display: flex;
+  flex-direction: column;
+
+  max-width: 40rem;
+}
+
+.message__info {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.message__info > h6 {
+  color: var(--secondary-100);
+  cursor: pointer;
+}
+
+.message__info > h6:hover {
+  text-decoration: underline;
+}
+
+.message__info > span {
+  color: var(--secondary-200);
+}
+
+.message__content > p {
+  width: 100%;
+}

@@ -1,15 +1,28 @@
 import { useCallback, useEffect } from "react";
 
-export function useScrollEnd(ref: React.RefObject<any>, cb: () => void) {
+interface ScrollEndOptions {
+  position?: "top" | "bottom";
+}
+
+export function useScrollEnd(
+  ref: React.RefObject<any>,
+  cb: () => void,
+  options: ScrollEndOptions = {}
+) {
   const handleScroll = useCallback(() => {
     if (!ref.current) return;
+
+    const { position = "bottom" } = options;
 
     const isAtBottom =
       ref.current.scrollTop + ref.current.clientHeight ===
       ref.current.scrollHeight;
 
-    if (isAtBottom) cb();
-  }, [cb, ref]);
+    const isAtTop = ref.current.scrollTop === 0;
+
+    if (isAtBottom && position === "bottom") cb();
+    if (isAtTop && position === "top") cb();
+  }, [cb, options, ref]);
 
   useEffect(() => {
     if (ref.current) {

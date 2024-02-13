@@ -4,3 +4,4 @@ export * from "./KeyPair";
 export * from "./User";
 export * from "./Invite";
 export * from "./Contact";
+export * from "./Message";
