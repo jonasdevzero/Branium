@@ -1,7 +1,7 @@
 import { KeyPair } from "@/domain/models";
 import { Fetch, KeyPairStorage } from "@/ui/utils";
 
-export const keysService = Object.freeze({
+export const keysServices = Object.freeze({
   async loadKeyPair(password: string) {
     const keyPair = await Fetch.post<KeyPair>("/api/keys/pair", {
       password,

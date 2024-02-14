@@ -4,7 +4,7 @@ import { LoginUserDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
 import { Form } from "@/ui/components";
 import { toast } from "@/ui/modules";
-import { authService } from "@/ui/services";
+import { authServices } from "@/ui/services";
 import { hasCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ export default function Login() {
       setIsLoading(true);
 
       try {
-        await authService.login(data);
+        await authServices.login(data);
         router.replace("/channels");
       } catch (e) {
         const error = e as ApiError;

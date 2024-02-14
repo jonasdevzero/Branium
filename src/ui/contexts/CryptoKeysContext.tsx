@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { KeyPairStorage } from "../utils";
-import { keysService } from "../services";
+import { keysServices } from "../services";
 import { Form, Modal } from "../components";
 import { ApiError, KeyPair } from "@/domain/models";
 import { useAuth } from "../hooks";
@@ -61,7 +61,7 @@ export function CryptoKeysProvider({
       const key = keys.find((k) => k.userId === userId);
       if (key) return key.publicKey;
 
-      const publicKey = await keysService.findPublicKey(userId);
+      const publicKey = await keysServices.findPublicKey(userId);
 
       if (publicKey !== null) setKeys((k) => [...k, { userId, publicKey }]);
 
@@ -131,7 +131,7 @@ function FetchKeyPairModal({
     setTries(tries + 1);
 
     try {
-      const keyPair = await keysService.loadKeyPair(password);
+      const keyPair = await keysServices.loadKeyPair(password);
       onSuccess(keyPair);
       reset();
     } catch (error) {
