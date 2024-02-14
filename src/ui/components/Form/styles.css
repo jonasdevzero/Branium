@@ -43,6 +43,11 @@ fieldset {
   outline: none;
 }
 
+.form__label > span.description {
+  text-align: right;
+  color: var(--secondary-200);
+}
+
 form > a {
   text-align: center;
 }

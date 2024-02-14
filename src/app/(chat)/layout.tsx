@@ -1,4 +1,4 @@
-import { AuthProvider } from "@/ui/contexts";
+import { AuthProvider, CryptoKeysProvider } from "@/ui/contexts";
 import { Toaster } from "@/ui/modules";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
@@ -23,7 +23,9 @@ export default function ChatLayout({
         <Toaster />
 
         <main>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <CryptoKeysProvider>{children}</CryptoKeysProvider>
+          </AuthProvider>
         </main>
       </body>
     </html>

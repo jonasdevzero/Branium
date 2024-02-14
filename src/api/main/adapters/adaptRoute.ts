@@ -67,6 +67,10 @@ export const adaptRoute = (controller: Controller) => {
     const responseHeaders = httpResponse.options?.headers || {};
     const responseCookies = httpResponse.options?.cookies || {};
 
+    if (typeof httpRequest.body === "object") {
+      responseHeaders["content-type"] = "application/json";
+    }
+
     for (const [key, value] of Object.entries(responseHeaders)) {
       if (!value) continue;
 

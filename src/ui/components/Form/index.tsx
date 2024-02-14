@@ -21,10 +21,11 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   field: string;
   error?: string;
   name: string;
+  subInfo?: string;
 };
 
 Form.Input = React.forwardRef<HTMLLabelElement, InputProps>((props, ref) => {
-  const { field, error, ...rest } = useMemo(() => props, [props]);
+  const { field, error, subInfo, ...rest } = useMemo(() => props, [props]);
 
   return (
     <label
@@ -38,6 +39,10 @@ Form.Input = React.forwardRef<HTMLLabelElement, InputProps>((props, ref) => {
       </p>
 
       <input id={props.name} {...rest} />
+
+      {typeof subInfo === "string" && (
+        <span className="description">{subInfo}</span>
+      )}
     </label>
   );
 });

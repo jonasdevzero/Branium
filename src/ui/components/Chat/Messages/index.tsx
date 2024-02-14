@@ -1,5 +1,5 @@
 import { Message } from "@/domain/models";
-import { useScrollEnd } from "@/ui/hooks";
+import { useCryptoKeys, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageComponent } from "./components";
@@ -17,6 +17,7 @@ export function Messages({ fetchMessages }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const cryptoKeys = useCryptoKeys();
 
   const scrollDown = useCallback(() => {
     if (containerRef.current === null) return;
@@ -25,6 +26,7 @@ export function Messages({ fetchMessages }: Props) {
   }, [containerRef]);
 
   const onFetchMessages = useCallback(async () => {
+    if (!cryptoKeys.privateKey) return;
     setIsLoading(true);
 
     try {
@@ -39,7 +41,7 @@ export function Messages({ fetchMessages }: Props) {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, fetchMessages, scrollDown]);
+  }, [cryptoKeys.privateKey, currentPage, fetchMessages, scrollDown]);
 
   useScrollEnd(
     containerRef,
@@ -57,7 +59,13 @@ export function Messages({ fetchMessages }: Props) {
     onFetchMessages();
   }, [onFetchMessages, scrollDown]);
 
+  useEffect(() => {
+    if (!cryptoKeys.hasKeyPair()) cryptoKeys.requirePassword();
+  }, [cryptoKeys]);
+
   const renderMessages = useCallback(() => {
+    if (!cryptoKeys.privateKey) return;
+
     if (isLoading && currentPage === 0)
       return <MessageComponent.Skeleton amount={50} />;
 
@@ -78,7 +86,7 @@ export function Messages({ fetchMessages }: Props) {
         />
       );
     });
-  }, [currentPage, isLoading, messages]);
+  }, [cryptoKeys, currentPage, isLoading, messages]);
 
   return (
     <div ref={containerRef} className="messages">

@@ -4,7 +4,7 @@ import "./styles.css";
 interface Props {
   id?: string;
   isOpen: boolean;
-  close(): void;
+  close?: () => void;
   title: string;
   children: React.ReactNode;
 }
@@ -25,14 +25,16 @@ export const Modal: React.FC<Props> = ({
         <div className="modal__header">
           <h4 className="header4">{title}</h4>
 
-          <button
-            id="close-modal"
-            className="modal__close icon__button"
-            type="button"
-            onClick={close}
-          >
-            <MaterialSymbol icon="close" size={24} color="#fff" />
-          </button>
+          {!!close && (
+            <button
+              id="close-modal"
+              className="modal__close icon__button"
+              type="button"
+              onClick={close}
+            >
+              <MaterialSymbol icon="close" size={24} color="#fff" />
+            </button>
+          )}
         </div>
 
         <div className="modal__content">{children}</div>

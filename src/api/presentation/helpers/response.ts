@@ -33,7 +33,7 @@ const error = (error: Error): HttpResponse => {
     statusCode: err.statusCode,
     body: {
       error: err.name,
-      status: err.statusCode,
+      statusCode: err.statusCode,
       message: err.message,
       meta: err.meta,
     },

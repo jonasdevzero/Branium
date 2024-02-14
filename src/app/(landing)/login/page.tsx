@@ -36,7 +36,7 @@ export default function Login() {
       } catch (e) {
         const error = e as ApiError;
 
-        if (error.status >= 400 && error.status < 500)
+        if (error.statusCode >= 400 && error.statusCode < 500)
           toast.error("username ou senha inválida");
       } finally {
         setIsLoading(false);
