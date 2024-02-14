@@ -12,7 +12,7 @@ export const keysServices = Object.freeze({
     return keyPair;
   },
 
-  async findPublicKey(userId: string) {
-    return await Fetch.get<string | null>(`/api/keys/public/${userId}2`);
+  findPublicKey(userId: string) {
+    return Fetch.get<string | null>(`/api/keys/public/${userId}`);
   },
 });

@@ -8,4 +8,4 @@ export interface ListContactMessagesDTO {
   limit?: number;
 }
 
-export type listContactMessagesResultDTO = Paginated<Message>;
+export type ListContactMessagesResultDTO = Paginated<Message>;

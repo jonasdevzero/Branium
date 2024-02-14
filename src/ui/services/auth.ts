@@ -6,7 +6,7 @@ import {
 import { KeyPair } from "@/domain/models";
 import { Fetch, KeyPairStorage } from "@/ui/utils";
 
-export const authServices = {
+export const authServices = Object.freeze({
   async registerUser(data: RegisterUserDTO) {
     await Fetch.post("/api/register", data);
   },
@@ -23,4 +23,4 @@ export const authServices = {
 
     KeyPairStorage.set(keyPair);
   },
-};
+});
