@@ -61,7 +61,7 @@ export function CryptoKeysProvider({
       const key = keys.find((k) => k.userId === userId);
       if (key) return key.publicKey;
 
-      const publicKey = await keysService.findPublic(userId);
+      const publicKey = await keysService.findPublicKey(userId);
 
       if (publicKey !== null) setKeys((k) => [...k, { userId, publicKey }]);
 

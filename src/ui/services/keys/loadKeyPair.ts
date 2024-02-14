@@ -1,8 +1,8 @@
 import { KeyPair } from "@/domain/models";
-import { Fetcher, KeyPairStorage } from "@/ui/utils";
+import { Fetch, KeyPairStorage } from "@/ui/utils";
 
-export async function loadKeyPairService(password: string) {
-  const keyPair = await Fetcher.post<KeyPair>("/api/keys/pair", {
+export async function loadKeyPair(password: string) {
+  const keyPair = await Fetch.post<KeyPair>("/api/keys/pair", {
     password,
   });
 

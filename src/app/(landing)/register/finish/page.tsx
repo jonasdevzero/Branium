@@ -3,7 +3,7 @@ import { FinishUserRegisterDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
 import { Form } from "@/ui/components";
 import { isEmail } from "@/ui/helpers";
-import { authenticationService } from "@/ui/services";
+import { authService } from "@/ui/services";
 import { finishRegisterUserSchema } from "@/ui/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
@@ -42,7 +42,7 @@ export default function FinishRegister() {
       setIsLoading(true);
 
       try {
-        await authenticationService.finishRegister({ ...data, image });
+        await authService.finishRegister({ ...data, image });
 
         router.replace("/login");
         toast.success("Cadastro finalizado!");

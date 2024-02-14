@@ -2,38 +2,30 @@
 import { ApiError } from "@/domain/models";
 import { toast } from "../modules";
 
-type FetcherMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-type FetcherBody = string | Object | FormData | null;
-type FetcherHeaders = Record<string, string>;
+type FetchMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+type FetchBody = string | Object | FormData | null;
+type FetchHeaders = Record<string, string>;
 
-export class Fetcher {
+export class Fetch {
   static async request<R extends unknown>(
-    method: FetcherMethod,
+    method: FetchMethod,
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers: FetchHeaders = {}
   ): Promise<R> {
-    let contentType = "text/plain";
-    let parsedBody: string | FormData | null = null;
+    const contentType = this.getContentType(body);
 
-    const isFormData = body instanceof FormData;
+    const parsedBody =
+      contentType === "application/json"
+        ? JSON.stringify(body)
+        : (body as string);
 
-    if (typeof body === "string") parsedBody = body;
-
-    if (typeof body === "object" && !isFormData) {
-      contentType = "application/json";
-      parsedBody = JSON.stringify(body);
-    }
-
-    if (isFormData) {
-      contentType = "multipart/form-data";
-      parsedBody = body;
-    }
+    if (!!contentType) headers["Content-Type"] = contentType;
 
     const response = await fetch(path, {
       method,
       body: parsedBody,
-      headers: { "Content-Type": contentType, ...headers },
+      headers,
     });
 
     if (!response.ok) {
@@ -42,6 +34,18 @@ export class Fetcher {
     }
 
     return this.treatResponse(response);
+  }
+
+  private static getContentType(body?: FetchBody): string | undefined {
+    if (typeof body === "string") return "text/plain";
+
+    const isFormData = body instanceof FormData;
+
+    if (typeof body === "object" && !isFormData) return "application/json";
+
+    if (isFormData) return "multipart/form-data";
+
+    return undefined;
   }
 
   private static treatError(error: ApiError) {
@@ -74,40 +78,40 @@ export class Fetcher {
 
   static get<R extends unknown>(
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers?: FetchHeaders
   ) {
     return this.request<R>("GET", path, body, headers);
   }
 
   static post<R extends unknown>(
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers?: FetchHeaders
   ) {
     return this.request<R>("POST", path, body, headers);
   }
 
   static put<R extends unknown>(
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers?: FetchHeaders
   ) {
     return this.request<R>("PUT", path, body, headers);
   }
 
   static patch<R extends unknown>(
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers?: FetchHeaders
   ) {
     return this.request<R>("PATCH", path, body, headers);
   }
 
   static delete<R extends unknown>(
     path: string,
-    body?: FetcherBody,
-    headers?: FetcherHeaders
+    body?: FetchBody,
+    headers?: FetchHeaders
   ) {
     return this.request<R>("DELETE", path, body, headers);
   }

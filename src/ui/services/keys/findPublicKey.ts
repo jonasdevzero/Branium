@@ -1,5 +1,5 @@
-import { Fetcher } from "@/ui/utils";
+import { Fetch } from "@/ui/utils";
 
-export async function findPublicKeyService(userId: string) {
-  return await Fetcher.get<string | null>(`/api/keys/public/${userId}2`);
+export async function findPublicKey(userId: string) {
+  return await Fetch.get<string | null>(`/api/keys/public/${userId}2`);
 }
