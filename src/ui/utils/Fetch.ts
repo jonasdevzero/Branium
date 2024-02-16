@@ -43,8 +43,6 @@ export class Fetch {
 
     if (typeof body === "object" && !isFormData) return "application/json";
 
-    if (isFormData) return "multipart/form-data";
-
     return undefined;
   }
 
@@ -64,16 +62,20 @@ export class Fetch {
   private static treatResponse(response: Response) {
     if (response.body === null) return;
 
-    const contentType = response.headers.get("content-type");
+    try {
+      const contentType = response.headers.get("content-type");
 
-    if (!contentType) return response.body;
+      if (!contentType) return response.body;
 
-    const type = contentType.split(";")[0];
+      const type = contentType.split(";")[0];
 
-    if (type === "application/json") return response.json();
-    if (type === "text/plain") return response.text();
+      if (type === "application/json") return response.json();
+      if (type === "text/plain") return response.text();
 
-    return response.body;
+      return response.body;
+    } catch (error) {
+      return;
+    }
   }
 
   static get<R extends unknown>(
