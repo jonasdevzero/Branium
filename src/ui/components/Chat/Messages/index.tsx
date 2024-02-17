@@ -1,16 +1,17 @@
 import { Message } from "@/domain/models";
 import { useCryptoKeys, useScrollEnd } from "@/ui/hooks";
-import { Paginated } from "@/ui/types";
+import { MessageEvents, Paginated } from "@/ui/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageComponent } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
 import "./styles.css";
 
 interface Props {
+  events: MessageEvents;
   fetchMessages(page: number): Promise<Paginated<Message>>;
 }
 
-export function Messages({ fetchMessages }: Props) {
+export function Messages({ events, fetchMessages }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [pages, setPages] = useState(0);
@@ -62,6 +63,32 @@ export function Messages({ fetchMessages }: Props) {
   useEffect(() => {
     if (!cryptoKeys.hasKeyPair()) cryptoKeys.requirePassword();
   }, [cryptoKeys]);
+
+  useEffect(() => {
+    const onNewMessage = (message: Message) =>
+      setMessages((m) => sortMessages([...m, message]));
+
+    const onSuccessMessage = (messageId: string) =>
+      setMessages((messages) =>
+        messages.map((m) => {
+          if (m.id === messageId) delete m.isSending;
+          return m;
+        })
+      );
+
+    const onFailMessage = (messageId: string) =>
+      setMessages((m) => m.filter(({ id }) => id !== messageId));
+
+    events.on("message:new", onNewMessage);
+    events.on("message:success", onSuccessMessage);
+    events.on("message:fail", onFailMessage);
+
+    return () => {
+      events.off("message:new", onNewMessage);
+      events.off("message:success", onSuccessMessage);
+      events.off("message:fail", onFailMessage);
+    };
+  }, [events]);
 
   const renderMessages = useCallback(() => {
     if (!cryptoKeys.privateKey) return;

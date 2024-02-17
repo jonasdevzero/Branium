@@ -21,7 +21,7 @@ export class AsymmetricCryptographer {
       new TextEncoder().encode(plainText)
     );
 
-    return Buffer.from(encrypted).toString("binary");
+    return Buffer.from(encrypted).toString("base64");
   }
 
   static async decrypt(cipherText: string, privateKey: string) {
@@ -36,37 +36,40 @@ export class AsymmetricCryptographer {
     const decrypted = await crypto.subtle.decrypt(
       { name: this.ALGORITHM.name },
       key,
-      Buffer.from(cipherText, "binary")
+      Buffer.from(cipherText, "base64")
     );
 
     return new TextDecoder().decode(decrypted);
   }
 
   private static getPemPublicKeyContent(publicKey: string) {
-    const pemContents = publicKey.replace(
-      /-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----/g,
-      ""
+    const pemContents = publicKey
+      .replace(/-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----/g, "")
+      .replace(/\\n/g, "");
+
+    const binaryDerString = Buffer.from(pemContents, "base64").toString(
+      "binary"
     );
 
-    const binaryDerString = window.atob(pemContents);
-    const binaryDer = this.parseBinaryBufferToArrayBuffer(binaryDerString);
+    const binaryDer = this.parseBinaryToArrayBuffer(binaryDerString);
 
     return binaryDer;
   }
 
   private static getPemPrivateKeyContent(privateKey: string) {
-    const pemContents = privateKey.replace(
-      /-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----/g,
-      ""
-    );
+    const pemContents = privateKey
+      .replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----/g, "")
+      .replace(/\\n/g, "");
 
-    const binaryDerString = window.atob(pemContents);
-    const binaryDer = this.parseBinaryBufferToArrayBuffer(binaryDerString);
+    const binaryDerString = Buffer.from(pemContents, "base64").toString(
+      "binary"
+    );
+    const binaryDer = this.parseBinaryToArrayBuffer(binaryDerString);
 
     return binaryDer;
   }
 
-  private static parseBinaryBufferToArrayBuffer(str: string) {
+  private static parseBinaryToArrayBuffer(str: string) {
     const buf = new ArrayBuffer(str.length);
     const bufView = new Uint8Array(buf);
 

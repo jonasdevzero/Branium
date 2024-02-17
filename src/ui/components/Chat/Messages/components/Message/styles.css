@@ -12,6 +12,18 @@
   padding-left: 56px;
 }
 
+.message > .avatar__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.message__pending {
+  display: flex;
+  justify-content: center;
+  width: 3.125rem;
+}
+
 .message__content {
   display: flex;
   flex-direction: column;

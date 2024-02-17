@@ -4,7 +4,19 @@ export function createNestedFormData(data: any) {
   const keys = flattenObjectKeys(data);
 
   keys.forEach((key) => {
-    formData.append(key, data[key]);
+    const subKeys = key.split(".");
+    const lastKey = subKeys[subKeys.length - 1];
+    let aux = data;
+
+    if (subKeys.length === 1) {
+      formData.append(key, aux[key]);
+      return;
+    }
+
+    for (let index = 0; index < subKeys.length - 1; index++)
+      aux = aux[subKeys[index]] || {};
+
+    formData.append(key, aux[lastKey]);
   });
 
   return formData;

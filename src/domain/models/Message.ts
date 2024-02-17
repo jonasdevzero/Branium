@@ -19,6 +19,8 @@ export interface Message {
   };
 
   files: Array<MessageFile>;
+
+  isSending?: boolean;
 }
 
 export type MessageType = "TEXT" | "IMAGE" | "FILE" | "AUDIO" | "VIDEO" | "MIX";
@@ -27,7 +29,7 @@ export interface MessageSender {
   id: string;
   name: string;
   username: string;
-  image: string | null;
+  image: string | null | undefined;
 }
 
 export interface MessageFile {

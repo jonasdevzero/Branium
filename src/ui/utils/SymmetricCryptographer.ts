@@ -35,7 +35,7 @@ export class SymmetricCryptographer {
       encodedText
     );
 
-    return Buffer.from(cipherText).toString("binary");
+    return Buffer.from(cipherText).toString("base64");
   }
 
   static async decrypt(cipherText: string, keyBlob: string) {
@@ -59,7 +59,7 @@ export class SymmetricCryptographer {
         iv,
       },
       secretKey,
-      Buffer.from(cipherText, "binary")
+      Buffer.from(cipherText, "base64")
     );
 
     return new TextDecoder().decode(cleartext);

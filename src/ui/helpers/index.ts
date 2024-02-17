@@ -4,3 +4,4 @@ export * from "./minifyName";
 export * from "./formatDate";
 export * from "./createNestedFormData";
 export * from "./createQueryParams";
+export * from "./getMessageType";

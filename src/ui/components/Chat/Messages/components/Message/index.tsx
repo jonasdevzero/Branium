@@ -2,6 +2,10 @@ import { Message } from "@/domain/models";
 import "./styles.css";
 import { formatDate } from "@/ui/helpers";
 import { Avatar, MessageSkeleton } from "@/ui/components";
+import { useCallback, useEffect, useState } from "react";
+import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
+import { useCryptoKeys } from "@/ui/hooks";
+import { MaterialSymbol } from "react-material-symbols";
 
 interface MessageProps {
   message: Message;
@@ -11,21 +15,75 @@ interface MessageProps {
 export function MessageComponent({ message, short }: MessageProps) {
   const { sender } = message;
 
-  if (short && !!message.message) {
+  const [decryptedText, setDecryptedText] = useState<string>();
+  const cryptoKeys = useCryptoKeys();
+
+  const decryptMessage = useCallback(async () => {
+    const { key, message: text } = message;
+
+    if (!text) return;
+
+    const privateKey = cryptoKeys.privateKey;
+
+    try {
+      if (!privateKey) {
+        throw new Error("Decrypt key not found");
+      }
+
+      const decryptedKey = await AsymmetricCryptographer.decrypt(
+        key,
+        privateKey
+      );
+
+      const plainText = await SymmetricCryptographer.decrypt(
+        text,
+        decryptedKey
+      );
+
+      setDecryptedText(plainText);
+    } catch (error) {
+      setDecryptedText("(Falha ao descriptografar a mensagem)");
+    }
+  }, [cryptoKeys.privateKey, message]);
+
+  useEffect(() => {
+    decryptMessage();
+  }, [decryptMessage]);
+
+  if (short && !!decryptedText) {
+    const isSending = message.isSending === true;
+
     return (
-      <div id={message.id} className="message message--short">
-        <p className="text">{message.message}</p>
+      <div
+        id={message.id}
+        className={`message ${!isSending && "message--short"}`}
+      >
+        {isSending && (
+          <span title="enviando mensagem" className="message__pending">
+            <MaterialSymbol icon="schedule_send" size={24} color="#fff" />
+          </span>
+        )}
+
+        <p className="text">{decryptedText}</p>
       </div>
     );
   }
 
   return (
-    <div id={message.id} className="message message--full">
-      <Avatar
-        name={sender.name}
-        alt={`foto de ${sender.name}`}
-        url={sender.image}
-      />
+    <div key={message.id} id={message.id} className="message message--full">
+      <div className="avatar__wrap">
+        <Avatar
+          name={sender.name}
+          alt={`foto de ${sender.name}`}
+          url={sender.image}
+        />
+
+        {message.isSending === true && (
+          <span title="enviando mensagem" className="message__pending">
+            <MaterialSymbol icon="schedule_send" size={24} color="#fff" />
+          </span>
+        )}
+      </div>
 
       <div className="message__content">
         <div className="message__info">
@@ -33,7 +91,7 @@ export function MessageComponent({ message, short }: MessageProps) {
           <span className="text">{formatDate(message.createdAt)}</span>
         </div>
 
-        {!!message.message && <p className="text">{message.message}</p>}
+        {!!decryptedText && <p className="text">{decryptedText}</p>}
       </div>
     </div>
   );

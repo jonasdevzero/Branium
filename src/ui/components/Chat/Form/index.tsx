@@ -18,6 +18,7 @@ export function Form({ onSubmit }: FormProps) {
     e.preventDefault();
 
     onSubmit({ text, files: [] });
+    setText("");
   };
 
   return (
@@ -35,10 +36,10 @@ export function Form({ onSubmit }: FormProps) {
         id="message-text"
         className="text"
         placeholder="Digite uma mensagem"
-        value={text}
         autoFocus
         contentEditable="true"
         autoComplete="false"
+        value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.code === "Enter" && e.shiftKey) return true;
@@ -46,6 +47,7 @@ export function Form({ onSubmit }: FormProps) {
           if (e.code === "Enter" || e.code === "NumpadEnter") {
             e.preventDefault();
             onSubmit({ text, files: [] });
+            setText("");
             return false;
           }
         }}
