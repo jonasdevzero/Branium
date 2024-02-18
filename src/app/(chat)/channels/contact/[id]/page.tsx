@@ -40,12 +40,20 @@ export default function ContactChannel() {
     loadContact();
   }, [loadContact]);
 
+  useEffect(() => {
+    messages.setCurrentRoomId(contactId);
+
+    return () => {
+      messages.setCurrentRoomId(undefined);
+    };
+  }, [contactId, messages]);
+
   const fetchMessages = useCallback(
     async (page: number) => {
       return await messagesService.message.contact.list({
         contactId,
         page,
-        limit: 50,
+        limit: 40,
       });
     },
     [contactId]

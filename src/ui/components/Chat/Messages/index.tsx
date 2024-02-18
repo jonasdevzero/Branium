@@ -1,11 +1,12 @@
+import { NewMessageDTO } from "@/domain/dtos";
 import { Message, RoomType } from "@/domain/models";
 import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MessageComponent } from "./components";
+import { LoadingSpinner } from "../..";
+import { MessageComponent, ScrollDown } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
 import "./styles.css";
-import { NewMessageDTO } from "@/domain/dtos";
 
 interface Props {
   roomId: string;
@@ -21,7 +22,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cryptoKeys = useCryptoKeys();
-  const { event, setCurrentRoomId } = useMessages();
+  const { event } = useMessages();
 
   const scrollDown = useCallback(() => {
     if (containerRef.current === null) return;
@@ -54,8 +55,9 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
       if (info.roomId !== roomId || info.type !== roomType) return;
 
       setMessages((m) => sortMessages([...m, message]));
+      setTimeout(scrollDown, 100);
     },
-    [roomId, roomType]
+    [roomId, roomType, scrollDown]
   );
 
   const onSuccessMessage = (messageId: string) =>
@@ -72,9 +74,9 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   useScrollEnd(
     containerRef,
     useCallback(() => {
-      if (currentPage === pages) return;
+      if (currentPage + 1 === pages) return;
 
-      setCurrentPage((p) => p++);
+      setCurrentPage(currentPage + 1);
       onFetchMessages();
     }, [currentPage, onFetchMessages, pages]),
     { position: "top" }
@@ -88,14 +90,6 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   useEffect(() => {
     if (!cryptoKeys.hasKeyPair()) cryptoKeys.requirePassword();
   }, [cryptoKeys]);
-
-  useEffect(() => {
-    setCurrentRoomId(roomId);
-
-    return () => {
-      setCurrentRoomId(undefined);
-    };
-  }, [roomId, setCurrentRoomId]);
 
   useEffect(() => {
     event.on("message:new", onNewMessage);
@@ -116,7 +110,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
       return <MessageComponent.Skeleton amount={50} />;
 
     return messages.map((message, index, array) => {
-      const previousMessage = array[index + 1];
+      const previousMessage = array[index - 1];
 
       const isPreviousSameSender =
         message.sender.id === previousMessage?.sender.id;
@@ -135,8 +129,14 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   }, [cryptoKeys, currentPage, isLoading, messages]);
 
   return (
-    <div ref={containerRef} className="messages">
+    <div
+      ref={containerRef}
+      className={`messages ${isLoading ? "messages--lock" : ""}`}
+    >
+      {isLoading && currentPage > 0 && <LoadingSpinner />}
       {renderMessages()}
+
+      <ScrollDown containerRef={containerRef} />
     </div>
   );
 }
