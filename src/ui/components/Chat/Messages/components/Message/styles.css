@@ -8,6 +8,10 @@
   margin-bottom: 1.5rem;
 }
 
+.message--full + .message--short {
+  margin-bottom: 1.5rem;
+}
+
 .message--short {
   padding-left: 56px;
 }

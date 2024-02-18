@@ -5,8 +5,8 @@ export interface Message {
   message: string | null;
   type: MessageType;
 
-  createdAt: string;
-  updatedAt: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 
   sender: MessageSender;
 

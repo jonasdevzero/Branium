@@ -43,8 +43,8 @@ export default function ContactChannel() {
   }, [loadContact]);
 
   useEffect(() => {
-    socket.on("contact:message:new", (data) => {
-      if (data.contactId !== contactId) return;
+    socket.on("message:new", (data) => {
+      if (data.roomId !== contactId) return;
 
       events.emit("message:new", data.message);
     });
