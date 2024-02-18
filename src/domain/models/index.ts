@@ -5,3 +5,4 @@ export * from "./User";
 export * from "./Invite";
 export * from "./Contact";
 export * from "./Message";
+export * from "./Room";

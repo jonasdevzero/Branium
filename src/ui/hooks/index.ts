@@ -4,3 +4,4 @@ export * from "./useOutsideClick";
 export * from "./useScrollEnd";
 export * from "./useInvites";
 export * from "./useCryptoKeys";
+export * from "./useMessages";

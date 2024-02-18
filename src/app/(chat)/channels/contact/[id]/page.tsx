@@ -8,25 +8,23 @@ import {
   SubmitMessageProps,
 } from "@/ui/components/Chat";
 import { getMessageType } from "@/ui/helpers";
-import { useAuth, useCryptoKeys } from "@/ui/hooks";
+import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { messagesService } from "@/ui/services";
-import { MessageEvents } from "@/ui/types";
 import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
-import EventEmitter from "events";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./styles.css";
 
 export default function ContactChannel() {
-  const events = useMemo<MessageEvents>(() => new EventEmitter(), []);
   const [contact, setContact] = useState<Contact>();
 
   const { id: contactId } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const { user, socket } = useAuth();
+  const { user } = useAuth();
   const cryptoKeys = useCryptoKeys();
+  const messages = useMessages();
 
   const loadContact = useCallback(async () => {
     try {
@@ -41,18 +39,6 @@ export default function ContactChannel() {
   useEffect(() => {
     loadContact();
   }, [loadContact]);
-
-  useEffect(() => {
-    socket.on("message:new", (data) => {
-      if (data.roomId !== contactId) return;
-
-      events.emit("message:new", data.message);
-    });
-
-    return () => {
-      socket.off("contact:message:new");
-    };
-  }, [contactId, events, socket]);
 
   const fetchMessages = useCallback(
     async (page: number) => {
@@ -104,13 +90,17 @@ export default function ContactChannel() {
           username: user.username,
           image: user.image,
         },
-        createdAt: new Date().toString(),
+        createdAt: new Date(),
         updatedAt: null,
 
         isSending: true,
       };
 
-      events.emit("message:new", loadedMessage);
+      messages.event.emit("message:new", {
+        message: loadedMessage,
+        roomId: contactId,
+        type: "CONTACT",
+      });
 
       try {
         await messagesService.message.contact.create({
@@ -121,16 +111,16 @@ export default function ContactChannel() {
           files: [],
         });
 
-        events.emit("message:success", temporaryMessageId);
+        messages.event.emit("message:success", temporaryMessageId);
       } catch (error) {
-        events.emit("message:fail", temporaryMessageId);
+        messages.event.emit("message:fail", temporaryMessageId);
 
         toast.error("Não foi possível enviar a mensagem", {
           id: "send-message",
         });
       }
     },
-    [contactId, cryptoKeys, user, events]
+    [cryptoKeys, contactId, user, messages.event]
   );
 
   return (
@@ -145,7 +135,11 @@ export default function ContactChannel() {
         <Header.Skeleton />
       )}
 
-      <Messages events={events} fetchMessages={fetchMessages} />
+      <Messages
+        roomId={contactId}
+        roomType="CONTACT"
+        fetchMessages={fetchMessages}
+      />
 
       <Form onSubmit={submitMessage} />
     </div>

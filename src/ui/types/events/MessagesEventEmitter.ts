@@ -1,18 +1,18 @@
-import { Message } from "@/domain/models";
+import { NewMessageDTO } from "@/domain/dtos";
 
 interface ListenerEvents {
-  "message:new": Message;
+  "message:new": NewMessageDTO;
   "message:success": string;
   "message:fail": string;
 }
 
 interface EmitterEvents {
-  "message:new": [Message];
+  "message:new": [NewMessageDTO];
   "message:success": [string];
   "message:fail": [string];
 }
 
-export interface MessageEvents {
+export interface MessagesEventEmitter {
   on<K extends keyof ListenerEvents>(
     event: K,
     listener: (data: ListenerEvents[K]) => void

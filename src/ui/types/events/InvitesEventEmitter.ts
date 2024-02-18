@@ -11,7 +11,7 @@ interface EmitterEvents {
   message: [{ text: string }];
 }
 
-export interface InvitesContextEvent {
+export interface InvitesEventEmitter {
   on<K extends keyof ListenerEvents>(
     event: K,
     listener: (data: ListenerEvents[K]) => void
@@ -26,9 +26,4 @@ export interface InvitesContextEvent {
     event: K,
     ...data: EmitterEvents[K]
   ): void;
-}
-
-export interface InvitesContextProps {
-  count: number;
-  event: InvitesContextEvent;
 }

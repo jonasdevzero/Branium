@@ -1,5 +1,5 @@
 import { Message } from "@/domain/models";
-import { getTime } from ".";
+import { getTime } from "@/ui/helpers";
 
 export function sortMessages(messages: Message[]) {
   return messages

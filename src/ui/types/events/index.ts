@@ -1,1 +1,2 @@
-export * from "./MessageEvents";
+export * from "./MessagesEventEmitter";
+export * from "./InvitesEventEmitter";

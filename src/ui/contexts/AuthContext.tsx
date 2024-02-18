@@ -9,9 +9,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Sidebar, LoadingContainer } from "../components";
+import { LoadingContainer } from "../components";
 import { Socket, websocketUrl } from "../services";
-import { InvitesProvider } from "./InvitesContext";
 import { KeyPairStorage } from "../utils";
 
 interface AuthContextProps {
@@ -84,10 +83,7 @@ export function AuthProvider({ children }: Props) {
 
   return (
     <AuthContext.Provider value={{ user, socket, logout }}>
-      <InvitesProvider>
-        <Sidebar />
-        {children}
-      </InvitesProvider>
+      {children}
     </AuthContext.Provider>
   );
 }

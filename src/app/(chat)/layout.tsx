@@ -1,9 +1,15 @@
-import { AuthProvider, CryptoKeysProvider } from "@/ui/contexts";
+import {
+  AuthProvider,
+  CryptoKeysProvider,
+  InvitesProvider,
+  MessagesProvider,
+} from "@/ui/contexts";
 import { Toaster } from "@/ui/modules";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "react-material-symbols/outlined";
 import "./globals.css";
+import { Sidebar } from "@/ui/components";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 
@@ -24,7 +30,16 @@ export default function ChatLayout({
 
         <main>
           <AuthProvider>
-            <CryptoKeysProvider>{children}</CryptoKeysProvider>
+            <InvitesProvider>
+              <CryptoKeysProvider>
+                <MessagesProvider>
+                  <>
+                    <Sidebar />
+                    {children}
+                  </>
+                </MessagesProvider>
+              </CryptoKeysProvider>
+            </InvitesProvider>
           </AuthProvider>
         </main>
       </body>

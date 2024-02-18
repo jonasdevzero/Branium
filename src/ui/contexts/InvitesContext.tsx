@@ -4,7 +4,12 @@ import { useAuth } from "../hooks";
 import { Invite } from "@/domain/models";
 import EventEmitter from "events";
 import { messagesService } from "../services";
-import { InvitesContextEvent, InvitesContextProps } from "../types";
+import { InvitesEventEmitter } from "../types";
+
+interface InvitesContextProps {
+  count: number;
+  event: InvitesEventEmitter;
+}
 
 export const InvitesContext = createContext({} as InvitesContextProps);
 
@@ -13,7 +18,7 @@ interface Props {
 }
 
 export function InvitesProvider({ children }: Props) {
-  const event = useMemo<InvitesContextEvent>(() => new EventEmitter(), []);
+  const event = useMemo<InvitesEventEmitter>(() => new EventEmitter(), []);
   const [count, setCount] = useState(0);
 
   const { socket } = useAuth();

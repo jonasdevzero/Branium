@@ -3,7 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, ContactSkeleton, LoadingSpinner, Room } from "../..";
 import { useRouter } from "next/navigation";
 import { messagesService } from "@/ui/services";
-import { useAuth, useDebounce, useScrollEnd } from "@/ui/hooks";
+import { useAuth, useDebounce, useMessages, useScrollEnd } from "@/ui/hooks";
+import { NewMessageDTO } from "@/domain/dtos";
+import { sortContacts } from "../helpers";
 
 interface Props {
   search: string;
@@ -18,37 +20,73 @@ export function SidebarContacts({ search }: Props) {
 
   const router = useRouter();
   const { socket } = useAuth();
+  const messages = useMessages();
+
+  const onNewMessage = useCallback(
+    async (data: NewMessageDTO) => {
+      const { roomId, type, message } = data;
+
+      if (type !== "CONTACT") return;
+
+      const lastUpdate = message.createdAt;
+
+      const hasContact = contacts.some((contact) => contact.id === roomId);
+
+      if (hasContact) {
+        const updatedContacts = contacts.map((contact) => {
+          if (contact.id === roomId) Object.assign(contact, { lastUpdate });
+          return contact;
+        });
+
+        sortContacts({ contacts: updatedContacts, setContacts });
+        return;
+      }
+
+      try {
+        const contact = await messagesService.contact.load(roomId);
+
+        sortContacts({ contacts: [...contacts, contact], setContacts });
+      } catch (error) {}
+    },
+    [contacts]
+  );
 
   useEffect(() => {
     socket.on("contact:new", (contact: Contact) =>
       setContacts((c) => [contact, ...c])
     );
 
+    messages.event.on("message:new", onNewMessage);
+
     return () => {
       socket.off("contact:new");
+      messages.event.off("message:new", onNewMessage);
     };
-  }, [socket]);
+  }, [messages.event, onNewMessage, socket]);
 
   useEffect(() => {
     setIsLoading(true);
   }, [search]);
 
-  const listContacts = useCallback(async (search?: string, page?: number) => {
-    setIsLoading(true);
+  const listContacts = useCallback(
+    async (search?: string, page?: number) => {
+      setIsLoading(true);
 
-    try {
-      const { pages, content } = await messagesService.contact.list({
-        page: page ?? 0,
-        limit: 30,
-        search,
-      });
+      try {
+        const { pages, content } = await messagesService.contact.list({
+          page: page ?? 0,
+          limit: 30,
+          search,
+        });
 
-      setPages(pages);
-      setContacts((c) => [...c, ...content]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        setPages(pages);
+        sortContacts({ contacts: [...contacts, ...content], setContacts });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [contacts]
+  );
 
   const renderContacts = useCallback(() => {
     const isFirstLoading = isLoading && currentPage === 0;
