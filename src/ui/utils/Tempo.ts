@@ -1,20 +1,15 @@
+"client-only";
 import { utcToZonedTime } from "date-fns-tz";
 
-const TIMEZONE = process.env.NEXT_PUBLIC_TIMEZONE || "America/Sao_Paulo";
-
-type Time = Date | number | string;
-
-class Tempo extends Date {
-  static timezone = TIMEZONE;
+export class Tempo extends Date {
+  static timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   /**
-   * Parse the UTC time to Timezone
+   * Parse the UTC time to client machine Timezone
    * @param date - UTC time
    */
-  constructor(date?: Time) {
-    if (date instanceof Tempo) {
-      throw new Error("[Tempo] :: Tempo is for constructor");
-    }
+  constructor(date?: Date | number | string) {
+    if (date instanceof Tempo) return date;
 
     const zonedDate = utcToZonedTime(date || new Date(), Tempo.timezone);
     super(zonedDate);
@@ -24,5 +19,3 @@ class Tempo extends Date {
     return new Tempo().getTime();
   }
 }
-
-export { Tempo };
