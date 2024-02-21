@@ -11,10 +11,11 @@ export interface DropdownItem {
 }
 
 interface Props {
+  icon?: React.ReactNode;
   options: Array<DropdownItem>;
 }
 
-export function Dropdown({ options }: Props) {
+export function Dropdown({ icon, options }: Props) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,10 +27,10 @@ export function Dropdown({ options }: Props) {
     <div ref={ref} className="dropdown">
       <button
         type="button"
-        className="dropdown__toggle"
+        className="dropdown__toggle button__icon"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <MaterialSymbol icon="more_vert" size={24} />
+        {icon || <MaterialSymbol icon="more_vert" />}
       </button>
 
       {isOpen && (
@@ -37,7 +38,7 @@ export function Dropdown({ options }: Props) {
           {options.map((option) => (
             <div
               key={option.label}
-              className="dropdown__item"
+              className="dropdown__item text"
               onClick={() => {
                 setIsOpen(false);
                 option.onClick();

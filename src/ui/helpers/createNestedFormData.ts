@@ -30,7 +30,9 @@ function flattenObjectKeys(obj: any, parentKey?: string): string[] {
 
     const currentKey = parentKey ? `${parentKey}.${key}` : key;
 
-    typeof obj[key] === "object" && obj[key] !== null
+    typeof obj[key] === "object" &&
+    obj[key] !== null &&
+    !(obj[key] instanceof File)
       ? (keys = keys.concat(flattenObjectKeys(obj[key], currentKey)))
       : keys.push(currentKey);
   }

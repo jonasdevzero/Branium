@@ -20,7 +20,7 @@ export class CreateContactMessageController implements Controller {
     const formData = new FormData();
 
     Object.entries(data).map(([key, value]) =>
-      formData.append(key, String(value))
+      formData.append(key, value as string)
     );
 
     await messagesApi.post("/message/contact", formData);

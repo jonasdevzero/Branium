@@ -15,8 +15,7 @@ interface ValidateEmailResult {
 @controller()
 export class FinishRegisterController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { token, email, name } = httpRequest.body;
-    const [image] = httpRequest.files?.image || [];
+    const { token, email, name, image } = httpRequest.body;
 
     const res = await services.auth.post<ValidateEmailResult>(
       "/register/validate-email",

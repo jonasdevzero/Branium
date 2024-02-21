@@ -2,7 +2,7 @@ export interface Message {
   id: string;
   key: string;
 
-  message: string | null;
+  message?: string | null;
   type: MessageType;
 
   createdAt: Date;
@@ -34,7 +34,7 @@ export interface MessageSender {
 
 export interface MessageFile {
   id: string;
-  url: string;
+  url: string | File;
   type: MessageFileType;
   key: string;
 }

@@ -24,3 +24,16 @@
   outline: none;
   resize: none;
 }
+
+.chat__form > .dropdown > button {
+  height: 100%;
+}
+
+.chat__form > .dropdown > .dropdown__list {
+  top: -9.5rem;
+  left: 0;
+}
+
+.chat__form > .overlay {
+  background-color: #000000aa;
+}

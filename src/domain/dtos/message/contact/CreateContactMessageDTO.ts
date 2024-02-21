@@ -13,13 +13,15 @@ export interface CreateContactMessageDTO {
   message?: string;
   type: MessageType;
 
-  files: Array<{
-    file: File;
-    type: MessageFileType;
+  files: Array<CreateFileDTO>;
+}
 
-    users: Array<{
-      id: string;
-      key: string;
-    }>;
+export interface CreateFileDTO {
+  file: File;
+  type: MessageFileType;
+
+  users: Array<{
+    id: string;
+    key: string;
   }>;
 }

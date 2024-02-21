@@ -44,13 +44,7 @@ export const adaptRoute = (controller: Controller) => {
       const formData = await request.formData();
       const files: Record<string, Blob[]> = {};
 
-      formData.forEach((value, key) => {
-        if (value instanceof File) {
-          files[key] ? files[key].push(value) : (files[key] = [value]);
-          return;
-        }
-        httpRequest.body[key] = value;
-      });
+      formData.forEach((value, key) => (httpRequest.body[key] = value));
 
       Object.assign(httpRequest, { files });
     }

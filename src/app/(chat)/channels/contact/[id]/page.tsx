@@ -1,13 +1,13 @@
 "use client";
 
-import { Contact, Message } from "@/domain/models";
+import { CreateFileDTO } from "@/domain/dtos";
+import { Contact } from "@/domain/models";
 import {
+  CreateMessageProps,
   Form,
   Header,
   Messages,
-  SubmitMessageProps,
 } from "@/ui/components/Chat";
-import { getMessageType } from "@/ui/helpers";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { messagesService } from "@/ui/services";
@@ -15,6 +15,7 @@ import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import "./styles.css";
+import { getFileType } from "@/ui/components/Chat/Form/helpers";
 
 export default function ContactChannel() {
   const [contact, setContact] = useState<Contact>();
@@ -28,13 +29,17 @@ export default function ContactChannel() {
 
   const loadContact = useCallback(async () => {
     try {
-      const data = await messagesService.contact.load(contactId);
+      const [data] = await Promise.all([
+        messagesService.contact.load(contactId),
+        cryptoKeys.loadPublicKey(contactId),
+      ]);
+
       setContact(data);
     } catch (error) {
       toast.error("Não foi possível buscar os dados desse contato!");
       router.push("/channels");
     }
-  }, [contactId, router]);
+  }, [contactId, cryptoKeys, router]);
 
   useEffect(() => {
     loadContact();
@@ -59,23 +64,18 @@ export default function ContactChannel() {
     [contactId]
   );
 
-  const submitMessage = useCallback(
-    async (data: SubmitMessageProps) => {
-      const { text, files } = data;
-
-      if (!text && !files.length) return;
+  const encryptText = useCallback(
+    async (text?: string) => {
+      const key = SymmetricCryptographer.generateKeyBlob();
+      const hasText = typeof text === "string" && text.trim().length > 0;
 
       const senderPublicKey = cryptoKeys.publicKey;
       const receiverPublicKey = await cryptoKeys.loadPublicKey(contactId);
 
       if (!receiverPublicKey || !senderPublicKey) {
         toast.error("Não foi possível enviar a mensagem");
-        return;
+        throw new Error("Error on encrypt file");
       }
-
-      const type = getMessageType(data);
-      const key = SymmetricCryptographer.generateKeyBlob();
-      const hasText = typeof text === "string" && text.trim().length > 0;
 
       const [senderKey, receiverKey, encryptedText] = await Promise.all([
         AsymmetricCryptographer.encrypt(key, senderPublicKey),
@@ -83,40 +83,96 @@ export default function ContactChannel() {
         hasText ? await SymmetricCryptographer.encrypt(text, key) : undefined,
       ]);
 
-      const temporaryMessageId = window.crypto.randomUUID();
-
-      const loadedMessage: Message = {
-        id: temporaryMessageId,
-        key: senderKey,
-        message: encryptedText || null,
-        type,
-        files: [],
-        reply: null,
-        sender: {
-          id: user.id,
-          name: user.name,
-          username: user.username,
-          image: user.image,
-        },
-        createdAt: new Date(),
-        updatedAt: null,
-
-        isSending: true,
+      return {
+        sender: { key: senderKey },
+        receiver: { id: contactId, key: receiverKey },
+        message: encryptedText,
       };
+    },
+    [contactId, cryptoKeys]
+  );
+
+  const encryptFile = useCallback(
+    async (file: File) => {
+      const fileKey = SymmetricCryptographer.generateKeyBlob();
+      const senderPublicKey = cryptoKeys.publicKey;
+      const receiverPublicKey = await cryptoKeys.loadPublicKey(contactId);
+
+      if (!receiverPublicKey || !senderPublicKey) {
+        toast.error("Não foi possível enviar a mensagem");
+        throw new Error("Error on encrypt file");
+      }
+
+      const [encryptedFile, senderKey, receiverKey] = await Promise.all([
+        SymmetricCryptographer.encryptFile(file, fileKey),
+        AsymmetricCryptographer.encrypt(fileKey, senderPublicKey),
+        AsymmetricCryptographer.encrypt(fileKey, receiverPublicKey),
+      ]);
+
+      return {
+        file: encryptedFile,
+        type: getFileType(file.type),
+        users: [
+          {
+            id: user.id,
+            key: senderKey,
+          },
+          {
+            id: contactId,
+            key: receiverKey,
+          },
+        ],
+      };
+    },
+    [contactId, cryptoKeys, user.id]
+  );
+
+  const submitMessage = useCallback(
+    async (data: CreateMessageProps) => {
+      const { text, files, type } = data;
+
+      if (!text && !files.length) return;
+
+      const [message, ...encryptedFiles] = await Promise.all([
+        encryptText(text),
+        ...files.map(encryptFile),
+      ]);
+
+      const temporaryMessageId = crypto.randomUUID();
 
       messages.event.emit("message:new", {
-        message: loadedMessage,
         roomId: contactId,
         type: "CONTACT",
+        message: {
+          id: temporaryMessageId,
+          key: message.sender.key,
+          message: message.message,
+          type,
+          files: encryptedFiles.map((file) => ({
+            id: crypto.randomUUID(),
+            url: file.file,
+            type: file.type,
+            key: file.users.find((u) => u.id === user.id)!.key,
+          })),
+          reply: null,
+          sender: {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            image: user.image,
+          },
+          createdAt: new Date(),
+          updatedAt: null,
+
+          isSending: true,
+        },
       });
 
       try {
         await messagesService.message.contact.create({
-          sender: { key: senderKey },
-          receiver: { id: contactId, key: receiverKey },
-          message: encryptedText,
+          ...message,
           type,
-          files: [],
+          files: encryptedFiles,
         });
 
         messages.event.emit("message:success", temporaryMessageId);
@@ -128,7 +184,7 @@ export default function ContactChannel() {
         });
       }
     },
-    [cryptoKeys, contactId, user, messages.event]
+    [contactId, encryptFile, encryptText, messages.event, user]
   );
 
   return (

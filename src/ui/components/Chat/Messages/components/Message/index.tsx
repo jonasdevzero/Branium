@@ -1,11 +1,12 @@
 import { Message } from "@/domain/models";
-import "./styles.css";
-import { formatDate } from "@/ui/helpers";
 import { Avatar, MessageSkeleton } from "@/ui/components";
-import { useCallback, useEffect, useState } from "react";
-import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
+import { formatDate } from "@/ui/helpers";
 import { useCryptoKeys } from "@/ui/hooks";
+import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
+import { useCallback, useEffect, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
+import "./styles.css";
+import Image from "next/image";
 
 interface MessageProps {
   message: Message;
@@ -16,6 +17,7 @@ export function MessageComponent({ message, short }: MessageProps) {
   const { sender } = message;
 
   const [decryptedText, setDecryptedText] = useState<string>();
+  const [decryptedFiles, setDecryptedFiles] = useState<File[]>([]);
   const cryptoKeys = useCryptoKeys();
 
   const decryptMessage = useCallback(async () => {
@@ -46,9 +48,60 @@ export function MessageComponent({ message, short }: MessageProps) {
     }
   }, [cryptoKeys.privateKey, message]);
 
+  const decryptFiles = useCallback(async () => {
+    await Promise.all(
+      message.files.map(async (file, index) => {
+        if (typeof file.url === "string") return;
+
+        try {
+          const privateKey = cryptoKeys.privateKey;
+
+          if (!privateKey) {
+            throw new Error("Decrypt key not found");
+          }
+
+          const decryptedKey = await AsymmetricCryptographer.decrypt(
+            file.key,
+            privateKey
+          );
+
+          const decryptedFile = await SymmetricCryptographer.decryptFile(
+            file.url,
+            decryptedKey
+          );
+
+          setDecryptedFiles((files) => {
+            files[index] = decryptedFile;
+            return files;
+          });
+        } catch (error) {
+          // ...
+        }
+      })
+    );
+  }, [cryptoKeys.privateKey, message.files]);
+
   useEffect(() => {
     decryptMessage();
-  }, [decryptMessage]);
+    decryptFiles();
+  }, [decryptFiles, decryptMessage]);
+
+  const renderFiles = useCallback(() => {
+    return decryptedFiles.map((file) => {
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      return (
+        <Image
+          key={file.lastModified}
+          width={64}
+          height={64}
+          src={url}
+          alt={file.name}
+        />
+      );
+    });
+  }, [decryptedFiles]);
 
   if (short && !!decryptedText) {
     const isSending = message.isSending === true;
@@ -65,6 +118,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         )}
 
         <p className="text">{decryptedText}</p>
+        {renderFiles()}
       </div>
     );
   }
@@ -92,6 +146,8 @@ export function MessageComponent({ message, short }: MessageProps) {
         </div>
 
         {!!decryptedText && <p className="text">{decryptedText}</p>}
+
+        {renderFiles()}
       </div>
     </div>
   );

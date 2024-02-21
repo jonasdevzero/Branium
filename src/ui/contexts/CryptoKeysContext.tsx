@@ -163,6 +163,9 @@ function FetchKeyPairModal({
         autoFocus
         value={password}
         disabled={isLoading}
+        onKeyDown={(e) => {
+          if (e.code === "Enter" || e.code === "NumpadEnter") confirm();
+        }}
         onChange={(e) => {
           setError(undefined);
           setPassword(e.target.value);
