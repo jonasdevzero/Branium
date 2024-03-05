@@ -1,11 +1,15 @@
+import { MessageFileType, MessageType } from "@/domain/models";
 import { useCallback, useState } from "react";
-import "./styles.css";
 import { MaterialSymbol } from "react-material-symbols";
 import { Dropdown } from "../..";
-import { getMessageType, isValidImage } from "./helpers";
-import { toast } from "@/ui/modules";
-import { MessageFileType, MessageType } from "@/domain/models";
 import { FilesForm } from "./components";
+import {
+  getMessageType,
+  imageMimeTypes,
+  isValidImage,
+  validateImages,
+} from "./helpers";
+import "./styles.css";
 
 export interface CreateMessageProps {
   text?: string;
@@ -36,21 +40,25 @@ export function Form({ onSubmit }: FormProps) {
     e.preventDefault();
     if (!e.target.files) return;
 
-    const images = Array.from(e.target.files);
+    const images = validateImages(Array.from(e.target.files));
 
-    if (images.length > 5) {
-      toast.error("Só é possível enviar 5 imagens por vez.", {
-        id: "image-message",
-      });
-      return;
-    }
-
-    const hasInvalid = !!images.some((image) => !isValidImage(image));
-
-    if (hasInvalid) return;
+    if (!images) return;
 
     setFiles(images);
     setFilesType("IMAGE");
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    const file = Array.from(e.clipboardData.files)[0];
+
+    if (!file) return;
+
+    if (imageMimeTypes.includes(file.type) && isValidImage(file)) {
+      setFiles([file]);
+      setFilesType("IMAGE");
+      return;
+    }
   };
 
   return (
@@ -100,6 +108,7 @@ export function Form({ onSubmit }: FormProps) {
         autoComplete="false"
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onPaste={handlePaste}
         onKeyDown={(e) => {
           if (e.code === "Enter" && e.shiftKey) return true;
 

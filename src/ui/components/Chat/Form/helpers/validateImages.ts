@@ -4,6 +4,21 @@ import { imageMimeTypes } from ".";
 // 5 MB
 const sizeLimit = 5 * 1000 * 1000;
 
+export function validateImages(images: File[]) {
+  if (images.length > 5) {
+    toast.error("Só é possível enviar 5 imagens por vez.", {
+      id: "image-message",
+    });
+    return;
+  }
+
+  const hasInvalid = !!images.some((image) => !isValidImage(image));
+
+  if (hasInvalid) return;
+
+  return images;
+}
+
 export function isValidImage(image: File) {
   if (!imageMimeTypes.includes(image.type)) {
     toast.error(`Formato de imagem inválida, permitidas: .png, .jpg e .jpeg.`, {
