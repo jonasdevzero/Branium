@@ -102,6 +102,14 @@
   height: 4rem;
 }
 
+.skeleton__box.message__image {
+  width: 12rem;
+  height: 10rem;
+
+  background-color: var(--primary-850);
+  animation: 1s skeleton_loading ease-out infinite;
+}
+
 @keyframes skeleton_loading {
   0% {
     opacity: 1;

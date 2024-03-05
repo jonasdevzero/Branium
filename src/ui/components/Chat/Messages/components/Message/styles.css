@@ -23,6 +23,24 @@
   padding-left: 4.5rem;
 }
 
+.message__time {
+  display: none;
+  justify-content: center;
+  width: 3.125rem;
+
+  color: var(--secondary-200);
+
+  padding-top: 0.25rem;
+}
+
+.message--short:is(:hover, :focus) {
+  padding-left: 1rem;
+}
+
+.message--short:is(:hover, :focus) .message__time {
+  display: inherit;
+}
+
 .message > .avatar__wrap {
   display: flex;
   flex-direction: column;
@@ -42,6 +60,7 @@
 .message__content {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
 
   max-width: 40rem;
 }

@@ -1,12 +1,13 @@
 import { Message } from "@/domain/models";
-import { Avatar, MessageSkeleton } from "@/ui/components";
-import { formatDate } from "@/ui/helpers";
+import { Avatar, MessageFilesSkeleton, MessageSkeleton } from "@/ui/components";
+import { formatDate, formatTime } from "@/ui/helpers";
 import { useCryptoKeys } from "@/ui/hooks";
-import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
 import { useCallback, useEffect, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
+import { imageMimeTypes } from "../../../Form/helpers";
+import { decryptFile, decryptText } from "../../helpers";
+import { MessageImages } from "../MessageImages";
 import "./styles.css";
-import Image from "next/image";
 
 interface MessageProps {
   message: Message;
@@ -17,30 +18,16 @@ export function MessageComponent({ message, short }: MessageProps) {
   const { sender } = message;
 
   const [decryptedText, setDecryptedText] = useState<string>();
-  const [decryptedFiles, setDecryptedFiles] = useState<File[]>([]);
+  const [decryptedFiles, setDecryptedFiles] = useState<Array<File | undefined>>(
+    []
+  );
   const cryptoKeys = useCryptoKeys();
 
   const decryptMessage = useCallback(async () => {
-    const { key, message: text } = message;
-
-    if (!text) return;
-
     const privateKey = cryptoKeys.privateKey;
 
     try {
-      if (!privateKey) {
-        throw new Error("Decrypt key not found");
-      }
-
-      const decryptedKey = await AsymmetricCryptographer.decrypt(
-        key,
-        privateKey
-      );
-
-      const plainText = await SymmetricCryptographer.decrypt(
-        text,
-        decryptedKey
-      );
+      const plainText = await decryptText({ message, privateKey });
 
       setDecryptedText(plainText);
     } catch (error) {
@@ -49,36 +36,17 @@ export function MessageComponent({ message, short }: MessageProps) {
   }, [cryptoKeys.privateKey, message]);
 
   const decryptFiles = useCallback(async () => {
-    await Promise.all(
-      message.files.map(async (file, index) => {
-        if (typeof file.url === "string") return;
+    if (!message.files.length) return;
 
-        try {
-          const privateKey = cryptoKeys.privateKey;
+    const privateKey = cryptoKeys.privateKey;
 
-          if (!privateKey) {
-            throw new Error("Decrypt key not found");
-          }
+    if (!privateKey) return;
 
-          const decryptedKey = await AsymmetricCryptographer.decrypt(
-            file.key,
-            privateKey
-          );
-
-          const decryptedFile = await SymmetricCryptographer.decryptFile(
-            file.url,
-            decryptedKey
-          );
-
-          setDecryptedFiles((files) => {
-            files[index] = decryptedFile;
-            return files;
-          });
-        } catch (error) {
-          // ...
-        }
-      })
+    const result = await Promise.all(
+      message.files.map(async (file) => decryptFile({ file, privateKey }))
     );
+
+    setDecryptedFiles(result as File[]);
   }, [cryptoKeys.privateKey, message.files]);
 
   useEffect(() => {
@@ -87,21 +55,21 @@ export function MessageComponent({ message, short }: MessageProps) {
   }, [decryptFiles, decryptMessage]);
 
   const renderFiles = useCallback(() => {
-    return decryptedFiles.map((file) => {
-      if (!file) return;
+    if (!message.files.length) return;
 
-      const url = URL.createObjectURL(file);
-      return (
-        <Image
-          key={file.lastModified}
-          width={64}
-          height={64}
-          src={url}
-          alt={file.name}
-        />
-      );
-    });
-  }, [decryptedFiles]);
+    if (message.files.length !== decryptedFiles.length)
+      return <MessageFilesSkeleton files={message.files} />;
+
+    const images = decryptedFiles.filter(
+      (file) => !!file && imageMimeTypes.includes(file.type)
+    ) as File[];
+
+    return (
+      <>
+        <MessageImages images={images} />
+      </>
+    );
+  }, [decryptedFiles, message.files]);
 
   if (short && !!decryptedText) {
     const isSending = message.isSending === true;
@@ -116,6 +84,10 @@ export function MessageComponent({ message, short }: MessageProps) {
             <MaterialSymbol icon="schedule_send" size={24} color="#fff" />
           </span>
         )}
+
+        <span className="message__time description">
+          {formatTime(message.createdAt)}
+        </span>
 
         <p className="text">{decryptedText}</p>
         {renderFiles()}

@@ -12,3 +12,4 @@ export * from "./MediaViewer";
 export * from "./Modal";
 export * from "./Skeleton";
 export * from "./Loading";
+export * from "./FilesViewer";

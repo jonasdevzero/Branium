@@ -4,7 +4,6 @@ export interface HttpRequest {
   body?: any;
   query: URLSearchParams;
   params: Record<string, string>;
-  files: Record<string, Blob[]>;
   user: {
     id: string;
   };

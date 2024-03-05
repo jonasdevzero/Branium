@@ -27,6 +27,7 @@ function flattenObjectKeys(obj: any, parentKey?: string): string[] {
 
   for (const key in obj) {
     if (!obj.hasOwnProperty(key)) continue;
+    if (typeof obj[key] === "undefined") continue;
 
     const currentKey = parentKey ? `${parentKey}.${key}` : key;
 

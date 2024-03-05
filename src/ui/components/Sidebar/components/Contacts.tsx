@@ -68,25 +68,22 @@ export function SidebarContacts({ search }: Props) {
     setIsLoading(true);
   }, [search]);
 
-  const listContacts = useCallback(
-    async (search?: string, page?: number) => {
-      setIsLoading(true);
+  const listContacts = useCallback(async (search?: string, page?: number) => {
+    setIsLoading(true);
 
-      try {
-        const { pages, content } = await messagesService.contact.list({
-          page: page ?? 0,
-          limit: 30,
-          search,
-        });
+    try {
+      const { pages, content } = await messagesService.contact.list({
+        page: page ?? 0,
+        limit: 30,
+        search,
+      });
 
-        setPages(pages);
-        sortContacts({ contacts: [...contacts, ...content], setContacts });
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [contacts]
-  );
+      setPages(pages);
+      sortContacts({ contacts: content, setContacts });
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const renderContacts = useCallback(() => {
     const isFirstLoading = isLoading && currentPage === 0;

@@ -23,7 +23,9 @@ export function Form({ onSubmit }: FormProps) {
   const [filesType, setFilesType] = useState<MessageFileType>();
 
   const submit = useCallback(() => {
-    onSubmit({ text, files, type: getMessageType(files, text) });
+    const txt = text || undefined;
+
+    onSubmit({ text: txt, files, type: getMessageType(files, txt) });
 
     setText("");
     setFiles([]);

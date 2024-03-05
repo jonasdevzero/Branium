@@ -46,10 +46,10 @@ export default function ContactChannel() {
   }, [loadContact]);
 
   useEffect(() => {
-    messages.setCurrentRoomId(contactId);
+    messages.selectRoom(contactId);
 
     return () => {
-      messages.setCurrentRoomId(undefined);
+      messages.selectRoom(undefined);
     };
   }, [contactId, messages]);
 
@@ -80,7 +80,7 @@ export default function ContactChannel() {
       const [senderKey, receiverKey, encryptedText] = await Promise.all([
         AsymmetricCryptographer.encrypt(key, senderPublicKey),
         AsymmetricCryptographer.encrypt(key, receiverPublicKey),
-        hasText ? await SymmetricCryptographer.encrypt(text, key) : undefined,
+        hasText ? SymmetricCryptographer.encrypt(text, key) : undefined,
       ]);
 
       return {

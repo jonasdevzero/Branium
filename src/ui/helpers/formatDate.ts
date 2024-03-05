@@ -1,4 +1,4 @@
-const formatter = new Intl.DateTimeFormat("pt-BR", {
+const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
   month: "2-digit",
   year: "numeric",
@@ -6,6 +6,15 @@ const formatter = new Intl.DateTimeFormat("pt-BR", {
   minute: "2-digit",
 });
 
+const timeFormatter = new Intl.DateTimeFormat("pt-BR", {
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 export function formatDate(date: Date | string | number) {
-  return formatter.format(new Date(date));
+  return dateFormatter.format(new Date(date));
+}
+
+export function formatTime(date: Date | string | number) {
+  return timeFormatter.format(new Date(date));
 }

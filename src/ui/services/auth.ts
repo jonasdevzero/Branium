@@ -5,6 +5,7 @@ import {
 } from "@/domain/dtos";
 import { KeyPair } from "@/domain/models";
 import { Fetch, KeyPairStorage } from "@/ui/utils";
+import { createNestedFormData } from "../helpers";
 
 export const authServices = Object.freeze({
   async registerUser(data: RegisterUserDTO) {
@@ -12,8 +13,7 @@ export const authServices = Object.freeze({
   },
 
   async finishRegister(data: FinishUserRegisterDTO) {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+    const formData = createNestedFormData(data);
 
     await Fetch.post("/api/register/finish", formData);
   },

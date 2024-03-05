@@ -22,7 +22,6 @@ export const adaptRoute = (controller: Controller) => {
       body: {},
       query,
       params: params.params,
-      files: {},
       user: { id: "" },
     };
 
@@ -42,11 +41,8 @@ export const adaptRoute = (controller: Controller) => {
 
     if (contentType?.includes("multipart/form-data")) {
       const formData = await request.formData();
-      const files: Record<string, Blob[]> = {};
 
       formData.forEach((value, key) => (httpRequest.body[key] = value));
-
-      Object.assign(httpRequest, { files });
     }
 
     const httpResponse = await controller.handle(httpRequest);
