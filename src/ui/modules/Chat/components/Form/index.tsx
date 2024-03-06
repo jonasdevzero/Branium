@@ -1,26 +1,20 @@
-import { MessageFileType, MessageType } from "@/domain/models";
+import { MessageFileType } from "@/domain/models";
+import "./styles.css";
 import { useCallback, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { Dropdown } from "../..";
-import { FilesForm } from "./components";
 import {
   getMessageType,
-  imageMimeTypes,
-  isValidImage,
+  isImage,
   isValidVideo,
+  isVideo,
   validateImages,
-  videoMimeTypes,
-} from "./helpers";
-import "./styles.css";
-
-export interface CreateMessageProps {
-  text?: string;
-  type: MessageType;
-  files: File[];
-}
+  MediaForm,
+} from "@/ui/modules/Chat";
+import { MaterialSymbol } from "react-material-symbols";
+import { Dropdown } from "@/ui/components";
+import { SubmitMessageDTO } from "@/domain/dtos";
 
 interface FormProps {
-  onSubmit(data: CreateMessageProps): void;
+  onSubmit(data: SubmitMessageDTO): void;
 }
 
 export function Form({ onSubmit }: FormProps) {
@@ -68,8 +62,8 @@ export function Form({ onSubmit }: FormProps) {
 
     if (!files.length) return;
 
-    const images = files.filter((f) => imageMimeTypes.includes(f.type));
-    const video = files.find((f) => videoMimeTypes.includes(f.type));
+    const images = files.filter(isImage);
+    const video = files.find(isVideo);
 
     if (images.length && validateImages(images)) {
       setFiles(images);
@@ -157,12 +151,10 @@ export function Form({ onSubmit }: FormProps) {
       </button>
 
       {files.length > 0 && typeof filesType !== "undefined" && (
-        <FilesForm
+        <MediaForm
           text={text}
-          setText={setText}
-          type={filesType}
           files={files}
-          setFiles={setFiles}
+          type={filesType}
           onSubmit={submit}
           onCancel={() => setFilesType(undefined)}
         />

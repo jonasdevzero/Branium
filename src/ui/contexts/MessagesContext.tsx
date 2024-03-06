@@ -1,12 +1,10 @@
 "use client";
+import { NewMessageDTO } from "@/domain/dtos";
 import EventEmitter from "events";
 import { createContext, useEffect, useMemo, useRef, useState } from "react";
+import { FilesViewer } from "../components";
 import { useAuth } from "../hooks";
 import { MessagesEventEmitter } from "../types";
-import { NewMessageDTO } from "@/domain/dtos";
-import { FilesViewer } from "../components";
-import { MessageFile } from "@/domain/models";
-import { messagesService } from "../services";
 
 interface MessagesContextProps {
   event: MessagesEventEmitter;
@@ -29,23 +27,6 @@ export function MessagesProvider({ children }: { children: React.ReactNode }) {
   const selectFiles = (files: File[], initialIndex: number) => {
     setSelectedFiles(files);
     setFileIndex(initialIndex);
-  };
-
-  const loadFile = async (file: MessageFile) => {
-    let fileBytes: File | undefined;
-
-    if (file.url instanceof File) fileBytes = file.url;
-
-    if (typeof file.url === "string") {
-      const { url } = await messagesService.file.loadUrl(file.url);
-
-      const res = await fetch(decodeURIComponent(url));
-      const blob = await res.blob();
-
-      fileBytes = new File([blob], file.url);
-    }
-
-    return fileBytes;
   };
 
   useEffect(() => {

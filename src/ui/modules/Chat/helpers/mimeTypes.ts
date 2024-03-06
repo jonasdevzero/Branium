@@ -10,3 +10,9 @@ export const audioMimeTypes = [
 ];
 
 export const videoMimeTypes = ["video/mp4"];
+
+export const isImage = (file: File) => imageMimeTypes.includes(file.type);
+
+export const isAudio = (file: File) => audioMimeTypes.includes(file.type);
+
+export const isVideo = (file: File) => videoMimeTypes.includes(file.type);

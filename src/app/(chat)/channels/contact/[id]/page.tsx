@@ -1,21 +1,15 @@
 "use client";
 
-import { CreateFileDTO } from "@/domain/dtos";
 import { Contact } from "@/domain/models";
-import {
-  CreateMessageProps,
-  Form,
-  Header,
-  Messages,
-} from "@/ui/components/Chat";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
+import { Form, Header, Messages, getFileType } from "@/ui/modules/Chat";
 import { messagesService } from "@/ui/services";
 import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import "./styles.css";
-import { getFileType } from "@/ui/components/Chat/Form/helpers";
+import { SubmitMessageDTO } from "@/domain/dtos";
 
 export default function ContactChannel() {
   const [contact, setContact] = useState<Contact>();
@@ -54,13 +48,12 @@ export default function ContactChannel() {
   }, [contactId, messages]);
 
   const fetchMessages = useCallback(
-    async (page: number) => {
-      return await messagesService.message.contact.list({
+    (page: number) =>
+      messagesService.message.contact.list({
         contactId,
         page,
-        limit: 40,
-      });
-    },
+        limit: 50,
+      }),
     [contactId]
   );
 
@@ -128,7 +121,7 @@ export default function ContactChannel() {
   );
 
   const submitMessage = useCallback(
-    async (data: CreateMessageProps) => {
+    async (data: SubmitMessageDTO) => {
       const { text, files, type } = data;
 
       if (!text && !files.length) return;

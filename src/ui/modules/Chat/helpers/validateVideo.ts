@@ -1,11 +1,11 @@
 import { toast } from "@/ui/modules";
-import { videoMimeTypes } from ".";
+import { isVideo } from ".";
 
 // 20 MB
 const sizeLimit = 20 * 1000 * 1000;
 
 export function isValidVideo(video: File) {
-  if (!videoMimeTypes.includes(video.type)) {
+  if (!isVideo(video)) {
     toast.error("Formato de vídeo inválido, permitido: .mp4", {
       id: "video-message",
     });

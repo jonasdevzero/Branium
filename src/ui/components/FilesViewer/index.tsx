@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { MaterialSymbol } from "react-material-symbols";
 import "./styles.css";
-import { imageMimeTypes } from "../Chat/Form/helpers";
+import { imageMimeTypes } from "../../modules/Chat/helpers";
 import { useState } from "react";
 
 interface Props {

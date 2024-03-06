@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { imageMimeTypes } from "../../helpers";
-import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
 import { useCallback } from "react";
+import { MaterialSymbol } from "react-material-symbols";
+import { isImage } from "@/ui/modules/Chat";
+import "./styles.css";
 
 interface FileIndicator {
   file: File;
@@ -20,10 +20,9 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
     (indicator: FileIndicator, index: number) => {
       const { file, onSelect, onRemove } = indicator;
 
-      const isImage = imageMimeTypes.includes(file.type);
       const isActive = index === currentIndex ? "file__indicator--active" : "";
 
-      if (isImage) {
+      if (isImage(file)) {
         const url = URL.createObjectURL(file);
 
         return (

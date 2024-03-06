@@ -3,29 +3,26 @@ import "./styles.css";
 import { useCallback, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import Image from "next/image";
-import { FilesIndicators } from "..";
+import { FilesIndicators } from "./components";
 
 interface Props {
   text: string;
-  setText: React.Dispatch<React.SetStateAction<string>>;
-
-  type?: MessageFileType;
   files: File[];
-  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  type?: MessageFileType;
 
   onSubmit(): void;
   onCancel(): void;
 }
 
-export function FilesForm({
-  text,
-  setText,
+export function MediaForm({
+  text: initialText,
+  files: initialFiles,
   type,
-  files,
-  setFiles,
   onSubmit,
   onCancel,
 }: Props) {
+  const [text, setText] = useState(initialText);
+  const [files, setFiles] = useState<File[]>(initialFiles);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const next = () =>

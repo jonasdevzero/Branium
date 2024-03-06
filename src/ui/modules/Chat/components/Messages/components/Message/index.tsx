@@ -9,10 +9,10 @@ import { formatDate, formatTime } from "@/ui/helpers";
 import { useCryptoKeys } from "@/ui/hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { imageMimeTypes, videoMimeTypes } from "../../../Form/helpers";
+import { ImageCards } from "..";
+import { isImage, isVideo } from "@/ui/modules/Chat";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
-import { ImageCards } from "..";
 
 interface MessageProps {
   message: Message;
@@ -65,13 +65,9 @@ export function MessageComponent({ message, short }: MessageProps) {
     if (message.files.length !== decryptedFiles.length)
       return <MessageFilesSkeleton files={message.files} />;
 
-    const images = decryptedFiles.filter(
-      (file) => !!file && imageMimeTypes.includes(file.type)
-    ) as File[];
+    const images = decryptedFiles.filter((f) => !!f && isImage(f)) as File[];
 
-    const video = decryptedFiles.filter(
-      (file) => !!file && videoMimeTypes.includes(file.type)
-    )[0];
+    const video = decryptedFiles.filter((f) => !!f && isVideo(f))[0];
 
     return (
       <>

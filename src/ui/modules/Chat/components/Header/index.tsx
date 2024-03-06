@@ -1,6 +1,6 @@
 import { MaterialSymbol } from "react-material-symbols";
-import { ContactSkeleton, Room } from "../..";
 import "./styles.css";
+import { ContactSkeleton, Room } from "@/ui/components";
 
 interface HeaderProps {
   name: string;

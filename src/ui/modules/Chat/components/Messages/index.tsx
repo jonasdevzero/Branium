@@ -3,7 +3,7 @@ import { Message, RoomType } from "@/domain/models";
 import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LoadingSpinner } from "../..";
+import { LoadingSpinner } from "@/ui/components";
 import { MessageComponent, ScrollDown } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
 import "./styles.css";
