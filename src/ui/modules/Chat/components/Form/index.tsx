@@ -8,6 +8,8 @@ import {
   isVideo,
   validateImages,
   MediaForm,
+  validateDocuments,
+  isDocument,
 } from "@/ui/modules/Chat";
 import { MaterialSymbol } from "react-material-symbols";
 import { Dropdown } from "@/ui/components";
@@ -22,14 +24,17 @@ export function Form({ onSubmit }: FormProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [filesType, setFilesType] = useState<MessageFileType>();
 
+  const clear = () => {
+    setText("");
+    setFiles([]);
+    setFilesType(undefined);
+  };
+
   const submit = useCallback(() => {
     const txt = text || undefined;
 
     onSubmit({ text: txt, files, type: getMessageType(files, txt) });
-
-    setText("");
-    setFiles([]);
-    setFilesType(undefined);
+    clear();
   }, [files, onSubmit, text]);
 
   const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +61,18 @@ export function Form({ onSubmit }: FormProps) {
     setFilesType("VIDEO");
   };
 
+  const handleDocuments = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (!e.target.files) return;
+
+    const documents = validateDocuments(Array.from(e.target.files));
+
+    if (!documents) return;
+
+    setFiles(documents);
+    setFilesType("FILE");
+  };
+
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     const files = Array.from(e.clipboardData.files);
@@ -64,10 +81,17 @@ export function Form({ onSubmit }: FormProps) {
 
     const images = files.filter(isImage);
     const video = files.find(isVideo);
+    const documents = files.filter(isDocument);
 
     if (images.length && validateImages(images)) {
       setFiles(images);
       setFilesType("IMAGE");
+      return;
+    }
+
+    if (documents.length && validateDocuments(documents)) {
+      setFiles(documents);
+      setFilesType("FILE");
       return;
     }
 
@@ -89,7 +113,7 @@ export function Form({ onSubmit }: FormProps) {
         options={[
           {
             label: "documentos",
-            onClick: () => null,
+            onClick: () => document.getElementById("f-documents")?.click(),
             icon: <MaterialSymbol icon="text_snippet" />,
           },
           {
@@ -124,6 +148,16 @@ export function Form({ onSubmit }: FormProps) {
         hidden
       />
 
+      <input
+        type="file"
+        name="f-documents"
+        id="f-documents"
+        accept=".json,.txt,.pdf,.csv"
+        onChange={handleDocuments}
+        multiple
+        hidden
+      />
+
       <textarea
         name="text"
         id="message-text"
@@ -155,7 +189,10 @@ export function Form({ onSubmit }: FormProps) {
           text={text}
           files={files}
           type={filesType}
-          onSubmit={submit}
+          onSubmit={(data) => {
+            onSubmit(data);
+            clear();
+          }}
           onCancel={() => setFilesType(undefined)}
         />
       )}

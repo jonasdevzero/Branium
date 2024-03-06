@@ -39,3 +39,16 @@
 .file__indicator > img {
   object-fit: cover;
 }
+
+.file__indicator > .document__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background-color: var(--primary-800);
+}

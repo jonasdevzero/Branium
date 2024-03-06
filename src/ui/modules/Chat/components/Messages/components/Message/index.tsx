@@ -1,6 +1,7 @@
 import { Message } from "@/domain/models";
 import {
   Avatar,
+  Document,
   MessageFilesSkeleton,
   MessageSkeleton,
   VideoPlayer,
@@ -10,7 +11,7 @@ import { useCryptoKeys } from "@/ui/hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { ImageCards } from "..";
-import { isImage, isVideo } from "@/ui/modules/Chat";
+import { isDocument, isImage, isVideo } from "@/ui/modules/Chat";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
 
@@ -69,11 +70,19 @@ export function MessageComponent({ message, short }: MessageProps) {
 
     const video = decryptedFiles.filter((f) => !!f && isVideo(f))[0];
 
+    const documents = decryptedFiles.filter(
+      (f) => !!f && isDocument(f)
+    ) as File[];
+
     return (
       <>
         <ImageCards images={images} />
 
         {!!video && <VideoPlayer src={video} />}
+
+        {documents.map((f) => (
+          <Document key={f.name} file={f} download />
+        ))}
       </>
     );
   }, [decryptedFiles, message.files]);
@@ -88,7 +97,7 @@ export function MessageComponent({ message, short }: MessageProps) {
       >
         {isSending && (
           <span title="enviando mensagem" className="message__pending">
-            <MaterialSymbol icon="schedule_send" size={24} color="#fff" />
+            <MaterialSymbol icon="schedule_send" />
           </span>
         )}
 
@@ -96,8 +105,10 @@ export function MessageComponent({ message, short }: MessageProps) {
           {formatTime(message.createdAt)}
         </span>
 
-        <p className="text">{decryptedText}</p>
-        {renderedFiles}
+        <div className="message__content">
+          <p className="text">{decryptedText}</p>
+          {renderedFiles}
+        </div>
       </div>
     );
   }
@@ -121,7 +132,7 @@ export function MessageComponent({ message, short }: MessageProps) {
       <div className="message__content">
         <div className="message__info">
           <h6 className="text">{sender.name}</h6>
-          <span className="text">{formatDate(message.createdAt)}</span>
+          <span className="description">{formatDate(message.createdAt)}</span>
         </div>
 
         {!!decryptedText && <p className="text">{decryptedText}</p>}

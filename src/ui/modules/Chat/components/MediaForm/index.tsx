@@ -4,13 +4,15 @@ import { useCallback, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import Image from "next/image";
 import { FilesIndicators } from "./components";
+import { Document, getMessageType } from "@/ui/modules/Chat";
+import { SubmitMessageDTO } from "@/domain/dtos";
 
 interface Props {
   text: string;
   files: File[];
   type?: MessageFileType;
 
-  onSubmit(): void;
+  onSubmit(data: SubmitMessageDTO): void;
   onCancel(): void;
 }
 
@@ -55,9 +57,14 @@ export function MediaForm({
   }, [onCancel, setFiles, setText]);
 
   const submit = useCallback(() => {
+    const txt = text || undefined;
+
+    onSubmit({ text: txt, files, type: getMessageType(files, txt) });
+
     setCurrentIndex(0);
-    onSubmit();
-  }, [onSubmit]);
+    setText("");
+    setFiles([]);
+  }, [files, onSubmit, text]);
 
   const currentImage = useMemo(() => {
     if (type !== "IMAGE") return;
@@ -90,6 +97,16 @@ export function MediaForm({
     return <video src={url} controls onLoad={() => URL.revokeObjectURL(url)} />;
   }, [files, type]);
 
+  const currentDocument = useMemo(() => {
+    if (type !== "FILE") return;
+
+    const document = files[currentIndex];
+
+    if (!document) return;
+
+    return <Document file={document} />;
+  }, [currentIndex, files, type]);
+
   return (
     <div className="overlay">
       <div className="files__form">
@@ -103,6 +120,7 @@ export function MediaForm({
           <div className="files__content">
             {currentImage}
             {currentVideo}
+            {currentDocument}
           </div>
 
           {files.length > 1 && (

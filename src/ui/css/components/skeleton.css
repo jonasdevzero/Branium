@@ -145,6 +145,32 @@
   border-color: transparent transparent transparent var(--secondary-200);
 }
 
+.skeleton__box.message__document {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 20rem;
+  height: 4rem;
+  gap: 0.5rem;
+
+  background-color: var(--primary-850);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  animation: 1s skeleton_loading ease-out infinite;
+}
+
+.skeleton__box.message__document .skeleton__box.description {
+  width: 4rem;
+}
+
+.skeleton__box.message__document .skeleton__box.download {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 @keyframes skeleton_loading {
   0% {
     opacity: 1;

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useCallback } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { isImage } from "@/ui/modules/Chat";
+import { isDocument, isImage } from "@/ui/modules/Chat";
 import "./styles.css";
 
 interface FileIndicator {
@@ -38,6 +38,29 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
               onLoadedData={() => URL.revokeObjectURL(url)}
               onClick={() => onSelect(index)}
             />
+
+            <button
+              className="remove__file button__icon"
+              type="button"
+              onClick={() => onRemove(index)}
+            >
+              <MaterialSymbol icon="close" />
+            </button>
+          </div>
+        );
+      }
+
+      if (isDocument(file)) {
+        const ext = file.name.split(".").slice(-1)[0];
+
+        return (
+          <div
+            className={`file__indicator ${isActive}`}
+            key={file.lastModified}
+          >
+            <span className="document__name" onClick={() => onSelect(index)}>
+              .{ext}
+            </span>
 
             <button
               className="remove__file button__icon"
