@@ -7,7 +7,9 @@ import {
   getMessageType,
   imageMimeTypes,
   isValidImage,
+  isValidVideo,
   validateImages,
+  videoMimeTypes,
 } from "./helpers";
 import "./styles.css";
 
@@ -36,7 +38,7 @@ export function Form({ onSubmit }: FormProps) {
     setFilesType(undefined);
   }, [files, onSubmit, text]);
 
-  const onSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (!e.target.files) return;
 
@@ -48,15 +50,36 @@ export function Form({ onSubmit }: FormProps) {
     setFilesType("IMAGE");
   };
 
+  const handleVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (!e.target.files) return;
+
+    const video = Array.from(e.target.files)[0];
+
+    if (!isValidVideo(video)) return;
+
+    setFiles([video]);
+    setFilesType("VIDEO");
+  };
+
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
-    const file = Array.from(e.clipboardData.files)[0];
+    const files = Array.from(e.clipboardData.files);
 
-    if (!file) return;
+    if (!files.length) return;
 
-    if (imageMimeTypes.includes(file.type) && isValidImage(file)) {
-      setFiles([file]);
+    const images = files.filter((f) => imageMimeTypes.includes(f.type));
+    const video = files.find((f) => videoMimeTypes.includes(f.type));
+
+    if (images.length && validateImages(images)) {
+      setFiles(images);
       setFilesType("IMAGE");
+      return;
+    }
+
+    if (!!video && isValidVideo(video)) {
+      setFiles([video]);
+      setFilesType("VIDEO");
       return;
     }
   };
@@ -82,7 +105,7 @@ export function Form({ onSubmit }: FormProps) {
           },
           {
             label: "vídeo",
-            onClick: () => null,
+            onClick: () => document.getElementById("f-video")?.click(),
             icon: <MaterialSymbol icon="videocam" />,
           },
         ]}
@@ -93,8 +116,17 @@ export function Form({ onSubmit }: FormProps) {
         name="f-images"
         id="f-images"
         accept=".png,.jpg,.jpeg"
-        onChange={onSelectImages}
+        onChange={handleImages}
         multiple
+        hidden
+      />
+
+      <input
+        type="file"
+        name="f-video"
+        id="f-video"
+        accept=".mp4"
+        onChange={handleVideo}
         hidden
       />
 
@@ -124,18 +156,17 @@ export function Form({ onSubmit }: FormProps) {
         <MaterialSymbol icon="mic" />
       </button>
 
-      <FilesForm
-        text={text}
-        setText={setText}
-        type={filesType}
-        files={files}
-        setFiles={setFiles}
-        onSubmit={submit}
-        onCancel={() => {
-          setFiles([]);
-          setFilesType(undefined);
-        }}
-      />
+      {files.length > 0 && typeof filesType !== "undefined" && (
+        <FilesForm
+          text={text}
+          setText={setText}
+          type={filesType}
+          files={files}
+          setFiles={setFiles}
+          onSubmit={submit}
+          onCancel={() => setFilesType(undefined)}
+        />
+      )}
     </form>
   );
 }

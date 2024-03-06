@@ -1,13 +1,18 @@
 import { Message } from "@/domain/models";
-import { Avatar, MessageFilesSkeleton, MessageSkeleton } from "@/ui/components";
+import {
+  Avatar,
+  MessageFilesSkeleton,
+  MessageSkeleton,
+  VideoPlayer,
+} from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
 import { useCryptoKeys } from "@/ui/hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { imageMimeTypes } from "../../../Form/helpers";
+import { imageMimeTypes, videoMimeTypes } from "../../../Form/helpers";
 import { decryptFile, decryptText } from "../../helpers";
-import { MessageImages } from "../MessageImages";
 import "./styles.css";
+import { ImageCards } from "..";
 
 interface MessageProps {
   message: Message;
@@ -54,7 +59,7 @@ export function MessageComponent({ message, short }: MessageProps) {
     decryptFiles();
   }, [decryptFiles, decryptMessage]);
 
-  const renderFiles = useCallback(() => {
+  const renderedFiles = useMemo(() => {
     if (!message.files.length) return;
 
     if (message.files.length !== decryptedFiles.length)
@@ -64,9 +69,15 @@ export function MessageComponent({ message, short }: MessageProps) {
       (file) => !!file && imageMimeTypes.includes(file.type)
     ) as File[];
 
+    const video = decryptedFiles.filter(
+      (file) => !!file && videoMimeTypes.includes(file.type)
+    )[0];
+
     return (
       <>
-        <MessageImages images={images} />
+        <ImageCards images={images} />
+
+        {!!video && <VideoPlayer src={video} />}
       </>
     );
   }, [decryptedFiles, message.files]);
@@ -90,7 +101,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         </span>
 
         <p className="text">{decryptedText}</p>
-        {renderFiles()}
+        {renderedFiles}
       </div>
     );
   }
@@ -119,7 +130,7 @@ export function MessageComponent({ message, short }: MessageProps) {
 
         {!!decryptedText && <p className="text">{decryptedText}</p>}
 
-        {renderFiles()}
+        {renderedFiles}
       </div>
     </div>
   );

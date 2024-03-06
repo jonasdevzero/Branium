@@ -1,3 +1,4 @@
+"use client";
 import { useEffect } from "react";
 
 export function useOutsideClick(ref: React.RefObject<any>, cb: () => void) {

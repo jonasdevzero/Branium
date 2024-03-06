@@ -1,6 +1,6 @@
 import { MessageFileType } from "@/domain/models";
 import "./styles.css";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import Image from "next/image";
 import { FilesIndicators } from "..";
@@ -51,15 +51,18 @@ export function FilesForm({
 
   const cancel = useCallback(() => {
     setCurrentIndex(0);
+    setFiles([]);
+    setText("");
+
     onCancel();
-  }, [onCancel]);
+  }, [onCancel, setFiles, setText]);
 
   const submit = useCallback(() => {
     setCurrentIndex(0);
     onSubmit();
   }, [onSubmit]);
 
-  const renderImage = useCallback(() => {
+  const currentImage = useMemo(() => {
     if (type !== "IMAGE") return;
 
     const image = files[currentIndex];
@@ -70,7 +73,6 @@ export function FilesForm({
 
     return (
       <Image
-        key={image.lastModified}
         src={url}
         alt={image.name}
         fill
@@ -79,21 +81,38 @@ export function FilesForm({
     );
   }, [currentIndex, files, type]);
 
-  if (typeof type === "undefined" || !files.length) return;
+  const currentVideo = useMemo(() => {
+    if (type !== "VIDEO") return;
+
+    const video = files[0];
+
+    if (!video) return;
+
+    const url = URL.createObjectURL(video);
+
+    return <video src={url} controls onLoad={() => URL.revokeObjectURL(url)} />;
+  }, [files, type]);
 
   return (
     <div className="overlay">
       <div className="files__form">
         <div className="files__container">
-          <button type="button" onClick={previous}>
-            <MaterialSymbol icon="navigate_before" />
-          </button>
+          {files.length > 1 && (
+            <button type="button" onClick={previous}>
+              <MaterialSymbol icon="navigate_before" />
+            </button>
+          )}
 
-          <div className="files__content">{renderImage()}</div>
+          <div className="files__content">
+            {currentImage}
+            {currentVideo}
+          </div>
 
-          <button type="button" onClick={next}>
-            <MaterialSymbol icon="navigate_next" />
-          </button>
+          {files.length > 1 && (
+            <button type="button" onClick={next}>
+              <MaterialSymbol icon="navigate_next" />
+            </button>
+          )}
         </div>
 
         <FilesIndicators
@@ -112,7 +131,7 @@ export function FilesForm({
 
           <textarea
             name="text"
-            id="message-text"
+            id="message-text-file"
             className="text"
             placeholder="Digite uma mensagem (opcional)"
             autoFocus

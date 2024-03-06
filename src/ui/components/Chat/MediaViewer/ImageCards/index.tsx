@@ -7,7 +7,7 @@ interface Props {
   images: File[];
 }
 
-export function MessageImages({ images }: Props) {
+export function ImageCards({ images }: Props) {
   const { selectFiles } = useMessages();
 
   if (!images.length) return null;

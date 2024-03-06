@@ -9,4 +9,4 @@ export const audioMimeTypes = [
   "audio/webm",
 ];
 
-export const videoMimeTypes = ["video/mp4", "video/ogg", "video/webm"];
+export const videoMimeTypes = ["video/mp4"];

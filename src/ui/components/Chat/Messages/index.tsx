@@ -2,7 +2,7 @@ import { NewMessageDTO } from "@/domain/dtos";
 import { Message, RoomType } from "@/domain/models";
 import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LoadingSpinner } from "../..";
 import { MessageComponent, ScrollDown } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
@@ -103,11 +103,12 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     };
   }, [event, onNewMessage]);
 
-  const renderMessages = useCallback(() => {
+  const isFirstLoading = isLoading && currentPage === 0;
+
+  const renderedMessages = useMemo(() => {
     if (!cryptoKeys.privateKey) return;
 
-    if (isLoading && currentPage === 0)
-      return <MessageComponent.Skeleton amount={50} />;
+    if (isFirstLoading) return <MessageComponent.Skeleton amount={50} />;
 
     return messages.map((message, index, array) => {
       const previousMessage = array[index - 1];
@@ -126,7 +127,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
         />
       );
     });
-  }, [cryptoKeys, currentPage, isLoading, messages]);
+  }, [cryptoKeys.privateKey, isFirstLoading, messages]);
 
   return (
     <div
@@ -134,7 +135,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
       className={`messages ${isLoading ? "messages--lock" : ""}`}
     >
       {isLoading && currentPage > 0 && <LoadingSpinner />}
-      {renderMessages()}
+      {renderedMessages}
 
       <ScrollDown containerRef={containerRef} />
     </div>

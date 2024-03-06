@@ -1,4 +1,5 @@
-import { useEffect, EffectCallback } from "react";
+"use client";
+import { useEffect } from "react";
 
 export function useDebounce(
   fn: Function,
