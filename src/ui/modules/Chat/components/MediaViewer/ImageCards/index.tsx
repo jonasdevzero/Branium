@@ -1,7 +1,7 @@
+import { Button } from "@/ui/components";
+import { useMessages } from "@/ui/hooks";
 import Image from "next/image";
 import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
-import { useMessages } from "@/ui/hooks";
 
 interface Props {
   images: File[];
@@ -32,13 +32,7 @@ export function ImageCards({ images }: Props) {
       })}
 
       {images.length > 4 && (
-        <button
-          className="button"
-          type="button"
-          onClick={() => selectFiles(images, 3)}
-        >
-          <MaterialSymbol icon="add" size={40} color="#fff" />
-        </button>
+        <Button.Icon icon="add" onClick={() => selectFiles(images, 3)} />
       )}
     </div>
   );

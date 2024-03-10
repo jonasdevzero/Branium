@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/domain/models";
-import { Card, InviteSkeleton, Modal, Room } from "@/ui/components";
+import { Button, Card, InviteSkeleton, Modal, Room } from "@/ui/components";
 import { useDebounce } from "@/ui/hooks";
 import { messagesService } from "@/ui/services";
 import { useCallback, useState } from "react";
@@ -72,13 +72,12 @@ export default function Invites() {
           type="secondary"
         />
 
-        <button
-          type="button"
+        <Button
           className="invite__action"
           onClick={() => setSelectedUser(user)}
         >
           convidar
-        </button>
+        </Button>
       </Card>
     ));
   }, [isLoading, search.length, users]);
@@ -136,13 +135,9 @@ export default function Invites() {
         </label>
 
         <div className="modal__actions">
-          <button className="button" type="button" onClick={closeInviteModal}>
-            cancelar
-          </button>
+          <Button onClick={closeInviteModal}>cancelar</Button>
 
-          <button className="button" type="button" onClick={inviteUser}>
-            enviar
-          </button>
+          <Button onClick={inviteUser}>enviar</Button>
         </div>
       </Modal>
 

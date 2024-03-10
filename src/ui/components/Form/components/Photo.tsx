@@ -3,6 +3,7 @@ import { toast } from "@/ui/modules";
 import Image from "next/image";
 import React, { useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
+import { Button } from "../..";
 
 interface PhotoInputProps {
   field: string;
@@ -69,13 +70,12 @@ export const FormPhoto = React.forwardRef<HTMLLabelElement, PhotoInputProps>(
             )}
 
             {!!preview && (
-              <button
+              <Button.Icon
+                icon="close"
                 type="button"
-                className="button remove__photo"
+                className="remove__photo"
                 onClick={removePhoto}
-              >
-                <MaterialSymbol icon="close" size={16} />
-              </button>
+              ></Button.Icon>
             )}
           </div>
         </div>

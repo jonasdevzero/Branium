@@ -31,8 +31,8 @@
   height: 2.25rem;
 
   background-color: var(--primary-850) !important;
-  padding: 0;
-  border-radius: 50%;
+  padding: 0 !important;
+  border-radius: 50% !important;
 
   transition: right 0.3s ease-in-out, opacity 0.2s ease;
 }
@@ -43,4 +43,9 @@
 
 .messages__scroll--hidden {
   right: -7rem;
+}
+
+.messages__scroll .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
 }

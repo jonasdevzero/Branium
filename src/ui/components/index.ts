@@ -13,3 +13,4 @@ export * from "./Modal";
 export * from "./Skeleton";
 export * from "./Loading";
 export * from "./FilesViewer";
+export * from "./Button";

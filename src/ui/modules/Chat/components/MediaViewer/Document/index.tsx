@@ -1,9 +1,9 @@
 "use client";
 
+import { Button } from "@/ui/components";
 import { getSizeName } from "@/ui/helpers";
-import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
 import { downloadFile } from "../../..";
+import "./styles.css";
 
 interface Props {
   file: File;
@@ -28,12 +28,11 @@ export function Document({ file, download = false }: Props) {
       </div>
 
       {download && (
-        <button
-          className="button document__download"
+        <Button.Icon
+          icon="download"
+          className="document__download"
           onClick={() => downloadFile(file)}
-        >
-          <MaterialSymbol icon="download" />
-        </button>
+        />
       )}
     </div>
   );

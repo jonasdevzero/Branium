@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
 import { usePathname } from "next/navigation";
+import { Button } from "..";
+import "./styles.css";
 
 interface Props {
   title: string;
@@ -36,9 +36,7 @@ export function NavigationHeader({ title, links, onClose }: Props) {
 
       <div className="divisor"></div>
 
-      <button type="button" className="button icon__button" onClick={onClose}>
-        <MaterialSymbol icon="close" size={24} color="#fff" />
-      </button>
+      <Button.Icon icon="close" onClick={onClose} />
     </header>
   );
 }

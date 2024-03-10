@@ -1,7 +1,7 @@
+import { Button } from "@/ui/components";
 import { useAuth } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
 import { convertSecondsToMinutes } from "../..";
 import "./styles.css";
 
@@ -168,27 +168,19 @@ export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
         <b className="text">{convertSecondsToMinutes(recordingTime + 1)}</b>
 
         <div className="record__actions">
-          <button
-            type="button"
+          <Button.Icon
+            icon={isRecording ? "pause" : "play_arrow"}
             onClick={playPause}
-            className="button icon__button"
             title={isRecording ? "pausar" : "play"}
-          >
-            {isRecording ? (
-              <MaterialSymbol icon="pause" />
-            ) : (
-              <MaterialSymbol icon="play_arrow" />
-            )}
-          </button>
+          />
 
-          <button
+          <Button.Icon
+            icon="stop"
             type="button"
             onClick={stop}
-            className="button icon__button stop__recording"
+            className="stop__recording"
             title="finalizar gravação"
-          >
-            <MaterialSymbol icon="stop" />
-          </button>
+          ></Button.Icon>
         </div>
       </div>
     </div>

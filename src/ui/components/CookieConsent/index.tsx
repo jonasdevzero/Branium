@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import "./styles.css";
 import { useRouter } from "next/navigation";
+import { Button } from "..";
 
 export const CookieConsent: React.FC = () => {
   const [hasConsent, setHasConsent] = useState(true);
@@ -40,13 +41,9 @@ export const CookieConsent: React.FC = () => {
       </p>
 
       <div className="container__actions">
-        <button className="button" type="button" onClick={rejectCookies}>
-          Rejeitar
-        </button>
+        <Button onClick={rejectCookies}>Rejeitar</Button>
 
-        <button className="button" type="button" onClick={acceptCookies}>
-          Aceitar
-        </button>
+        <Button onClick={acceptCookies}>Aceitar</Button>
       </div>
     </div>
   );

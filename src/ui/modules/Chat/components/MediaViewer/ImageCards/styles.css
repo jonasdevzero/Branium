@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 
-.message__images > button {
+.message__images > .button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,11 +28,16 @@
   width: 12rem;
   height: 10rem;
 
-  background-color: #00000080;
+  background-color: #00000080 !important;
   padding: 0;
   transition: background-color 0.2s ease;
 }
 
-.message__images > button:is(:hover, :focus) {
+.message__images > .button:is(:hover, :focus) {
   background-color: #00000090;
+}
+
+.message__images > .button > .icon {
+  font-size: 2.5rem;
+  color: var(--secondary-0);
 }

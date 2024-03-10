@@ -1,7 +1,7 @@
 "use client";
 import { FinishUserRegisterDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
-import { Form } from "@/ui/components";
+import { Button, Form } from "@/ui/components";
 import { isEmail } from "@/ui/helpers";
 import { authServices } from "@/ui/services";
 import { finishRegisterUserSchema } from "@/ui/validators";
@@ -81,9 +81,9 @@ export default function FinishRegister() {
         <Form.Photo field="foto (opcional)" name="image" onSelect={setImage} />
       </fieldset>
 
-      <button type="submit" className="button text" disabled={isLoading}>
+      <Button type="submit" className="text" disabled={isLoading}>
         finalizar
-      </button>
+      </Button>
     </Form>
   );
 }

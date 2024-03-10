@@ -1,9 +1,6 @@
+import { SubmitMessageDTO } from "@/domain/dtos";
 import { MessageFileType } from "@/domain/models";
-import "./styles.css";
-import { useCallback, useMemo, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import Image from "next/image";
-import { FilesIndicators } from "./components";
+import { Button } from "@/ui/components";
 import {
   AudioPlayer,
   Document,
@@ -11,7 +8,10 @@ import {
   VideoPlayer,
   getMessageType,
 } from "@/ui/modules/Chat";
-import { SubmitMessageDTO } from "@/domain/dtos";
+import Image from "next/image";
+import { useCallback, useMemo, useState } from "react";
+import { FilesIndicators } from "./components";
+import "./styles.css";
 
 interface Props {
   text: string;
@@ -99,17 +99,13 @@ export function MediaForm({
       <div className="files__form">
         <div className="files__container">
           {files.length > 1 && (
-            <button className="button" type="button" onClick={previous}>
-              <MaterialSymbol icon="navigate_before" />
-            </button>
+            <Button.Icon icon="navigate_before" onClick={previous} />
           )}
 
           <div className="files__content">{currentFile}</div>
 
           {files.length > 1 && (
-            <button className="button" type="button" onClick={next}>
-              <MaterialSymbol icon="navigate_next" />
-            </button>
+            <Button.Icon icon="navigate_next" onClick={next} />
           )}
         </div>
 
@@ -146,14 +142,7 @@ export function MediaForm({
             }}
           />
 
-          <button
-            type="button"
-            className="button button__icon"
-            title="cancelar"
-            onClick={cancel}
-          >
-            <MaterialSymbol icon="close" />
-          </button>
+          <Button.Icon icon="close" title="cancelar" onClick={cancel} />
         </div>
       </div>
     </div>

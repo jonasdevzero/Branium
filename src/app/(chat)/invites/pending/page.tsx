@@ -2,6 +2,7 @@
 
 import { Invite } from "@/domain/models";
 import {
+  Button,
   Card,
   InviteSkeleton,
   LoadingSpinner,
@@ -119,13 +120,12 @@ export default function InvitesPending() {
           type="secondary"
         />
 
-        <button
-          type="button"
-          className="button invite__action"
+        <Button
+          className="invite__action"
           onClick={() => setSelectedInvite(invite)}
         >
           responder
-        </button>
+        </Button>
       </Card>
     ));
   }, [isLoading, currentPage, invites, search.length]);
@@ -183,21 +183,13 @@ export default function InvitesPending() {
         )}
 
         <div className="modal__actions">
-          <button
-            className="button"
-            type="button"
-            onClick={() => responseInvite(selectedInvite!.id, false)}
-          >
+          <Button onClick={() => responseInvite(selectedInvite!.id, false)}>
             rejeitar
-          </button>
+          </Button>
 
-          <button
-            className="button"
-            type="button"
-            onClick={() => responseInvite(selectedInvite!.id, true)}
-          >
+          <Button onClick={() => responseInvite(selectedInvite!.id, true)}>
             aceitar
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>

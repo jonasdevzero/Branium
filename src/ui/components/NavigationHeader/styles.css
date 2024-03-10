@@ -33,3 +33,8 @@
 
   border-bottom: solid 2px var(--secondary-0);
 }
+
+.navigation__header .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}

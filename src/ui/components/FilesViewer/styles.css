@@ -30,7 +30,7 @@
   min-width: 4rem;
   min-height: 4rem;
 
-  background-color: var(--primary-800);
+  background-color: var(--primary-900) !important;
   padding: 0;
   border-radius: 50%;
   cursor: pointer;
@@ -43,8 +43,8 @@
   opacity: 0.7;
 }
 
-.files__viewer > button > span,
-.files__close > span {
+.files__viewer > button > .icon,
+.files__close > .icon {
   font-size: 2rem;
   color: var(--secondary-0);
 }

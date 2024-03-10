@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
-import { MaterialSymbol } from "react-material-symbols";
-import "./styles.css";
-import { imageMimeTypes } from "../../modules/Chat/helpers";
 import { useState } from "react";
+import { Button } from "..";
+import { imageMimeTypes } from "../../modules/Chat/helpers";
+import "./styles.css";
 
 interface Props {
   close(): void;
@@ -51,25 +51,20 @@ export const FilesViewer: React.FC<Props> = ({
   return (
     <div className="overlay files__viewer--overlay">
       <div className="files__viewer">
-        <button
-          type="button"
-          className="button files__close icon__button"
+        <Button.Icon
+          icon="close"
+          className="files__close"
           onClick={handleClose}
-        >
-          <MaterialSymbol icon="close" />
-        </button>
+        />
+
         {files.length > 1 && (
-          <button type="button" className="button" onClick={previous}>
-            <MaterialSymbol icon="navigate_before" />
-          </button>
+          <Button.Icon icon="navigate_before" onClick={previous} />
         )}
 
         <div className="files__content">{renderFile(files[currentIndex])}</div>
 
         {files.length > 1 && (
-          <button type="button" className="button" onClick={next}>
-            <MaterialSymbol icon="navigate_next" />
-          </button>
+          <Button.Icon icon="navigate_next" onClick={next} />
         )}
       </div>
     </div>

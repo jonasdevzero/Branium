@@ -1,3 +1,4 @@
+import { Button } from "@/ui/components";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
@@ -34,14 +35,12 @@ export function ScrollDown({ containerRef }: Props) {
   }, [containerRef, onScroll]);
 
   return (
-    <button
+    <Button
       type="button"
-      className={`button messages__scroll ${
-        !show ? "messages__scroll--hidden" : ""
-      }`}
+      className={`messages__scroll ${!show ? "messages__scroll--hidden" : ""}`}
       onClick={scrollDown}
     >
       <MaterialSymbol icon="arrow_drop_down" size={24} color="#fff" />
-    </button>
+    </Button>
   );
 }

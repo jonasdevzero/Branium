@@ -1,7 +1,7 @@
 "use client";
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
+import { Button } from "@/ui/components";
 import { convertSecondsToMinutes } from "@/ui/modules/Chat";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
 
 interface Props {
@@ -68,13 +68,10 @@ export function AudioPlayer({ src }: Props) {
         onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
       />
 
-      <button
-        className="button icon__button"
-        type="button"
+      <Button.Icon
+        icon={isPlaying ? "pause" : "play_arrow"}
         onClick={togglePlayPause}
-      >
-        <MaterialSymbol icon={isPlaying ? "pause" : "play_arrow"} />
-      </button>
+      />
 
       <div className="range__container">
         <input
@@ -91,13 +88,9 @@ export function AudioPlayer({ src }: Props) {
         <span>/ {convertSecondsToMinutes(duration)}</span>
       </span>
 
-      <button
-        className="button speed description"
-        type="button"
-        onClick={toggleSpeed}
-      >
+      <Button className="speed description" onClick={toggleSpeed}>
         {speed}
-      </button>
+      </Button>
     </div>
   );
 }

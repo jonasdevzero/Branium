@@ -1,4 +1,4 @@
-import { MaterialSymbol } from "react-material-symbols";
+import { Button } from "..";
 import "./styles.css";
 
 interface Props {
@@ -26,14 +26,12 @@ export const Modal: React.FC<Props> = ({
           <h4 className="header4">{title}</h4>
 
           {!!close && (
-            <button
+            <Button.Icon
               id="close-modal"
-              className="button modal__close icon__button"
-              type="button"
+              icon="close"
+              className="modal__close"
               onClick={close}
-            >
-              <MaterialSymbol icon="close" size={24} color="#fff" />
-            </button>
+            />
           )}
         </div>
 

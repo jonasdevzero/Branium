@@ -1,8 +1,8 @@
 "use client";
-import { useRef, useState } from "react";
-import "./styles.css";
-import { MaterialSymbol } from "react-material-symbols";
 import { useOutsideClick } from "@/ui/hooks";
+import { useRef, useState } from "react";
+import { Button } from "..";
+import "./styles.css";
 
 export interface DropdownItem {
   icon?: React.ReactNode;
@@ -25,13 +25,13 @@ export function Dropdown({ icon, options }: Props) {
 
   return (
     <div ref={ref} className="dropdown">
-      <button
-        type="button"
-        className="button dropdown__toggle button__icon"
+      <Button.Icon
+        className="dropdown__toggle"
         onClick={() => setIsOpen(!isOpen)}
+        icon="more_vert"
       >
-        {icon || <MaterialSymbol icon="more_vert" />}
-      </button>
+        {icon}
+      </Button.Icon>
 
       {isOpen && (
         <div className="dropdown__list">

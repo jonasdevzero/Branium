@@ -1,7 +1,7 @@
+import { Button } from "@/ui/components";
+import { isDocument, isImage } from "@/ui/modules/Chat";
 import Image from "next/image";
 import { useCallback } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { isDocument, isImage } from "@/ui/modules/Chat";
 import "./styles.css";
 
 interface FileIndicator {
@@ -39,13 +39,11 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
               onClick={() => onSelect(index)}
             />
 
-            <button
-              className="button remove__file button__icon"
-              type="button"
+            <Button.Icon
+              icon="close"
+              className="remove__file"
               onClick={() => onRemove(index)}
-            >
-              <MaterialSymbol icon="close" />
-            </button>
+            />
           </div>
         );
       }
@@ -62,13 +60,11 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
               .{ext}
             </span>
 
-            <button
-              className="button remove__file button__icon"
-              type="button"
+            <Button.Icon
+              icon="close"
+              className="remove__file"
               onClick={() => onRemove(index)}
-            >
-              <MaterialSymbol icon="close" />
-            </button>
+            />
           </div>
         );
       }

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { KeyPairStorage } from "../utils";
 import { keysServices } from "../services";
-import { Form, Modal } from "../components";
+import { Button, Form, Modal } from "../components";
 import { ApiError, KeyPair } from "@/domain/models";
 import { useAuth } from "../hooks";
 import { usePathname, useRouter } from "next/navigation";
@@ -175,18 +175,11 @@ function FetchKeyPairModal({
       />
 
       <div className="modal__actions">
-        <button className="button" type="button" onClick={cancel}>
-          cancelar
-        </button>
+        <Button onClick={cancel}>cancelar</Button>
 
-        <button
-          className="button"
-          type="button"
-          onClick={confirm}
-          disabled={isLoading}
-        >
+        <Button onClick={confirm} disabled={isLoading}>
           confirmar
-        </button>
+        </Button>
       </div>
     </Modal>
   );

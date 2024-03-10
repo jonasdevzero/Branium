@@ -1,8 +1,8 @@
-import { MaterialSymbol } from "react-material-symbols";
-import "./styles.css";
+import { Button } from "@/ui/components";
+import { useOutsideClick } from "@/ui/hooks";
 import Picker, { Categories, Theme } from "emoji-picker-react";
 import { useRef, useState } from "react";
-import { useOutsideClick } from "@/ui/hooks";
+import "./styles.css";
 
 interface Props {
   onPick(emoji: string): void;
@@ -16,13 +16,7 @@ export function EmojiPicker({ onPick }: Props) {
 
   return (
     <div ref={ref} className="emoji__picker">
-      <button
-        type="button"
-        className="button icon__button"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <MaterialSymbol icon="mood" />
-      </button>
+      <Button.Icon icon="mood" onClick={() => setIsOpen(!isOpen)} />
 
       <Picker
         className="picker"

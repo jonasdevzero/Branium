@@ -1,5 +1,5 @@
 "use client";
-import { Form } from "@/ui/components";
+import { Button, Form } from "@/ui/components";
 import { authServices } from "@/ui/services";
 import { RegisterUserDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
@@ -104,9 +104,9 @@ export default function Register() {
         </Form.Checkbox>
       </fieldset>
 
-      <button type="submit" className="button text" disabled={isLoading}>
+      <Button type="submit" className="text" disabled={isLoading}>
         cadastrar
-      </button>
+      </Button>
     </Form>
   );
 }

@@ -23,6 +23,11 @@
   gap: 1rem;
 }
 
+.modal__close > .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}
+
 .modal__container > .modal__content {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,35 @@
+.button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 2.5rem;
+  gap: 0.5rem;
+
+  color: var(--primary-900);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0.01em;
+
+  background-color: var(--secondary-0);
+  cursor: pointer;
+  border: 0;
+  border-radius: 0.25rem;
+  transition: opacity 0.2s ease;
+}
+
+.button.button__small {
+  width: fit-content;
+  height: fit-content;
+
+  padding: 0.25rem 1rem;
+}
+
+.button:is(:hover, :focus) {
+  opacity: 0.7;
+}
+
+.button.icon__button {
+  background-color: transparent !important;
+  padding: 0;
+}

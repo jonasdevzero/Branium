@@ -37,3 +37,8 @@
 .chat__form > .overlay {
   background-color: #000000aa;
 }
+
+.chat__form .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}

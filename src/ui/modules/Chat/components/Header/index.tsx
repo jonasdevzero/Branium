@@ -1,6 +1,5 @@
-import { MaterialSymbol } from "react-material-symbols";
+import { Button, ContactSkeleton, Room } from "@/ui/components";
 import "./styles.css";
-import { ContactSkeleton, Room } from "@/ui/components";
 
 interface HeaderProps {
   name: string;
@@ -14,17 +13,11 @@ export function Header({ name, image, username }: HeaderProps) {
       <Room name={name} image={image} username={username} type="secondary" />
 
       <div className="actions">
-        <button className="button button__icon">
-          <MaterialSymbol icon="videocam" />
-        </button>
+        <Button.Icon icon="videocam" />
 
-        <button className="button button__icon">
-          <MaterialSymbol icon="call" />
-        </button>
+        <Button.Icon icon="call" />
 
-        <button className="button button__icon">
-          <MaterialSymbol icon="more_vert" />
-        </button>
+        <Button.Icon icon="more_vert" />
       </div>
     </header>
   );

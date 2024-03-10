@@ -57,11 +57,6 @@ input {
   border-radius: 0.5rem;
 }
 
-.icon__button {
-  background-color: transparent !important;
-  padding: 0;
-}
-
 @media (min-width: 2000px) {
   main {
     min-width: 2000px;

@@ -2,7 +2,7 @@
 
 import { LoginUserDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
-import { Form } from "@/ui/components";
+import { Button, Form } from "@/ui/components";
 import { toast } from "@/ui/modules";
 import { authServices } from "@/ui/services";
 import { hasCookie } from "cookies-next";
@@ -57,9 +57,9 @@ export default function Login() {
         <Form.Input field="senha" {...register("password")} type="password" />
       </fieldset>
 
-      <button type="submit" className="button text" disabled={isLoading}>
+      <Button type="submit" className="text" disabled={isLoading}>
         entrar
-      </button>
+      </Button>
 
       <Link href={"/recover-password"}>Esqueceu a senha?</Link>
     </Form>

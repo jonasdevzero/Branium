@@ -1,21 +1,21 @@
+import { SubmitMessageDTO } from "@/domain/dtos";
 import { MessageFileType } from "@/domain/models";
-import "./styles.css";
-import { useCallback, useState } from "react";
+import { Button, Dropdown } from "@/ui/components";
 import {
+  AudioRecorder,
+  EmojiPicker,
+  MediaForm,
   getMessageType,
+  isDocument,
   isImage,
   isValidVideo,
   isVideo,
-  validateImages,
-  MediaForm,
   validateDocuments,
-  isDocument,
-  AudioRecorder,
-  EmojiPicker,
+  validateImages,
 } from "@/ui/modules/Chat";
+import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { Dropdown } from "@/ui/components";
-import { SubmitMessageDTO } from "@/domain/dtos";
+import "./styles.css";
 
 interface FormProps {
   onSubmit(data: SubmitMessageDTO): void;
@@ -181,13 +181,7 @@ export function Form({ onSubmit }: FormProps) {
         }}
       />
 
-      <button
-        type="button"
-        className="button button__icon"
-        onClick={() => setRecordAudio(true)}
-      >
-        <MaterialSymbol icon="mic" />
-      </button>
+      <Button.Icon icon="mic" onClick={() => setRecordAudio(true)} />
 
       {files.length > 0 && typeof filesType !== "undefined" && (
         <MediaForm

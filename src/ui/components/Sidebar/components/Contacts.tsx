@@ -1,6 +1,6 @@
 import { Contact } from "@/domain/models";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Card, ContactSkeleton, LoadingSpinner, Room } from "../..";
+import { Button, Card, ContactSkeleton, LoadingSpinner, Room } from "../..";
 import { useRouter } from "next/navigation";
 import { messagesService } from "@/ui/services";
 import { useAuth, useDebounce, useMessages, useScrollEnd } from "@/ui/hooks";
@@ -95,13 +95,9 @@ export function SidebarContacts({ search }: Props) {
       return (
         <>
           <p className="text">Nenhum contato adicionado</p>
-          <button
-            className="button button__small"
-            type="button"
-            onClick={() => router.push("/invites")}
-          >
+          <Button.Small onClick={() => router.push("/invites")}>
             adicionar
-          </button>
+          </Button.Small>
         </>
       );
 

@@ -83,6 +83,8 @@
 .skeleton__box.button {
   width: 6.25rem;
   height: 2rem;
+
+  background-color: var(--primary-800) !important;
 }
 
 .skeleton__box.icon {
