@@ -41,8 +41,9 @@
   object-fit: contain;
 }
 
-.files__content > video {
-  width: fit-content !important;
+.files__content > .video__player {
+  width: fit-content;
+  height: fit-content;
   max-width: 100%;
 }
 

@@ -11,7 +11,13 @@ import { useCryptoKeys } from "@/ui/hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { ImageCards } from "..";
-import { isDocument, isImage, isVideo } from "@/ui/modules/Chat";
+import {
+  AudioPlayer,
+  isAudio,
+  isDocument,
+  isImage,
+  isVideo,
+} from "@/ui/modules/Chat";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
 
@@ -74,6 +80,8 @@ export function MessageComponent({ message, short }: MessageProps) {
       (f) => !!f && isDocument(f)
     ) as File[];
 
+    const audio = decryptedFiles.filter((f) => !!f && isAudio(f))[0];
+
     return (
       <>
         <ImageCards images={images} />
@@ -83,6 +91,8 @@ export function MessageComponent({ message, short }: MessageProps) {
         {documents.map((f) => (
           <Document key={f.name} file={f} download />
         ))}
+
+        {!!audio && <AudioPlayer src={audio} />}
       </>
     );
   }, [decryptedFiles, message.files]);

@@ -10,6 +10,7 @@ import {
   MediaForm,
   validateDocuments,
   isDocument,
+  AudioRecorder,
 } from "@/ui/modules/Chat";
 import { MaterialSymbol } from "react-material-symbols";
 import { Dropdown } from "@/ui/components";
@@ -23,6 +24,7 @@ export function Form({ onSubmit }: FormProps) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [filesType, setFilesType] = useState<MessageFileType>();
+  const [recordAudio, setRecordAudio] = useState(false);
 
   const clear = () => {
     setText("");
@@ -180,7 +182,11 @@ export function Form({ onSubmit }: FormProps) {
         }}
       />
 
-      <button type="button" className="button__icon">
+      <button
+        type="button"
+        className="button__icon"
+        onClick={() => setRecordAudio(true)}
+      >
         <MaterialSymbol icon="mic" />
       </button>
 
@@ -196,6 +202,15 @@ export function Form({ onSubmit }: FormProps) {
           onCancel={() => setFilesType(undefined)}
         />
       )}
+
+      <AudioRecorder
+        canRecord={recordAudio}
+        stopRecording={() => setRecordAudio(false)}
+        onRecord={(audio) => {
+          setFilesType("AUDIO");
+          setFiles([audio]);
+        }}
+      />
     </form>
   );
 }

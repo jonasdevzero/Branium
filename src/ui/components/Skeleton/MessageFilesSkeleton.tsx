@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function MessageFilesSkeleton({ files }: Props) {
-  const { images, video, documents } = useMemo(
+  const { images, video, documents, audio } = useMemo(
     () => ({
       images: files.filter((f) => f.type === "IMAGE").length,
       audio: files.some((f) => f.type === "AUDIO"),
@@ -22,6 +22,7 @@ export function MessageFilesSkeleton({ files }: Props) {
       <MessageImagesSkeleton count={images} />
       {video && <MessageVideoSkeleton />}
       <MessageDocumentSkeleton count={documents} />
+      {audio && <MessageAudioSkeleton />}
     </>
   );
 }
@@ -53,4 +54,18 @@ function MessageDocumentSkeleton({ count }: { count: number }) {
       <span className="skeleton__box download"></span>
     </span>
   ));
+}
+
+function MessageAudioSkeleton() {
+  return (
+    <span className="skeleton__box audio__player">
+      <span className="skeleton__box icon"></span>
+
+      <span className="skeleton__box range"></span>
+
+      <span className="skeleton__box description"></span>
+
+      <span className="skeleton__box icon"></span>
+    </span>
+  );
 }

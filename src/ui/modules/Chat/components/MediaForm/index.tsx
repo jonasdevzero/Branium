@@ -4,7 +4,12 @@ import { useCallback, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import Image from "next/image";
 import { FilesIndicators } from "./components";
-import { Document, getMessageType } from "@/ui/modules/Chat";
+import {
+  AudioPlayer,
+  Document,
+  VideoPlayer,
+  getMessageType,
+} from "@/ui/modules/Chat";
 import { SubmitMessageDTO } from "@/domain/dtos";
 
 interface Props {
@@ -66,45 +71,26 @@ export function MediaForm({
     setFiles([]);
   }, [files, onSubmit, text]);
 
-  const currentImage = useMemo(() => {
-    if (type !== "IMAGE") return;
+  const currentFile = useMemo(() => {
+    const file = files[currentIndex];
+    if (!file) return;
 
-    const image = files[currentIndex];
+    if (type === "FILE") return <Document file={file} />;
 
-    if (!image) return;
+    if (type === "VIDEO") return <VideoPlayer src={file} />;
 
-    const url = URL.createObjectURL(image);
+    if (type === "AUDIO") return <AudioPlayer src={file} />;
+
+    const url = URL.createObjectURL(file);
 
     return (
       <Image
         src={url}
-        alt={image.name}
+        alt={file.name}
         fill
         onLoadedData={() => URL.revokeObjectURL(url)}
       />
     );
-  }, [currentIndex, files, type]);
-
-  const currentVideo = useMemo(() => {
-    if (type !== "VIDEO") return;
-
-    const video = files[0];
-
-    if (!video) return;
-
-    const url = URL.createObjectURL(video);
-
-    return <video src={url} controls onLoad={() => URL.revokeObjectURL(url)} />;
-  }, [files, type]);
-
-  const currentDocument = useMemo(() => {
-    if (type !== "FILE") return;
-
-    const document = files[currentIndex];
-
-    if (!document) return;
-
-    return <Document file={document} />;
   }, [currentIndex, files, type]);
 
   return (
@@ -117,11 +103,7 @@ export function MediaForm({
             </button>
           )}
 
-          <div className="files__content">
-            {currentImage}
-            {currentVideo}
-            {currentDocument}
-          </div>
+          <div className="files__content">{currentFile}</div>
 
           {files.length > 1 && (
             <button type="button" onClick={next}>

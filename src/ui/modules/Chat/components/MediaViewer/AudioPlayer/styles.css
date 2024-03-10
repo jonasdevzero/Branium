@@ -1,0 +1,141 @@
+.audio__player {
+  display: flex;
+  align-items: center;
+  width: 20rem;
+  height: 3rem;
+  gap: 0.5rem;
+
+  background-color: var(--primary-850);
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.audio__player > button > span {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}
+
+.audio__player > .audio__time {
+  white-space: nowrap;
+}
+
+.audio__player > .audio__time > span {
+  color: var(--secondary-200);
+}
+
+.audio__player > .range__container {
+  display: flex;
+  align-items: center;
+
+  --bar-bg: var(--primary-750);
+  --seek-before-width: 0;
+  --seek-before-color: var(--primary-800);
+  --knobby: var(--secondary-100);
+  --selectedKnobby: var(--secondary-200);
+
+  appearance: none;
+  background: var(--bar-bg);
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+  height: 7px;
+  outline: none;
+}
+
+/* progress bar - safari */
+.range__container > input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--bar-bg);
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+  height: 7px;
+  outline: none;
+}
+
+/* progress bar - firefox */
+.range__container > input[type="range"]::-moz-range-track {
+  background: var(--bar-bg);
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+  height: 7px;
+  outline: none;
+}
+
+.range__container > input[type="range"]::-moz-focus-outer {
+  border: 0;
+}
+
+/* progress bar - chrome and safari */
+.range__container > input[type="range"]:before {
+  content: "";
+  height: 7px;
+  width: var(--seek-before-width);
+  background-color: var(--seek-before-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* progress bar - firefox */
+.range__container > input[type="range"]::-moz-range-progress {
+  background-color: var(--seek-before-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  height: 7px;
+}
+
+/* knobby - chrome and safari */
+.range__container > input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 11px;
+  width: 11px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--knobby);
+  cursor: pointer;
+  position: relative;
+  margin: -2px 0 0 0;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+/* knobby while dragging - chrome and safari */
+.range__container > input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.4);
+  background: var(--selectedKnobby);
+}
+
+/* knobby - firefox */
+.range__container > input[type="range"]::-moz-range-thumb {
+  height: 11px;
+  width: 11px;
+  border-radius: 50%;
+  border: transparent;
+  background-color: var(--knobby);
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+/* knobby while dragging - firefox */
+.range__container > input[type="range"]:active::-moz-range-thumb {
+  transform: scale(1.4);
+  background: var(--selectedKnobby);
+}
+
+.audio__player > .speed {
+  min-width: 1.75rem;
+  height: 1.75rem;
+
+  color: var(--secondary-0);
+
+  background-color: var(--primary-900);
+  padding: 0;
+  border-radius: 50%;
+}
