@@ -36,7 +36,7 @@ export function NavigationHeader({ title, links, onClose }: Props) {
 
       <div className="divisor"></div>
 
-      <button type="button" className="icon__button" onClick={onClose}>
+      <button type="button" className="button icon__button" onClick={onClose}>
         <MaterialSymbol icon="close" size={24} color="#fff" />
       </button>
     </header>

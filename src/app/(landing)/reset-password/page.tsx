@@ -21,7 +21,7 @@ export default function ResetPassword() {
         />
       </fieldset>
 
-      <button type="submit" className="text">
+      <button type="submit" className="button text">
         redefinir
       </button>
     </Form>

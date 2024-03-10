@@ -68,7 +68,11 @@ export function AudioPlayer({ src }: Props) {
         onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
       />
 
-      <button className="icon__button" type="button" onClick={togglePlayPause}>
+      <button
+        className="button icon__button"
+        type="button"
+        onClick={togglePlayPause}
+      >
         <MaterialSymbol icon={isPlaying ? "pause" : "play_arrow"} />
       </button>
 
@@ -87,7 +91,11 @@ export function AudioPlayer({ src }: Props) {
         <span>/ {convertSecondsToMinutes(duration)}</span>
       </span>
 
-      <button className="speed description" type="button" onClick={toggleSpeed}>
+      <button
+        className="button speed description"
+        type="button"
+        onClick={toggleSpeed}
+      >
         {speed}
       </button>
     </div>

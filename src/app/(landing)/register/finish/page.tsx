@@ -81,7 +81,7 @@ export default function FinishRegister() {
         <Form.Photo field="foto (opcional)" name="image" onSelect={setImage} />
       </fieldset>
 
-      <button type="submit" className="text" disabled={isLoading}>
+      <button type="submit" className="button text" disabled={isLoading}>
         finalizar
       </button>
     </Form>

@@ -32,7 +32,11 @@ export function ImageCards({ images }: Props) {
       })}
 
       {images.length > 4 && (
-        <button type="button" onClick={() => selectFiles(images, 3)}>
+        <button
+          className="button"
+          type="button"
+          onClick={() => selectFiles(images, 3)}
+        >
           <MaterialSymbol icon="add" size={40} color="#fff" />
         </button>
       )}

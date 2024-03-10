@@ -13,9 +13,11 @@ import { MaterialSymbol } from "react-material-symbols";
 import { ImageCards } from "..";
 import {
   AudioPlayer,
+  countEmojis,
   isAudio,
   isDocument,
   isImage,
+  isOnlyEmoji,
   isVideo,
 } from "@/ui/modules/Chat";
 import { decryptFile, decryptText } from "../../helpers";
@@ -34,6 +36,16 @@ export function MessageComponent({ message, short }: MessageProps) {
     []
   );
   const cryptoKeys = useCryptoKeys();
+
+  const emojiSize = useMemo(() => {
+    if (typeof decryptedText !== "string") return "";
+    if (!isOnlyEmoji(decryptedText)) return "";
+
+    const count = countEmojis(decryptedText);
+    const size = count >= 4 ? 4 : count;
+
+    return `text__emoji--${size}`;
+  }, [decryptedText]);
 
   const decryptMessage = useCallback(async () => {
     const privateKey = cryptoKeys.privateKey;
@@ -116,7 +128,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         </span>
 
         <div className="message__content">
-          <p className="text">{decryptedText}</p>
+          <p className={`text ${emojiSize}`}>{decryptedText}</p>
           {renderedFiles}
         </div>
       </div>
@@ -145,7 +157,9 @@ export function MessageComponent({ message, short }: MessageProps) {
           <span className="description">{formatDate(message.createdAt)}</span>
         </div>
 
-        {!!decryptedText && <p className="text">{decryptedText}</p>}
+        {!!decryptedText && (
+          <p className={`text ${emojiSize}`}>{decryptedText}</p>
+        )}
 
         {renderedFiles}
       </div>

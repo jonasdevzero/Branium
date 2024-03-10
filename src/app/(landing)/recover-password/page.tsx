@@ -15,7 +15,7 @@ export default function RecoverPassword() {
         <Form.Input field="email" name="email" />
       </fieldset>
 
-      <button type="submit" className="text">
+      <button type="submit" className="button text">
         recuperar
       </button>
     </Form>

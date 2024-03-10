@@ -40,11 +40,11 @@ export const CookieConsent: React.FC = () => {
       </p>
 
       <div className="container__actions">
-        <button type="button" onClick={rejectCookies}>
+        <button className="button" type="button" onClick={rejectCookies}>
           Rejeitar
         </button>
 
-        <button type="button" onClick={acceptCookies}>
+        <button className="button" type="button" onClick={acceptCookies}>
           Aceitar
         </button>
       </div>

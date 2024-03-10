@@ -171,7 +171,7 @@ export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
           <button
             type="button"
             onClick={playPause}
-            className="icon__button"
+            className="button icon__button"
             title={isRecording ? "pausar" : "play"}
           >
             {isRecording ? (
@@ -184,7 +184,7 @@ export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
           <button
             type="button"
             onClick={stop}
-            className="icon__button stop__recording"
+            className="button icon__button stop__recording"
             title="finalizar gravação"
           >
             <MaterialSymbol icon="stop" />

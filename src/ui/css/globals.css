@@ -122,11 +122,11 @@ h6 {
 }
 
 .description {
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
 }
 
-button {
+.button {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -146,14 +146,14 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button.button__small {
+.button.button__small {
   width: fit-content;
   height: fit-content;
 
   padding: 0.25rem 1rem;
 }
 
-button:is(:hover, :focus) {
+.button:is(:hover, :focus) {
   background-color: var(--secondary-200);
 }
 

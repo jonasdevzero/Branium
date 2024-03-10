@@ -121,7 +121,7 @@ export default function InvitesPending() {
 
         <button
           type="button"
-          className="invite__action"
+          className="button invite__action"
           onClick={() => setSelectedInvite(invite)}
         >
           responder
@@ -184,6 +184,7 @@ export default function InvitesPending() {
 
         <div className="modal__actions">
           <button
+            className="button"
             type="button"
             onClick={() => responseInvite(selectedInvite!.id, false)}
           >
@@ -191,6 +192,7 @@ export default function InvitesPending() {
           </button>
 
           <button
+            className="button"
             type="button"
             onClick={() => responseInvite(selectedInvite!.id, true)}
           >

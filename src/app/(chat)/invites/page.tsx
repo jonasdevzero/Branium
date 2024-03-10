@@ -136,11 +136,11 @@ export default function Invites() {
         </label>
 
         <div className="modal__actions">
-          <button type="button" onClick={closeInviteModal}>
+          <button className="button" type="button" onClick={closeInviteModal}>
             cancelar
           </button>
 
-          <button type="button" onClick={inviteUser}>
+          <button className="button" type="button" onClick={inviteUser}>
             enviar
           </button>
         </div>

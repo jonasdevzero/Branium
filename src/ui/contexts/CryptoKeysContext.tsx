@@ -175,11 +175,16 @@ function FetchKeyPairModal({
       />
 
       <div className="modal__actions">
-        <button type="button" onClick={cancel}>
+        <button className="button" type="button" onClick={cancel}>
           cancelar
         </button>
 
-        <button type="button" onClick={confirm} disabled={isLoading}>
+        <button
+          className="button"
+          type="button"
+          onClick={confirm}
+          disabled={isLoading}
+        >
           confirmar
         </button>
       </div>

@@ -28,7 +28,7 @@ export const Modal: React.FC<Props> = ({
           {!!close && (
             <button
               id="close-modal"
-              className="modal__close icon__button"
+              className="button modal__close icon__button"
               type="button"
               onClick={close}
             >

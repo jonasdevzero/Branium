@@ -7,6 +7,7 @@ import { FilesIndicators } from "./components";
 import {
   AudioPlayer,
   Document,
+  EmojiPicker,
   VideoPlayer,
   getMessageType,
 } from "@/ui/modules/Chat";
@@ -98,7 +99,7 @@ export function MediaForm({
       <div className="files__form">
         <div className="files__container">
           {files.length > 1 && (
-            <button type="button" onClick={previous}>
+            <button className="button" type="button" onClick={previous}>
               <MaterialSymbol icon="navigate_before" />
             </button>
           )}
@@ -106,7 +107,7 @@ export function MediaForm({
           <div className="files__content">{currentFile}</div>
 
           {files.length > 1 && (
-            <button type="button" onClick={next}>
+            <button className="button" type="button" onClick={next}>
               <MaterialSymbol icon="navigate_next" />
             </button>
           )}
@@ -122,9 +123,7 @@ export function MediaForm({
         />
 
         <div className="chat__form">
-          <button type="button" className="button__icon">
-            <MaterialSymbol icon="mood" />
-          </button>
+          <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 
           <textarea
             name="text"
@@ -149,7 +148,7 @@ export function MediaForm({
 
           <button
             type="button"
-            className="button__icon"
+            className="button button__icon"
             title="cancelar"
             onClick={cancel}
           >

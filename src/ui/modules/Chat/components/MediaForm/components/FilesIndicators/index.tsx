@@ -40,7 +40,7 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
             />
 
             <button
-              className="remove__file button__icon"
+              className="button remove__file button__icon"
               type="button"
               onClick={() => onRemove(index)}
             >
@@ -63,7 +63,7 @@ export function FilesIndicators({ currentIndex, indicators }: Props) {
             </span>
 
             <button
-              className="remove__file button__icon"
+              className="button remove__file button__icon"
               type="button"
               onClick={() => onRemove(index)}
             >

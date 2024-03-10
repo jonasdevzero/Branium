@@ -57,7 +57,7 @@ export default function Login() {
         <Form.Input field="senha" {...register("password")} type="password" />
       </fieldset>
 
-      <button type="submit" className="text" disabled={isLoading}>
+      <button type="submit" className="button text" disabled={isLoading}>
         entrar
       </button>
 

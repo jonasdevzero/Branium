@@ -27,7 +27,7 @@ export function Dropdown({ icon, options }: Props) {
     <div ref={ref} className="dropdown">
       <button
         type="button"
-        className="dropdown__toggle button__icon"
+        className="button dropdown__toggle button__icon"
         onClick={() => setIsOpen(!isOpen)}
       >
         {icon || <MaterialSymbol icon="more_vert" />}

@@ -29,7 +29,7 @@ export function Document({ file, download = false }: Props) {
 
       {download && (
         <button
-          className="document__download"
+          className="button document__download"
           onClick={() => downloadFile(file)}
         >
           <MaterialSymbol icon="download" />

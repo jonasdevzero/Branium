@@ -14,15 +14,15 @@ export function Header({ name, image, username }: HeaderProps) {
       <Room name={name} image={image} username={username} type="secondary" />
 
       <div className="actions">
-        <button className="button__icon">
+        <button className="button button__icon">
           <MaterialSymbol icon="videocam" />
         </button>
 
-        <button className="button__icon">
+        <button className="button button__icon">
           <MaterialSymbol icon="call" />
         </button>
 
-        <button className="button__icon">
+        <button className="button button__icon">
           <MaterialSymbol icon="more_vert" />
         </button>
       </div>

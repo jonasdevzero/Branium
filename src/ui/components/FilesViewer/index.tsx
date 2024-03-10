@@ -53,13 +53,13 @@ export const FilesViewer: React.FC<Props> = ({
       <div className="files__viewer">
         <button
           type="button"
-          className="files__close icon__button"
+          className="button files__close icon__button"
           onClick={handleClose}
         >
           <MaterialSymbol icon="close" />
         </button>
         {files.length > 1 && (
-          <button type="button" onClick={previous}>
+          <button type="button" className="button" onClick={previous}>
             <MaterialSymbol icon="navigate_before" />
           </button>
         )}
@@ -67,7 +67,7 @@ export const FilesViewer: React.FC<Props> = ({
         <div className="files__content">{renderFile(files[currentIndex])}</div>
 
         {files.length > 1 && (
-          <button type="button" onClick={next}>
+          <button type="button" className="button" onClick={next}>
             <MaterialSymbol icon="navigate_next" />
           </button>
         )}

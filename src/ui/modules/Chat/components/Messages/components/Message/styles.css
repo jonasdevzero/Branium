@@ -88,3 +88,23 @@
 .message__content > p {
   width: 100%;
 }
+
+.message__content > p.text__emoji--1 {
+  font-size: 4rem;
+  line-height: 4.5rem;
+}
+
+.message__content > p.text__emoji--2 {
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+
+.message__content > p.text__emoji--3 {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+.message__content > p.text__emoji--4 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}

@@ -4,3 +4,4 @@ export * from "./Messages";
 export * from "./MediaViewer";
 export * from "./MediaForm";
 export * from "./AudioRecorder";
+export * from "./EmojiPicker";

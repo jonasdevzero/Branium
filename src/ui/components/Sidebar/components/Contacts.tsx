@@ -96,7 +96,7 @@ export function SidebarContacts({ search }: Props) {
         <>
           <p className="text">Nenhum contato adicionado</p>
           <button
-            className="button__small"
+            className="button button__small"
             type="button"
             onClick={() => router.push("/invites")}
           >

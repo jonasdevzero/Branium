@@ -71,7 +71,7 @@ export const FormPhoto = React.forwardRef<HTMLLabelElement, PhotoInputProps>(
             {!!preview && (
               <button
                 type="button"
-                className="remove__photo"
+                className="button remove__photo"
                 onClick={removePhoto}
               >
                 <MaterialSymbol icon="close" size={16} />

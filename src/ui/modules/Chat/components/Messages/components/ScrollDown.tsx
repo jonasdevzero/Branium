@@ -36,7 +36,9 @@ export function ScrollDown({ containerRef }: Props) {
   return (
     <button
       type="button"
-      className={`messages__scroll ${!show ? "messages__scroll--hidden" : ""}`}
+      className={`button messages__scroll ${
+        !show ? "messages__scroll--hidden" : ""
+      }`}
       onClick={scrollDown}
     >
       <MaterialSymbol icon="arrow_drop_down" size={24} color="#fff" />

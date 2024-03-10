@@ -5,3 +5,4 @@ export * from "./validateVideo";
 export * from "./validateDocuments";
 export * from "./downloadFile";
 export * from "./convertSecondsToMinutes";
+export * from "./emoji";

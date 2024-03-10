@@ -11,6 +11,7 @@ import {
   validateDocuments,
   isDocument,
   AudioRecorder,
+  EmojiPicker,
 } from "@/ui/modules/Chat";
 import { MaterialSymbol } from "react-material-symbols";
 import { Dropdown } from "@/ui/components";
@@ -106,9 +107,7 @@ export function Form({ onSubmit }: FormProps) {
 
   return (
     <form className="chat__form">
-      <button type="button" className="button__icon">
-        <MaterialSymbol icon="mood" />
-      </button>
+      <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 
       <Dropdown
         icon={<MaterialSymbol icon="expand_less" />}
@@ -184,7 +183,7 @@ export function Form({ onSubmit }: FormProps) {
 
       <button
         type="button"
-        className="button__icon"
+        className="button button__icon"
         onClick={() => setRecordAudio(true)}
       >
         <MaterialSymbol icon="mic" />
@@ -199,7 +198,10 @@ export function Form({ onSubmit }: FormProps) {
             onSubmit(data);
             clear();
           }}
-          onCancel={() => setFilesType(undefined)}
+          onCancel={() => {
+            setFiles([]);
+            setFilesType(undefined);
+          }}
         />
       )}
 
