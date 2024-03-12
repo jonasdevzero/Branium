@@ -1,19 +1,22 @@
 import "./styles.css";
 import { ButtonHTMLAttributes } from "react";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
+import { LoadingSpinner } from "..";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
+  isLoading?: boolean;
 }
 
-export function Button(props: Props) {
+export function Button({ isLoading, ...props }: Props) {
   return (
     <button
       type="button"
       {...props}
       className={`button ${props.className || ""}`}
+      disabled={props.disabled || isLoading}
     >
-      {props.children}
+      {isLoading ? <LoadingSpinner /> : props.children}
     </button>
   );
 }

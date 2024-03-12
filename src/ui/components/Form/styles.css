@@ -126,3 +126,8 @@ form > button[type="submit"] {
   border: solid var(--primary-850) 2px;
   border-radius: 100%;
 }
+
+form button .loading__spin {
+  border: 3px solid var(--primary-750);
+  border-bottom-color: transparent;
+}

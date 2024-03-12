@@ -104,7 +104,7 @@ export default function Register() {
         </Form.Checkbox>
       </fieldset>
 
-      <Button type="submit" className="text" disabled={isLoading}>
+      <Button type="submit" className="text" isLoading={isLoading}>
         cadastrar
       </Button>
     </Form>
