@@ -47,12 +47,16 @@ export const adaptRoute = (controller: Controller) => {
 
     const httpResponse = await controller.handle(httpRequest);
 
-    const response = new NextResponse(
-      typeof httpResponse.body !== "undefined"
-        ? JSON.stringify(httpResponse.body)
-        : null,
-      { status: httpResponse.statusCode }
-    );
+    let responseBody = null;
+
+    if (typeof httpResponse.body === "string") responseBody = httpResponse.body;
+
+    if (typeof httpResponse.body === "object")
+      responseBody = JSON.stringify(httpResponse.body);
+
+    const response = new NextResponse(responseBody, {
+      status: httpResponse.statusCode,
+    });
 
     const responseHeaders = httpResponse.options?.headers || {};
     const responseCookies = httpResponse.options?.cookies || {};

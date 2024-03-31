@@ -37,8 +37,13 @@ export function MessagesProvider({ children }: { children: React.ReactNode }) {
         audioRef.current?.play().catch(() => null);
     });
 
+    socket.on("message:delete", (messageId: string) =>
+      event.emit("message:delete", messageId)
+    );
+
     return () => {
       socket.off("message:new");
+      socket.off("message:delete");
     };
   }, [currentRoomId, event, socket]);
 

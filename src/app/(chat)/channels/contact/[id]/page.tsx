@@ -131,7 +131,7 @@ export default function ContactChannel() {
         ...files.map(encryptFile),
       ]);
 
-      const temporaryMessageId = crypto.randomUUID();
+      const temporaryMessageId = `temp:${crypto.randomUUID()}`;
 
       messages.event.emit("message:new", {
         roomId: contactId,
@@ -162,13 +162,16 @@ export default function ContactChannel() {
       });
 
       try {
-        await messagesService.message.contact.create({
+        const messageId = await messagesService.message.contact.create({
           ...message,
           type,
           files: encryptedFiles,
         });
 
-        messages.event.emit("message:success", temporaryMessageId);
+        messages.event.emit("message:success", {
+          temporaryMessageId,
+          realMessageId: messageId,
+        });
       } catch (error) {
         messages.event.emit("message:fail", temporaryMessageId);
 

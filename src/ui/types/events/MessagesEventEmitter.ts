@@ -1,15 +1,17 @@
-import { NewMessageDTO } from "@/domain/dtos";
+import { NewMessageDTO, SuccessMessageDTO } from "@/domain/dtos";
 
 interface ListenerEvents {
   "message:new": NewMessageDTO;
-  "message:success": string;
+  "message:success": SuccessMessageDTO;
   "message:fail": string;
+  "message:delete": string;
 }
 
 interface EmitterEvents {
   "message:new": [NewMessageDTO];
-  "message:success": [string];
+  "message:success": [SuccessMessageDTO];
   "message:fail": [string];
+  "message:delete": [string];
 }
 
 export interface MessagesEventEmitter {

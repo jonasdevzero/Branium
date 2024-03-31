@@ -25,6 +25,7 @@ import {
 } from "@/ui/modules/Chat";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
+import { messageServices } from "@/ui/services/messages/message";
 
 interface MessageProps {
   message: Message;
@@ -114,20 +115,15 @@ export function MessageComponent({ message, short }: MessageProps) {
   }, [decryptedFiles, message.files]);
 
   const messageActions = useMemo(() => {
+    const isSender = message.sender.id === user.id;
+
     const options: DropdownItem[] = [
       {
-        label: "deletar para mim",
+        label: `deletar para ${isSender ? "todos" : "mim"}`,
         icon: <MaterialSymbol icon="delete" />,
-        onClick: () => null,
+        onClick: () => messageServices.delete(message.id),
       },
     ];
-
-    if (message.sender.id === user.id)
-      options.push({
-        label: "deletar para todos",
-        icon: <MaterialSymbol icon="delete" />,
-        onClick: () => null,
-      });
 
     return (
       <Dropdown
@@ -140,7 +136,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         options={options}
       />
     );
-  }, [message.sender.id, user.id]);
+  }, [message.id, message.sender.id, user.id]);
 
   if (short && !!decryptedText) {
     const isSending = message.isSending === true;

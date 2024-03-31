@@ -23,8 +23,11 @@ export class CreateContactMessageController implements Controller {
       formData.append(key, value as string)
     );
 
-    await messagesApi.post("/message/contact", formData);
+    const { data: messageId } = await messagesApi.post<string>(
+      "/message/contact",
+      formData
+    );
 
-    return response.created();
+    return response.created(messageId);
   }
 }

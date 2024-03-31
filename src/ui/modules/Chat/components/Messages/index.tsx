@@ -1,4 +1,4 @@
-import { NewMessageDTO } from "@/domain/dtos";
+import { NewMessageDTO, SuccessMessageDTO } from "@/domain/dtos";
 import { Message, RoomType } from "@/domain/models";
 import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
@@ -60,15 +60,20 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     [roomId, roomType, scrollDown]
   );
 
-  const onSuccessMessage = (messageId: string) =>
+  const onSuccessMessage = (data: SuccessMessageDTO) => {
+    const { realMessageId, temporaryMessageId } = data;
+
     setMessages((messages) =>
       messages.map((m) => {
-        if (m.id === messageId) delete m.isSending;
+        if (m.id === temporaryMessageId)
+          Object.assign(m, { id: realMessageId, isSending: undefined });
+
         return m;
       })
     );
+  };
 
-  const onFailMessage = (messageId: string) =>
+  const removeMessage = (messageId: string) =>
     setMessages((m) => m.filter(({ id }) => id !== messageId));
 
   useScrollEnd(
@@ -94,12 +99,14 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   useEffect(() => {
     event.on("message:new", onNewMessage);
     event.on("message:success", onSuccessMessage);
-    event.on("message:fail", onFailMessage);
+    event.on("message:fail", removeMessage);
+    event.on("message:delete", removeMessage);
 
     return () => {
       event.off("message:new", onNewMessage);
       event.off("message:success", onSuccessMessage);
-      event.off("message:fail", onFailMessage);
+      event.off("message:fail", removeMessage);
+      event.off("message:delete", removeMessage);
     };
   }, [event, onNewMessage]);
 
