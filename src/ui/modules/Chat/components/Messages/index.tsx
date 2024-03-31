@@ -131,6 +131,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
 
   return (
     <div
+      id="messages__container"
       ref={containerRef}
       className={`messages ${isLoading ? "messages--lock" : ""}`}
     >

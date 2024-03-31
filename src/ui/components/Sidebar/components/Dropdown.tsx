@@ -36,5 +36,10 @@ export function SidebarDropdown() {
     [logout, router]
   );
 
-  return <Dropdown options={dropdownOptions} />;
+  return (
+    <Dropdown
+      options={dropdownOptions}
+      position={{ horizontalAxis: ["left"], verticalAxis: ["bottom"] }}
+    />
+  );
 }

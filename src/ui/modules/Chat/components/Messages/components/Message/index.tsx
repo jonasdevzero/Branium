@@ -1,13 +1,16 @@
 import { Message } from "@/domain/models";
 import {
   Avatar,
+  Button,
   Document,
+  Dropdown,
+  DropdownItem,
   MessageFilesSkeleton,
   MessageSkeleton,
   VideoPlayer,
 } from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
-import { useCryptoKeys } from "@/ui/hooks";
+import { useAuth, useCryptoKeys } from "@/ui/hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { ImageCards } from "..";
@@ -36,6 +39,7 @@ export function MessageComponent({ message, short }: MessageProps) {
     []
   );
   const cryptoKeys = useCryptoKeys();
+  const { user } = useAuth();
 
   const emojiSize = useMemo(() => {
     if (typeof decryptedText !== "string") return "";
@@ -109,6 +113,35 @@ export function MessageComponent({ message, short }: MessageProps) {
     );
   }, [decryptedFiles, message.files]);
 
+  const messageActions = useMemo(() => {
+    const options: DropdownItem[] = [
+      {
+        label: "deletar para mim",
+        icon: <MaterialSymbol icon="delete" />,
+        onClick: () => null,
+      },
+    ];
+
+    if (message.sender.id === user.id)
+      options.push({
+        label: "deletar para todos",
+        icon: <MaterialSymbol icon="delete" />,
+        onClick: () => null,
+      });
+
+    return (
+      <Dropdown
+        position={{
+          containerId: "messages__container",
+          horizontalAxis: ["left", "right"],
+          verticalAxis: ["bottom", "top"],
+        }}
+        icon={<MaterialSymbol icon="more_horiz" />}
+        options={options}
+      />
+    );
+  }, [message.sender.id, user.id]);
+
   if (short && !!decryptedText) {
     const isSending = message.isSending === true;
 
@@ -131,6 +164,8 @@ export function MessageComponent({ message, short }: MessageProps) {
           <p className={`text ${emojiSize}`}>{decryptedText}</p>
           {renderedFiles}
         </div>
+
+        {messageActions}
       </div>
     );
   }
@@ -163,6 +198,8 @@ export function MessageComponent({ message, short }: MessageProps) {
 
         {renderedFiles}
       </div>
+
+      {messageActions}
     </div>
   );
 }

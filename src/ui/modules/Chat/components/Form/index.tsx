@@ -111,6 +111,10 @@ export function Form({ onSubmit }: FormProps) {
 
       <Dropdown
         icon={<MaterialSymbol icon="expand_less" />}
+        position={{
+          horizontalAxis: ["right", "left"],
+          verticalAxis: ["top"],
+        }}
         options={[
           {
             label: "documentos",
