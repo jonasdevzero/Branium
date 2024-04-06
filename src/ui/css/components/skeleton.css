@@ -21,6 +21,8 @@
 .skeleton__wrap.message {
   flex-direction: row;
   animation: 1s skeleton_loading ease-out infinite;
+
+  overflow: unset !important;
 }
 
 .skeleton__wrap.message + .skeleton__wrap.message {
