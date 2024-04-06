@@ -1,5 +1,4 @@
 import { Button } from "@/ui/components";
-import { useAuth } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { convertSecondsToMinutes } from "../..";
@@ -15,7 +14,6 @@ const audioType = "audio/ogg; codecs=opus";
 const maxAudioTime = 120; // 2 minutes;
 
 export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
-  const { user } = useAuth();
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
@@ -94,7 +92,7 @@ export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
       };
 
       recorder.onstop = () => {
-        const filename = `${Date.now()}-${user.username}-audio`;
+        const filename = `${Date.now()}-${crypto.randomUUID()}-audio`;
         const blob = new Blob(chunks, { type: audioType });
         const file = new File([blob], filename, { type: audioType });
 
@@ -125,7 +123,7 @@ export function AudioRecorder({ canRecord, stopRecording, onRecord }: Props) {
         id: "mic-error",
       });
     }
-  }, [onRecord, stop, user.username]);
+  }, [onRecord, stop]);
 
   const playPause = useCallback(() => {
     if (!recorder) return;
