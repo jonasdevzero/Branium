@@ -1,6 +1,6 @@
 import { SubmitMessageDTO } from "@/domain/dtos";
 import { Message, MessageFileType } from "@/domain/models";
-import { Button, Dropdown } from "@/ui/components";
+import { Button, Popover } from "@/ui/components";
 import {
   AudioRecorder,
   EmojiPicker,
@@ -138,7 +138,7 @@ export function Form({ onSubmit }: FormProps) {
       <form className="chat__form">
         <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 
-        <Dropdown
+        <Popover
           icon={<MaterialSymbol icon="expand_less" />}
           position={{
             horizontalAxis: ["right", "left"],

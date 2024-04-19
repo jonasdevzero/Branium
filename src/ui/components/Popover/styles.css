@@ -1,8 +1,8 @@
-.dropdown {
+.popover {
   position: relative;
 }
 
-.dropdown__toggle {
+.popover__toggle {
   color: var(--secondary-0);
 
   background-color: transparent !important;
@@ -11,17 +11,17 @@
   transition: color 0.3s ease;
 }
 
-.dropdown__toggle:is(:hover, :focus) {
+.popover__toggle:is(:hover, :focus) {
   color: var(--secondary-200);
 }
 
-.dropdown__toggle > span {
+.popover__toggle > span {
   font-size: 1.5rem;
 
   color: var(--secondary-0);
 }
 
-.dropdown__list {
+.popover__list {
   display: none;
   flex-direction: column;
   position: fixed;
@@ -35,11 +35,11 @@
   z-index: 10;
 }
 
-.dropdown__list--open {
+.popover__list--open {
   display: flex;
 }
 
-.dropdown__item {
+.popover__item {
   display: flex;
   align-items: center;
   width: 100%;
@@ -54,11 +54,11 @@
   transition: background-color 0.3s ease;
 }
 
-.dropdown__item:is(:hover, :focus) {
+.popover__item:is(:hover, :focus) {
   background-color: var(--primary-800);
 }
 
-.dropdown__item > span {
+.popover__item > span {
   font-size: 1.5rem;
 
   color: var(--secondary-0);

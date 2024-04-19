@@ -1,5 +1,5 @@
 import { MaterialSymbol } from "react-material-symbols";
-import { Dropdown, DropdownItem } from "../..";
+import { Popover, PopoverItem } from "../..";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/ui/modules";
@@ -9,7 +9,7 @@ export function SidebarDropdown() {
   const router = useRouter();
   const { logout } = useAuth();
 
-  const dropdownOptions = useMemo<DropdownItem[]>(
+  const dropdownOptions = useMemo<PopoverItem[]>(
     () => [
       {
         label: "convidar usuário",
@@ -37,7 +37,7 @@ export function SidebarDropdown() {
   );
 
   return (
-    <Dropdown
+    <Popover
       options={dropdownOptions}
       position={{ horizontalAxis: ["left"], verticalAxis: ["bottom"] }}
     />

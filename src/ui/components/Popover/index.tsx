@@ -4,7 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "..";
 import "./styles.css";
 
-export interface DropdownItem {
+export interface PopoverItem {
   icon?: React.ReactNode;
   label: string;
   onClick(): void;
@@ -12,7 +12,7 @@ export interface DropdownItem {
 
 interface Props {
   icon?: React.ReactNode;
-  options: Array<DropdownItem>;
+  options: Array<PopoverItem>;
   position: {
     containerId?: string;
     horizontalAxis: Array<"left" | "right">;
@@ -20,19 +20,19 @@ interface Props {
   };
 }
 
-export function Dropdown({ icon, options, position }: Props) {
+export function Popover({ icon, options, position }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownStyle, setDropdownStyle] = useState({});
+  const popRef = useRef<HTMLDivElement>(null);
+  const [popoverStyle, setDropdownStyle] = useState({});
 
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
 
   const setPosition = useCallback(() => {
-    if (!ref.current || !dropdownRef.current) return;
+    if (!ref.current || !popRef.current) return;
 
     let containerRect = {
       top: 0,
@@ -49,23 +49,23 @@ export function Dropdown({ icon, options, position }: Props) {
 
     if (container) containerRect = container.getBoundingClientRect();
 
-    const { width: dropdownWidth, height: dropdownHeight } =
-      dropdownRef.current.getBoundingClientRect();
+    const { width: popWidth, height: popHeight } =
+      popRef.current.getBoundingClientRect();
 
     const bottomSpace =
-      containerRect.bottom - buttonRect.bottom - spaceGap >= dropdownHeight;
+      containerRect.bottom - buttonRect.bottom - spaceGap >= popHeight;
 
-    const topSpace = buttonRect.top - containerRect.top >= dropdownHeight;
+    const topSpace = buttonRect.top - containerRect.top >= popHeight;
 
-    const rightSpace = containerRect.right - buttonRect.right >= dropdownWidth;
+    const rightSpace = containerRect.right - buttonRect.right >= popWidth;
 
-    const leftSpace = buttonRect.left - containerRect.left >= dropdownWidth;
+    const leftSpace = buttonRect.left - containerRect.left >= popWidth;
 
     let style: Record<string, unknown> = {};
 
     for (const position of horizontalAxis) {
       if (position === "left" && leftSpace) {
-        style.left = `${buttonRect.left - dropdownWidth + buttonRect.width}px`;
+        style.left = `${buttonRect.left - popWidth + buttonRect.width}px`;
 
         break;
       }
@@ -78,7 +78,7 @@ export function Dropdown({ icon, options, position }: Props) {
 
     for (const position of verticalAxis) {
       if (position === "top" && topSpace) {
-        style.top = `${buttonRect.top - dropdownHeight}px`;
+        style.top = `${buttonRect.top - popHeight}px`;
         break;
       }
 
@@ -104,9 +104,9 @@ export function Dropdown({ icon, options, position }: Props) {
   }, [setPosition]);
 
   return (
-    <div ref={ref} className="dropdown">
+    <div ref={ref} className="popover">
       <Button.Icon
-        className="dropdown__toggle"
+        className="popover__toggle"
         onClick={() => setIsOpen(!isOpen)}
         icon="more_vert"
       >
@@ -114,14 +114,14 @@ export function Dropdown({ icon, options, position }: Props) {
       </Button.Icon>
 
       <div
-        ref={dropdownRef}
-        className={`dropdown__list${isOpen ? " dropdown__list--open" : ""}`}
-        style={dropdownStyle}
+        ref={popRef}
+        className={`popover__list${isOpen ? " popover__list--open" : ""}`}
+        style={popoverStyle}
       >
         {options.map((option) => (
           <div
             key={option.label}
-            className="dropdown__item text"
+            className="popover__item text"
             onClick={() => {
               setIsOpen(false);
               option.onClick();

@@ -6,7 +6,7 @@ export * from "./Sidebar";
 export * from "./Avatar";
 export * from "./Room";
 export * from "./Card";
-export * from "./Dropdown";
+export * from "./Popover";
 export * from "./NavigationHeader";
 export * from "../modules/Chat/components/MediaViewer";
 export * from "./Modal";

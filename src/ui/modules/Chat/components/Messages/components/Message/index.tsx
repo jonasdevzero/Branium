@@ -2,8 +2,8 @@ import { Message } from "@/domain/models";
 import {
   Avatar,
   Document,
-  Dropdown,
-  DropdownItem,
+  Popover,
+  PopoverItem,
   MessageFilesSkeleton,
   MessageSkeleton,
   VideoPlayer,
@@ -131,7 +131,7 @@ export function MessageComponent({ message, short }: MessageProps) {
   const messageActions = useMemo(() => {
     const isSender = message.sender.id === user.id;
 
-    const options: DropdownItem[] = [
+    const options: PopoverItem[] = [
       {
         label: "responder",
         icon: <MaterialSymbol icon="reply" />,
@@ -162,7 +162,7 @@ export function MessageComponent({ message, short }: MessageProps) {
     }
 
     return (
-      <Dropdown
+      <Popover
         position={{
           containerId: "messages__container",
           horizontalAxis: ["left", "right"],
