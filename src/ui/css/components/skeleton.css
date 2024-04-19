@@ -207,6 +207,13 @@
   border-radius: 50%;
 }
 
+.skeleton__box.reply {
+  width: 14rem;
+  height: 3.25rem;
+
+  border-left: 2px solid var(--secondary-200);
+}
+
 @keyframes skeleton_loading {
   0% {
     opacity: 1;

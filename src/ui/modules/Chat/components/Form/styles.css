@@ -1,3 +1,22 @@
+.chat__reply {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: var(--primary-900);
+  padding: 0.25rem 1.5rem;
+  border-radius: 0.25rem;
+}
+
+.chat__reply > .button.icon__button {
+  font-size: 1rem;
+  color: var(--secondary-0);
+
+  background-color: var(--primary-750) !important;
+  padding: 0.125rem;
+  border-radius: 50%;
+}
+
 .chat__form {
   display: flex;
   flex-direction: row;

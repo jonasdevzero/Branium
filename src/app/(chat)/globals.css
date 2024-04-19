@@ -32,6 +32,7 @@ input {
 .container {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100%;
   height: 100%;
   gap: 1rem;
@@ -55,6 +56,12 @@ input {
 
   padding: 0 1rem;
   border-radius: 0.5rem;
+}
+
+.container > .scroll__down {
+  position: absolute;
+  bottom: 6rem;
+  right: 2rem;
 }
 
 @media (min-width: 2000px) {

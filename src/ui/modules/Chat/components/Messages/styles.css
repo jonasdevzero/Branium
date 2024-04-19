@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  position: relative;
 
   overflow-y: scroll;
   scroll-behavior: smooth;
@@ -17,35 +16,4 @@
 .messages > .loading__spin {
   margin: 0 auto;
   margin-bottom: 0.5rem;
-}
-
-.messages__scroll {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  bottom: 7rem;
-  right: 2rem;
-
-  width: 2.25rem;
-  height: 2.25rem;
-
-  background-color: var(--primary-850) !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-
-  transition: right 0.3s ease-in-out, opacity 0.2s ease;
-}
-
-.messages__scroll:hover {
-  opacity: 0.7;
-}
-
-.messages__scroll--hidden {
-  right: -7rem;
-}
-
-.messages__scroll .icon {
-  font-size: 1.5rem;
-  color: var(--secondary-0);
 }

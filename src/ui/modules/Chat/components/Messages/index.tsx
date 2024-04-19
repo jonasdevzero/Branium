@@ -1,10 +1,14 @@
-import { NewMessageDTO, SuccessMessageDTO } from "@/domain/dtos";
+import {
+  EditedMessageDTO,
+  NewMessageDTO,
+  SuccessMessageDTO,
+} from "@/domain/dtos";
 import { Message, RoomType } from "@/domain/models";
+import { LoadingSpinner } from "@/ui/components";
 import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LoadingSpinner } from "@/ui/components";
-import { MessageComponent, ScrollDown } from "./components";
+import { MessageComponent } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
 import "./styles.css";
 
@@ -19,12 +23,13 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pages, setPages] = useState(0);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [lastElement, setLastElement] = useState<Element>();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cryptoKeys = useCryptoKeys();
-  const { event } = useMessages();
+  const { event, selectedMessage, selectMessage } = useMessages();
 
-  const scrollDown = useCallback(() => {
+  const scrollContainer = useCallback(() => {
     if (containerRef.current === null) return;
 
     containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
@@ -37,16 +42,18 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     try {
       const { pages, content } = await fetchMessages(currentPage);
 
+      const lastElement = containerRef.current?.children[0];
+
       setPages(pages);
       setMessages((m) => sortMessages([...m, ...content]));
 
-      if (currentPage === 0) scrollDown();
+      currentPage === 0 ? scrollContainer() : setLastElement(lastElement);
     } catch (error) {
       // ...
     } finally {
       setIsLoading(false);
     }
-  }, [cryptoKeys.privateKey, currentPage, fetchMessages, scrollDown]);
+  }, [cryptoKeys.privateKey, currentPage, fetchMessages, scrollContainer]);
 
   const onNewMessage = useCallback(
     (data: NewMessageDTO) => {
@@ -55,9 +62,9 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
       if (info.roomId !== roomId || info.type !== roomType) return;
 
       setMessages((m) => sortMessages([...m, message]));
-      setTimeout(scrollDown, 100);
+      setTimeout(scrollContainer, 100);
     },
-    [roomId, roomType, scrollDown]
+    [roomId, roomType, scrollContainer]
   );
 
   const onSuccessMessage = (data: SuccessMessageDTO) => {
@@ -73,8 +80,56 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     );
   };
 
+  const onEditedMessage = useCallback((data: EditedMessageDTO) => {
+    const { messageId, text, updatedAt } = data;
+
+    const update = { message: text, updatedAt };
+
+    setMessages((messages) =>
+      messages.map((m) => {
+        if (m.id === messageId) Object.assign(m, update);
+        if (m.reply?.id === messageId) Object.assign(m.reply, update);
+        return m;
+      })
+    );
+  }, []);
+
   const removeMessage = (messageId: string) =>
     setMessages((m) => m.filter(({ id }) => id !== messageId));
+
+  const navigateToMessage = useCallback(
+    async (id: string) => {
+      let messageElement = document.getElementById(`message:${id}`);
+
+      if (!messageElement) {
+        const loadedMessages: Message[] = [];
+
+        let nextPage = currentPage + 1;
+        let message: Message | undefined;
+
+        while (!message) {
+          const { content } = await fetchMessages(nextPage);
+
+          nextPage++;
+          loadedMessages.push(...content);
+          message = loadedMessages.find((m) => m.id === id);
+        }
+
+        setCurrentPage(nextPage - 1);
+        setMessages((m) => sortMessages([...m, ...loadedMessages]));
+
+        selectMessage({ type: "NAVIGATE", data: message });
+        return;
+      }
+
+      messageElement.scrollIntoView({
+        inline: "center",
+        block: "center",
+        behavior: "smooth",
+      });
+    },
+    [currentPage, fetchMessages, selectMessage]
+  );
 
   useScrollEnd(
     containerRef,
@@ -88,9 +143,8 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
   );
 
   useEffect(() => {
-    scrollDown();
     onFetchMessages();
-  }, [onFetchMessages, scrollDown]);
+  }, [onFetchMessages]);
 
   useEffect(() => {
     if (!cryptoKeys.hasKeyPair()) cryptoKeys.requirePassword();
@@ -100,15 +154,17 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     event.on("message:new", onNewMessage);
     event.on("message:success", onSuccessMessage);
     event.on("message:fail", removeMessage);
+    event.on("message:edit", onEditedMessage);
     event.on("message:delete", removeMessage);
 
     return () => {
       event.off("message:new", onNewMessage);
       event.off("message:success", onSuccessMessage);
       event.off("message:fail", removeMessage);
+      event.on("message:edit", onEditedMessage);
       event.off("message:delete", removeMessage);
     };
-  }, [event, onNewMessage]);
+  }, [event, onEditedMessage, onNewMessage]);
 
   const isFirstLoading = isLoading && currentPage === 0;
 
@@ -136,6 +192,27 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     });
   }, [cryptoKeys.privateKey, isFirstLoading, messages]);
 
+  useEffect(() => {
+    if (lastElement && containerRef.current) {
+      const elementRect = lastElement.getBoundingClientRect();
+
+      const y = elementRect.top - elementRect.height;
+
+      containerRef.current.scroll({
+        left: 0,
+        top: y,
+        behavior: "instant",
+      });
+
+      setLastElement(undefined);
+    }
+  }, [lastElement, renderedMessages]);
+
+  useEffect(() => {
+    if (selectedMessage && selectedMessage.type === "NAVIGATE")
+      navigateToMessage(selectedMessage.data.id);
+  }, [navigateToMessage, selectedMessage]);
+
   return (
     <div
       id="messages__container"
@@ -144,8 +221,6 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
     >
       {isLoading && currentPage > 0 && <LoadingSpinner />}
       {renderedMessages}
-
-      <ScrollDown containerRef={containerRef} />
     </div>
   );
 }

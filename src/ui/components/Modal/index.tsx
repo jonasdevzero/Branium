@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "..";
 import "./styles.css";
 
@@ -9,13 +10,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const Modal: React.FC<Props> = ({
-  id,
-  isOpen,
-  close,
-  title,
-  children,
-}) => {
+export function Modal({ id, isOpen, close, title, children }: Props) {
   if (!isOpen) return null;
 
   return (
@@ -39,4 +34,4 @@ export const Modal: React.FC<Props> = ({
       </div>
     </>
   );
-};
+}

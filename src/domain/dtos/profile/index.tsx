@@ -1,6 +1,7 @@
 import { Message } from "@/domain/models";
 import {
   Avatar,
+  Button,
   Document,
   Dropdown,
   DropdownItem,
@@ -9,7 +10,10 @@ import {
   VideoPlayer,
 } from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
-import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
+import { useAuth, useCryptoKeys } from "@/ui/hooks";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { MaterialSymbol } from "react-material-symbols";
+import { ImageCards } from "..";
 import {
   AudioPlayer,
   countEmojis,
@@ -19,32 +23,26 @@ import {
   isOnlyEmoji,
   isVideo,
 } from "@/ui/modules/Chat";
-import { messageServices } from "@/ui/services/messages/message";
-import { Alert } from "@/ui/utils";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { ImageCards } from "..";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
+import { messageServices } from "@/ui/services/messages/message";
+import { SelectedMessageDTO } from "@/domain/dtos";
 
 interface MessageProps {
   message: Message;
   short?: boolean;
+  onSelect(data: SelectedMessageDTO): void;
 }
 
-export function MessageComponent({ message, short }: MessageProps) {
-  const { sender, reply } = message;
+export function MessageComponent({ message, short, onSelect }: MessageProps) {
+  const { sender } = message;
 
   const [decryptedText, setDecryptedText] = useState<string>();
-  const [decryptedReply, setDecryptedReply] = useState<string>();
   const [decryptedFiles, setDecryptedFiles] = useState<Array<File | undefined>>(
     []
   );
   const cryptoKeys = useCryptoKeys();
   const { user } = useAuth();
-  const { selectedMessage, selectMessage } = useMessages();
-
-  const isSelected = selectedMessage && message.id === selectedMessage.data.id;
 
   const emojiSize = useMemo(() => {
     if (typeof decryptedText !== "string") return "";
@@ -60,10 +58,9 @@ export function MessageComponent({ message, short }: MessageProps) {
     const privateKey = cryptoKeys.privateKey;
 
     try {
-      const { text, replyText } = await decryptText({ message, privateKey });
+      const plainText = await decryptText({ message, privateKey });
 
-      setDecryptedText(text);
-      setDecryptedReply(replyText);
+      setDecryptedText(plainText);
     } catch (error) {
       setDecryptedText("(Falha ao descriptografar a mensagem)");
     }
@@ -85,17 +82,8 @@ export function MessageComponent({ message, short }: MessageProps) {
 
   useEffect(() => {
     decryptMessage();
-  }, [decryptMessage, message.message, message.reply?.message]);
-
-  useEffect(() => {
     decryptFiles();
-  }, [decryptFiles]);
-
-  const renderedText = useMemo(() => {
-    if (!decryptedText) return <span className="skeleton__box text"></span>;
-
-    return <p className={`text ${emojiSize}`}>{decryptedText}</p>;
-  }, [decryptedText, emojiSize]);
+  }, [decryptFiles, decryptMessage]);
 
   const renderedFiles = useMemo(() => {
     if (!message.files.length) return;
@@ -135,21 +123,12 @@ export function MessageComponent({ message, short }: MessageProps) {
       {
         label: "responder",
         icon: <MaterialSymbol icon="reply" />,
-        onClick: () => selectMessage({ type: "REPLY", data: message }),
+        onClick: () => onSelect({ type: "REPLY", data: message }),
       },
       {
         label: `deletar para ${isSender ? "todos" : "mim"}`,
         icon: <MaterialSymbol icon="delete" />,
-        onClick: () =>
-          Alert.create({
-            title: "Deletar mensagem?",
-            description: "Deseja deletar permanentemente esta mensagem?",
-            confirm: {
-              label: "confirmar",
-              onClick: () => messageServices.delete(message.id),
-            },
-            cancel: { label: "cancelar" },
-          }),
+        onClick: () => messageServices.delete(message.id),
       },
     ];
 
@@ -157,7 +136,7 @@ export function MessageComponent({ message, short }: MessageProps) {
       options.splice(1, 0, {
         label: "editar",
         icon: <MaterialSymbol icon="edit" />,
-        onClick: () => selectMessage({ type: "EDIT", data: message }),
+        onClick: () => onSelect({ type: "REPLY", data: message }),
       });
     }
 
@@ -172,42 +151,15 @@ export function MessageComponent({ message, short }: MessageProps) {
         options={options}
       />
     );
-  }, [message, selectMessage, user.id]);
+  }, [message, onSelect, user.id]);
 
-  const renderedReply = useMemo(() => {
-    if (!reply) return null;
-
-    if (!decryptedReply) {
-      return <span className="skeleton__box reply"></span>;
-    }
+  if (short && !!decryptedText) {
+    const isSending = message.isSending === true;
 
     return (
       <div
-        className="message__reply description"
-        onClick={() =>
-          selectMessage({
-            type: "NAVIGATE",
-            data: reply as Message,
-          })
-        }
-      >
-        <span className="reply__username">@{reply.sender.username}</span>
-
-        <span className="reply__text">{decryptedReply}</span>
-      </div>
-    );
-  }, [decryptedReply, reply, selectMessage]);
-
-  const isSending = message.isSending === true;
-
-  if (short) {
-    return (
-      <div
-        key={message.id}
-        id={`message:${message.id}`}
-        className={`message ${!isSending && "message--short"} ${
-          isSelected && "message--selected"
-        }`}
+        id={message.id}
+        className={`message ${!isSending && "message--short"}`}
       >
         {isSending && (
           <span title="enviando mensagem" className="message__pending">
@@ -220,26 +172,17 @@ export function MessageComponent({ message, short }: MessageProps) {
         </span>
 
         <div className="message__content">
-          {renderedReply}
-          {renderedText}
+          <p className={`text ${emojiSize}`}>{decryptedText}</p>
           {renderedFiles}
         </div>
 
         {messageActions}
-
-        {message.updatedAt && (
-          <span className="message__edited description">(editado)</span>
-        )}
       </div>
     );
   }
 
   return (
-    <div
-      key={message.id}
-      id={`message:${message.id}`}
-      className={`message message--full ${isSelected && "message--selected"}`}
-    >
+    <div key={message.id} id={message.id} className="message message--full">
       <div className="avatar__wrap">
         <Avatar
           name={sender.name}
@@ -247,7 +190,7 @@ export function MessageComponent({ message, short }: MessageProps) {
           url={sender.image}
         />
 
-        {isSending && (
+        {message.isSending === true && (
           <span title="enviando mensagem" className="message__pending">
             <MaterialSymbol icon="schedule_send" size={24} color="#fff" />
           </span>
@@ -260,16 +203,14 @@ export function MessageComponent({ message, short }: MessageProps) {
           <span className="description">{formatDate(message.createdAt)}</span>
         </div>
 
-        {renderedReply}
-        {renderedText}
+        {!!decryptedText && (
+          <p className={`text ${emojiSize}`}>{decryptedText}</p>
+        )}
+
         {renderedFiles}
       </div>
 
       {messageActions}
-
-      {message.updatedAt && (
-        <span className="message__edited description">(editado)</span>
-      )}
     </div>
   );
 }

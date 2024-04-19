@@ -13,7 +13,7 @@ export interface Message {
   reply: null | {
     id: string;
     key: string;
-    message: string | null;
+    message?: string | null;
     type: MessageType;
     sender: MessageSender;
   };

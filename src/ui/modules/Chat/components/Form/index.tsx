@@ -1,5 +1,5 @@
 import { SubmitMessageDTO } from "@/domain/dtos";
-import { MessageFileType } from "@/domain/models";
+import { Message, MessageFileType } from "@/domain/models";
 import { Button, Dropdown } from "@/ui/components";
 import {
   AudioRecorder,
@@ -16,6 +16,8 @@ import {
 import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import "./styles.css";
+import { useMessages } from "@/ui/hooks";
+import { EditForm } from "./components";
 
 interface FormProps {
   onSubmit(data: SubmitMessageDTO): void;
@@ -27,18 +29,27 @@ export function Form({ onSubmit }: FormProps) {
   const [filesType, setFilesType] = useState<MessageFileType>();
   const [recordAudio, setRecordAudio] = useState(false);
 
-  const clear = () => {
+  const { selectedMessage, selectMessage } = useMessages();
+
+  const clear = useCallback(() => {
     setText("");
     setFiles([]);
     setFilesType(undefined);
-  };
+
+    selectMessage(null);
+  }, [selectMessage]);
 
   const submit = useCallback(() => {
     const txt = text || undefined;
+    let reply: Message | undefined;
 
-    onSubmit({ text: txt, files, type: getMessageType(files, txt) });
+    if (selectedMessage && selectedMessage.type === "REPLY") {
+      reply = selectedMessage.data;
+    }
+
+    onSubmit({ text: txt, files, type: getMessageType(files, txt), reply });
     clear();
-  }, [files, onSubmit, text]);
+  }, [clear, files, onSubmit, selectedMessage, text]);
 
   const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -106,111 +117,130 @@ export function Form({ onSubmit }: FormProps) {
   };
 
   return (
-    <form className="chat__form">
-      <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
+    <>
+      {selectedMessage && selectedMessage.type === "REPLY" && (
+        <div className="chat__reply">
+          <span className="description">
+            Respondendo @{selectedMessage.data.sender.username}
+          </span>
 
-      <Dropdown
-        icon={<MaterialSymbol icon="expand_less" />}
-        position={{
-          horizontalAxis: ["right", "left"],
-          verticalAxis: ["top"],
-        }}
-        options={[
-          {
-            label: "documentos",
-            onClick: () => document.getElementById("f-documents")?.click(),
-            icon: <MaterialSymbol icon="text_snippet" />,
-          },
-          {
-            label: "fotos",
-            onClick: () => document.getElementById("f-images")?.click(),
-            icon: <MaterialSymbol icon="photo" />,
-          },
-          {
-            label: "vídeo",
-            onClick: () => document.getElementById("f-video")?.click(),
-            icon: <MaterialSymbol icon="videocam" />,
-          },
-        ]}
-      />
+          <Button.Icon icon="close" onClick={() => selectMessage(null)} />
+        </div>
+      )}
 
-      <input
-        type="file"
-        name="f-images"
-        id="f-images"
-        accept=".png,.jpg,.jpeg"
-        onChange={handleImages}
-        multiple
-        hidden
-      />
-
-      <input
-        type="file"
-        name="f-video"
-        id="f-video"
-        accept=".mp4"
-        onChange={handleVideo}
-        hidden
-      />
-
-      <input
-        type="file"
-        name="f-documents"
-        id="f-documents"
-        accept=".json,.txt,.pdf,.csv"
-        onChange={handleDocuments}
-        multiple
-        hidden
-      />
-
-      <textarea
-        name="text"
-        id="message-text"
-        className="text"
-        placeholder="Digite uma mensagem"
-        autoFocus
-        contentEditable="true"
-        autoComplete="false"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onPaste={handlePaste}
-        onKeyDown={(e) => {
-          if (e.code === "Enter" && e.shiftKey) return true;
-
-          if (e.code === "Enter" || e.code === "NumpadEnter") {
-            e.preventDefault();
-            submit();
-            return false;
-          }
-        }}
-      />
-
-      <Button.Icon icon="mic" onClick={() => setRecordAudio(true)} />
-
-      {files.length > 0 && typeof filesType !== "undefined" && (
-        <MediaForm
-          text={text}
-          files={files}
-          type={filesType}
-          onSubmit={(data) => {
-            onSubmit(data);
-            clear();
-          }}
-          onCancel={() => {
-            setFiles([]);
-            setFilesType(undefined);
-          }}
+      {selectedMessage && selectedMessage.type === "EDIT" && (
+        <EditForm
+          message={selectedMessage.data}
+          close={() => selectMessage(null)}
         />
       )}
 
-      <AudioRecorder
-        canRecord={recordAudio}
-        stopRecording={() => setRecordAudio(false)}
-        onRecord={(audio) => {
-          setFilesType("AUDIO");
-          setFiles([audio]);
-        }}
-      />
-    </form>
+      <form className="chat__form">
+        <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
+
+        <Dropdown
+          icon={<MaterialSymbol icon="expand_less" />}
+          position={{
+            horizontalAxis: ["right", "left"],
+            verticalAxis: ["top"],
+          }}
+          options={[
+            {
+              label: "documentos",
+              onClick: () => document.getElementById("f-documents")?.click(),
+              icon: <MaterialSymbol icon="text_snippet" />,
+            },
+            {
+              label: "fotos",
+              onClick: () => document.getElementById("f-images")?.click(),
+              icon: <MaterialSymbol icon="photo" />,
+            },
+            {
+              label: "vídeo",
+              onClick: () => document.getElementById("f-video")?.click(),
+              icon: <MaterialSymbol icon="videocam" />,
+            },
+          ]}
+        />
+
+        <input
+          type="file"
+          name="f-images"
+          id="f-images"
+          accept=".png,.jpg,.jpeg"
+          onChange={handleImages}
+          multiple
+          hidden
+        />
+
+        <input
+          type="file"
+          name="f-video"
+          id="f-video"
+          accept=".mp4"
+          onChange={handleVideo}
+          hidden
+        />
+
+        <input
+          type="file"
+          name="f-documents"
+          id="f-documents"
+          accept=".json,.txt,.pdf,.csv"
+          onChange={handleDocuments}
+          multiple
+          hidden
+        />
+
+        <textarea
+          name="text"
+          id="message-text"
+          className="text"
+          placeholder="Digite uma mensagem"
+          autoFocus
+          contentEditable="true"
+          autoComplete="false"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onPaste={handlePaste}
+          onKeyDown={(e) => {
+            if (e.code === "Enter" && e.shiftKey) return true;
+
+            if (e.code === "Enter" || e.code === "NumpadEnter") {
+              e.preventDefault();
+              submit();
+              return false;
+            }
+          }}
+        />
+
+        <Button.Icon icon="mic" onClick={() => setRecordAudio(true)} />
+
+        {files.length > 0 && typeof filesType !== "undefined" && (
+          <MediaForm
+            text={text}
+            files={files}
+            type={filesType}
+            onSubmit={(data) => {
+              onSubmit(data);
+              clear();
+            }}
+            onCancel={() => {
+              setFiles([]);
+              setFilesType(undefined);
+            }}
+          />
+        )}
+
+        <AudioRecorder
+          canRecord={recordAudio}
+          stopRecording={() => setRecordAudio(false)}
+          onRecord={(audio) => {
+            setFilesType("AUDIO");
+            setFiles([audio]);
+          }}
+        />
+      </form>
+    </>
   );
 }

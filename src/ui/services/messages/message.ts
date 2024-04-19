@@ -1,4 +1,8 @@
-import { CreateContactMessageDTO, ListContactMessagesDTO } from "@/domain/dtos";
+import {
+  CreateContactMessageDTO,
+  EditMessageDTO,
+  ListContactMessagesDTO,
+} from "@/domain/dtos";
 import { Message } from "@/domain/models";
 import { createNestedFormData, createQueryParams } from "@/ui/helpers";
 import { toast } from "@/ui/modules";
@@ -6,6 +10,16 @@ import { Paginated } from "@/ui/types";
 import { Fetch, Tempo } from "@/ui/utils";
 
 export const messageServices = {
+  async edit(data: EditMessageDTO) {
+    const { messageId, message } = data;
+
+    try {
+      await Fetch.patch(`/api/message/${messageId}`, { message });
+    } catch (error) {
+      toast.success("Falha ao editar mensagem!", { id: "message-edited" });
+    }
+  },
+
   async delete(messageId: string) {
     try {
       await Fetch.delete(`/api/message/${messageId}`);

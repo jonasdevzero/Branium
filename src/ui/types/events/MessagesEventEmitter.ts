@@ -1,16 +1,22 @@
-import { NewMessageDTO, SuccessMessageDTO } from "@/domain/dtos";
+import {
+  EditedMessageDTO,
+  NewMessageDTO,
+  SuccessMessageDTO,
+} from "@/domain/dtos";
 
 interface ListenerEvents {
   "message:new": NewMessageDTO;
   "message:success": SuccessMessageDTO;
   "message:fail": string;
   "message:delete": string;
+  "message:edit": EditedMessageDTO;
 }
 
 interface EmitterEvents {
   "message:new": [NewMessageDTO];
   "message:success": [SuccessMessageDTO];
   "message:fail": [string];
+  "message:edit": [EditedMessageDTO];
   "message:delete": [string];
 }
 

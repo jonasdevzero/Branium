@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/ui/components";
 import { convertSecondsToMinutes } from "@/ui/modules/Chat";
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
 
 interface Props {
@@ -38,7 +38,7 @@ export function AudioPlayer({ src }: Props) {
     setSpeed(newSpeed);
   }, [speed]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (audioRef.current && progressBar.current) {
       audioRef.current.addEventListener("timeupdate", () => {
         const currentTime = Math.floor(audioRef.current?.currentTime || 0);

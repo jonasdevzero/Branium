@@ -8,17 +8,25 @@ interface DecryptTextDTO {
 
 export async function decryptText(data: DecryptTextDTO) {
   const { message, privateKey } = data;
-  const { message: text, key } = message;
-
-  if (!text) return;
+  const { message: text, key, reply } = message;
 
   if (!privateKey) {
     throw new Error("Decrypt key not found");
   }
 
-  const decryptedKey = await AsymmetricCryptographer.decrypt(key, privateKey);
+  const [decryptedKey, decryptedReplyKey] = await Promise.all([
+    text ? AsymmetricCryptographer.decrypt(key, privateKey) : null,
+    reply ? AsymmetricCryptographer.decrypt(reply.key, privateKey) : null,
+  ]);
 
-  const plainText = await SymmetricCryptographer.decrypt(text, decryptedKey);
+  const [plainText, replyPlainText] = await Promise.all([
+    decryptedKey && text
+      ? SymmetricCryptographer.decrypt(text, decryptedKey)
+      : undefined,
+    decryptedReplyKey && reply?.message
+      ? SymmetricCryptographer.decrypt(reply.message, decryptedReplyKey)
+      : undefined,
+  ]);
 
-  return plainText;
+  return { text: plainText, replyText: replyPlainText, decryptedKey };
 }

@@ -3,7 +3,13 @@
 import { Contact } from "@/domain/models";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
-import { Form, Header, Messages, getFileType } from "@/ui/modules/Chat";
+import {
+  Form,
+  Header,
+  Messages,
+  ScrollDown,
+  getFileType,
+} from "@/ui/modules/Chat";
 import { messagesService } from "@/ui/services";
 import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
 import { useParams, useRouter } from "next/navigation";
@@ -122,7 +128,7 @@ export default function ContactChannel() {
 
   const submitMessage = useCallback(
     async (data: SubmitMessageDTO) => {
-      const { text, files, type } = data;
+      const { text, files, type, reply } = data;
 
       if (!text && !files.length) return;
 
@@ -147,7 +153,7 @@ export default function ContactChannel() {
             type: file.type,
             key: file.users.find((u) => u.id === user.id)!.key,
           })),
-          reply: null,
+          reply: reply || null,
           sender: {
             id: user.id,
             name: user.name,
@@ -166,6 +172,7 @@ export default function ContactChannel() {
           ...message,
           type,
           files: encryptedFiles,
+          replyId: reply?.id,
         });
 
         messages.event.emit("message:success", {
@@ -200,6 +207,8 @@ export default function ContactChannel() {
         roomType="CONTACT"
         fetchMessages={fetchMessages}
       />
+
+      <ScrollDown containerId="messages__container" />
 
       <Form onSubmit={submitMessage} />
     </div>
