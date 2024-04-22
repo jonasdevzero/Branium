@@ -6,6 +6,7 @@ import { toast } from "@/ui/modules";
 import {
   Form,
   Header,
+  MESSAGES_CONTAINER_ID,
   Messages,
   ScrollDown,
   getFileType,
@@ -208,7 +209,7 @@ export default function ContactChannel() {
         fetchMessages={fetchMessages}
       />
 
-      <ScrollDown containerId="messages__container" />
+      <ScrollDown containerId={MESSAGES_CONTAINER_ID} />
 
       <Form onSubmit={submitMessage} />
     </div>

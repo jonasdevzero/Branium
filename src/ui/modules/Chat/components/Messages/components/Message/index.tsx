@@ -2,16 +2,17 @@ import { Message } from "@/domain/models";
 import {
   Avatar,
   Document,
-  Popover,
-  PopoverItem,
   MessageFilesSkeleton,
   MessageSkeleton,
+  Popover,
+  PopoverItem,
   VideoPlayer,
 } from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import {
   AudioPlayer,
+  MESSAGES_CONTAINER_ID,
   countEmojis,
   isAudio,
   isDocument,
@@ -83,6 +84,26 @@ export function MessageComponent({ message, short }: MessageProps) {
     setDecryptedFiles(result as File[]);
   }, [cryptoKeys.privateKey, message.files]);
 
+  const replyMessage = useCallback(
+    (message: Message) => {
+      const messageElement = document.getElementById(`message:${message.id}`);
+
+      if (!messageElement) return;
+
+      selectMessage({ data: message, type: "REPLY" });
+      setTimeout(
+        () =>
+          messageElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center",
+          }),
+        100
+      );
+    },
+    [selectMessage]
+  );
+
   useEffect(() => {
     decryptMessage();
   }, [decryptMessage, message.message, message.reply?.message]);
@@ -135,7 +156,7 @@ export function MessageComponent({ message, short }: MessageProps) {
       {
         label: "responder",
         icon: <MaterialSymbol icon="reply" />,
-        onClick: () => selectMessage({ type: "REPLY", data: message }),
+        onClick: () => replyMessage(message),
       },
       {
         label: `deletar para ${isSender ? "todos" : "mim"}`,
@@ -164,7 +185,7 @@ export function MessageComponent({ message, short }: MessageProps) {
     return (
       <Popover
         position={{
-          containerId: "messages__container",
+          containerId: MESSAGES_CONTAINER_ID,
           horizontalAxis: ["left", "right"],
           verticalAxis: ["bottom", "top"],
         }}
@@ -172,7 +193,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         options={options}
       />
     );
-  }, [message, selectMessage, user.id]);
+  }, [message, replyMessage, selectMessage, user.id]);
 
   const renderedReply = useMemo(() => {
     if (!reply) return null;

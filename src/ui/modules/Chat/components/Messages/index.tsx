@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageComponent } from "./components";
 import { isUngroupTime, sortMessages } from "./helpers";
 import "./styles.css";
+import { MESSAGES_CONTAINER_ID } from "../../constants";
 
 interface Props {
   roomId: string;
@@ -215,7 +216,7 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
 
   return (
     <div
-      id="messages__container"
+      id={MESSAGES_CONTAINER_ID}
       ref={containerRef}
       className={`messages ${isLoading ? "messages--lock" : ""}`}
     >
