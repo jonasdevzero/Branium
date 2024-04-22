@@ -1,6 +1,6 @@
 import { SubmitMessageDTO } from "@/domain/dtos";
 import { Message, MessageFileType } from "@/domain/models";
-import { Button, Popover } from "@/ui/components";
+import { Button, LoadingSpinner, Popover } from "@/ui/components";
 import {
   AudioRecorder,
   EmojiPicker,
@@ -23,9 +23,10 @@ interface FormProps {
   onSubmit(data: SubmitMessageDTO): void;
   youBlocked?: boolean;
   blocked?: boolean;
+  loading?: boolean;
 }
 
-export function Form({ onSubmit, youBlocked, blocked }: FormProps) {
+export function Form({ onSubmit, youBlocked, blocked, loading }: FormProps) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [filesType, setFilesType] = useState<MessageFileType>();
@@ -149,6 +150,8 @@ export function Form({ onSubmit, youBlocked, blocked }: FormProps) {
             </b>
           </div>
         )}
+
+        {loading && <div className="form__overlay" />}
 
         <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 

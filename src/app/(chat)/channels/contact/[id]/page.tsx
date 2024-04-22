@@ -301,6 +301,7 @@ export default function ContactChannel() {
         onSubmit={submitMessage}
         blocked={contact?.blocked}
         youBlocked={contact?.youBlocked}
+        loading={!contact}
       />
     </div>
   );
