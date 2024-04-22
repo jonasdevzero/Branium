@@ -21,9 +21,11 @@ import { EditForm } from "./components";
 
 interface FormProps {
   onSubmit(data: SubmitMessageDTO): void;
+  youBlocked?: boolean;
+  blocked?: boolean;
 }
 
-export function Form({ onSubmit }: FormProps) {
+export function Form({ onSubmit, youBlocked, blocked }: FormProps) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [filesType, setFilesType] = useState<MessageFileType>();
@@ -116,9 +118,11 @@ export function Form({ onSubmit }: FormProps) {
     }
   };
 
+  const hasBlock = youBlocked || blocked;
+
   return (
     <>
-      {selectedMessage && selectedMessage.type === "REPLY" && (
+      {selectedMessage && selectedMessage.type === "REPLY" && !hasBlock && (
         <div className="chat__reply">
           <span className="description">
             Respondendo @{selectedMessage.data.sender.username}
@@ -128,7 +132,7 @@ export function Form({ onSubmit }: FormProps) {
         </div>
       )}
 
-      {selectedMessage && selectedMessage.type === "EDIT" && (
+      {selectedMessage && selectedMessage.type === "EDIT" && !hasBlock && (
         <EditForm
           message={selectedMessage.data}
           close={() => selectMessage(null)}
@@ -136,6 +140,16 @@ export function Form({ onSubmit }: FormProps) {
       )}
 
       <form className="chat__form">
+        {hasBlock && (
+          <div className="form__overlay">
+            <b className="text">
+              {youBlocked
+                ? "Você bloqueou este contato!"
+                : "Este contato lhe bloqueou!"}
+            </b>
+          </div>
+        )}
+
         <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 
         <Popover

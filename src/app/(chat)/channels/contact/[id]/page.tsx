@@ -12,11 +12,17 @@ import {
   getFileType,
 } from "@/ui/modules/Chat";
 import { messagesService } from "@/ui/services";
-import { AsymmetricCryptographer, SymmetricCryptographer } from "@/ui/utils";
+import {
+  Alert,
+  AsymmetricCryptographer,
+  SymmetricCryptographer,
+} from "@/ui/utils";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./styles.css";
-import { SubmitMessageDTO } from "@/domain/dtos";
+import { BlockContactDTO, SubmitMessageDTO } from "@/domain/dtos";
+import { PopoverItem } from "@/ui/components";
+import { MaterialSymbol } from "react-material-symbols";
 
 export default function ContactChannel() {
   const [contact, setContact] = useState<Contact>();
@@ -24,7 +30,7 @@ export default function ContactChannel() {
   const { id: contactId } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const { user } = useAuth();
+  const { user, socket } = useAuth();
   const cryptoKeys = useCryptoKeys();
   const messages = useMessages();
 
@@ -191,6 +197,83 @@ export default function ContactChannel() {
     [contactId, encryptFile, encryptText, messages.event, user]
   );
 
+  const toggleBlock = useCallback(() => {
+    if (!contact) return;
+    const { youBlocked, username } = contact;
+    const action = youBlocked ? "desbloquear" : "bloquear";
+
+    const title = `${youBlocked ? "Desbloquear" : "Bloquear"} contato`;
+    const description = `Deseja realmente ${action} o @${username}?`;
+
+    const onConfirm = async () => {
+      try {
+        await messagesService.contact.edit({
+          contactId: contact.id,
+          blocked: !youBlocked,
+        });
+
+        setContact({ ...contact, youBlocked: !contact.youBlocked });
+        messages.selectMessage(null);
+      } catch (error) {
+        toast.error(`Não foi possível ${action} o @${username}!`);
+      }
+    };
+
+    Alert.create({
+      title,
+      description,
+      cancel: { label: "Cancelar" },
+      confirm: {
+        label: "Confirmar",
+        theme: "danger",
+        onClick: onConfirm,
+      },
+    });
+  }, [contact, messages]);
+
+  const headerOptions = useMemo<PopoverItem[]>(
+    () => [
+      {
+        label: "perfil",
+        icon: <MaterialSymbol icon={"person"} />,
+        onClick: () => {},
+      },
+      {
+        label: contact?.youBlocked ? "desbloquear" : "bloquear",
+        icon: <MaterialSymbol icon="block" />,
+        onClick: toggleBlock,
+      },
+      {
+        label: "fechar",
+        icon: <MaterialSymbol icon="close" />,
+        onClick: () => router.push("/channels"),
+      },
+    ],
+    [contact?.youBlocked, router, toggleBlock]
+  );
+
+  const onContactBlock = useCallback(
+    (data: BlockContactDTO) => {
+      if (!contact) return;
+
+      const { contactId, blocked } = data;
+
+      if (contactId !== contact.id) return;
+
+      setContact({ ...contact, blocked });
+      messages.selectMessage(null);
+    },
+    [contact, messages]
+  );
+
+  useEffect(() => {
+    socket.on("contact:block", onContactBlock);
+
+    return () => {
+      socket.off("contact:block");
+    };
+  }, [onContactBlock, socket]);
+
   return (
     <div className="container">
       {!!contact ? (
@@ -198,6 +281,8 @@ export default function ContactChannel() {
           name={contact.customName || contact.name}
           username={contact.username}
           image={contact.image}
+          options={headerOptions}
+          hasBlock={contact.blocked || contact.youBlocked}
         />
       ) : (
         <Header.Skeleton />
@@ -207,11 +292,16 @@ export default function ContactChannel() {
         roomId={contactId}
         roomType="CONTACT"
         fetchMessages={fetchMessages}
+        hasBlock={contact?.blocked || contact?.youBlocked}
       />
 
       <ScrollDown containerId={MESSAGES_CONTAINER_ID} />
 
-      <Form onSubmit={submitMessage} />
+      <Form
+        onSubmit={submitMessage}
+        blocked={contact?.blocked}
+        youBlocked={contact?.youBlocked}
+      />
     </div>
   );
 }

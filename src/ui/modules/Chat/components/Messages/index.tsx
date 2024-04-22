@@ -17,9 +17,10 @@ interface Props {
   roomId: string;
   roomType: RoomType;
   fetchMessages(page: number): Promise<Paginated<Message>>;
+  hasBlock?: boolean;
 }
 
-export function Messages({ roomId, roomType, fetchMessages }: Props) {
+export function Messages({ roomId, roomType, fetchMessages, hasBlock }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [pages, setPages] = useState(0);
@@ -188,10 +189,11 @@ export function Messages({ roomId, roomType, fetchMessages }: Props) {
           key={message.id}
           message={message}
           short={isPreviousSameSender && !ungroup}
+          hasBlock={hasBlock}
         />
       );
     });
-  }, [cryptoKeys.privateKey, isFirstLoading, messages]);
+  }, [cryptoKeys.privateKey, hasBlock, isFirstLoading, messages]);
 
   useEffect(() => {
     if (lastElement && containerRef.current) {

@@ -38,3 +38,10 @@
   opacity: 0.7;
   cursor: inherit;
 }
+
+.button.danger {
+  font-weight: 500;
+  color: var(--secondary-0);
+
+  background-color: var(--danger-600);
+}

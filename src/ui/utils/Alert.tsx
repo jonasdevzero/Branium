@@ -1,12 +1,12 @@
 import { Root, createRoot } from "react-dom/client";
-import { Button, Modal } from "../components";
+import { Button, ButtonTheme, Modal } from "../components";
 
 interface AlertProps {
   title: string;
   description: string;
-  confirm?: { label: string; color?: string; onClick(): unknown };
-  cancel?: { label: string; color?: string };
-  deny?: { label: string; color?: string };
+  confirm?: { label: string; theme?: ButtonTheme; onClick(): unknown };
+  cancel?: { label: string; theme?: ButtonTheme };
+  deny?: { label: string; theme?: ButtonTheme };
 }
 
 interface AlertRenderProps extends AlertProps {
@@ -72,19 +72,23 @@ export class Alert {
         {hasAction && (
           <div className="modal__actions">
             {!!cancel && (
-              <Button onClick={close} disabled={isLoading}>
+              <Button onClick={close} disabled={isLoading} theme={cancel.theme}>
                 {cancel.label}
               </Button>
             )}
 
             {!!deny && (
-              <Button onClick={close} disabled={isLoading}>
+              <Button onClick={close} disabled={isLoading} theme={deny.theme}>
                 {deny.label}
               </Button>
             )}
 
             {!!confirm && (
-              <Button onClick={confirm.onClick} isLoading={isLoading}>
+              <Button
+                onClick={confirm.onClick}
+                isLoading={isLoading}
+                theme={confirm.theme}
+              >
                 {confirm.label}
               </Button>
             )}

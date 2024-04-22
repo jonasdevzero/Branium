@@ -23,6 +23,8 @@ html {
   --info: #623cea;
 
   --card-height: 4rem;
+
+  --overlay-bg-color: #00000090;
 }
 
 html,
@@ -149,7 +151,7 @@ h6 {
   height: 100vh;
   z-index: 998;
 
-  background-color: #00000090;
+  background-color: var(--overlay-bg-color);
 }
 
 .overlay--closed {

@@ -20,6 +20,7 @@
 .chat__form {
   display: flex;
   flex-direction: row;
+  position: relative;
   width: 100%;
   height: 4rem;
   min-height: 4rem;
@@ -28,6 +29,18 @@
   background-color: var(--primary-750);
   padding: 0.5rem 1.5rem;
   border-radius: 0.5rem;
+}
+
+.chat__form > .form__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #000000aa;
+  border-radius: 0.5rem;
+  z-index: 1;
 }
 
 .chat__form > textarea {
@@ -53,8 +66,13 @@
   left: 0;
 }
 
-.chat__form > .overlay {
-  background-color: #000000aa;
+.chat__form > .form__overlay {
+  background-color: var(--overlay-bg-color);
+  user-select: none;
+}
+
+.chat__form > .form__overlay > b {
+  color: var(--secondary-200);
 }
 
 .chat__form .icon {

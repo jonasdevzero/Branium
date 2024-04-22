@@ -3,17 +3,20 @@ import { ButtonHTMLAttributes } from "react";
 import { MaterialSymbol, MaterialSymbolProps } from "react-material-symbols";
 import { LoadingSpinner } from "..";
 
+export type ButtonTheme = "default" | "danger";
+
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   isLoading?: boolean;
+  theme?: ButtonTheme;
 }
 
-export function Button({ isLoading, ...props }: Props) {
+export function Button({ isLoading, theme, ...props }: Props) {
   return (
     <button
       type="button"
       {...props}
-      className={`button ${props.className || ""}`}
+      className={`button ${props.className || ""} ${theme || "default"}`}
       disabled={props.disabled || isLoading}
     >
       {isLoading ? <LoadingSpinner /> : props.children}

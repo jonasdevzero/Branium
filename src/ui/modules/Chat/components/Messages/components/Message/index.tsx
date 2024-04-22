@@ -31,9 +31,10 @@ import "./styles.css";
 interface MessageProps {
   message: Message;
   short?: boolean;
+  hasBlock?: boolean;
 }
 
-export function MessageComponent({ message, short }: MessageProps) {
+export function MessageComponent({ message, short, hasBlock }: MessageProps) {
   const { sender, reply } = message;
 
   const [decryptedText, setDecryptedText] = useState<string>();
@@ -154,11 +155,6 @@ export function MessageComponent({ message, short }: MessageProps) {
 
     const options: PopoverItem[] = [
       {
-        label: "responder",
-        icon: <MaterialSymbol icon="reply" />,
-        onClick: () => replyMessage(message),
-      },
-      {
         label: `deletar para ${isSender ? "todos" : "mim"}`,
         icon: <MaterialSymbol icon="delete" />,
         onClick: () =>
@@ -174,7 +170,15 @@ export function MessageComponent({ message, short }: MessageProps) {
       },
     ];
 
-    if (isSender) {
+    if (!hasBlock) {
+      options.splice(0, 0, {
+        label: "responder",
+        icon: <MaterialSymbol icon="reply" />,
+        onClick: () => replyMessage(message),
+      });
+    }
+
+    if (isSender && !hasBlock) {
       options.splice(1, 0, {
         label: "editar",
         icon: <MaterialSymbol icon="edit" />,
@@ -193,7 +197,7 @@ export function MessageComponent({ message, short }: MessageProps) {
         options={options}
       />
     );
-  }, [message, replyMessage, selectMessage, user.id]);
+  }, [hasBlock, message, replyMessage, selectMessage, user.id]);
 
   const renderedReply = useMemo(() => {
     if (!reply) return null;
