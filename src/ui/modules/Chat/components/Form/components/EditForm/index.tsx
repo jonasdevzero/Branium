@@ -1,7 +1,7 @@
 import { Message } from "@/domain/models";
 import { useCallback, useEffect, useState } from "react";
 import { EmojiPicker } from "../../..";
-import { Avatar, Button } from "@/ui/components";
+import { Avatar, Button, LoadingSpinner } from "@/ui/components";
 import { useCryptoKeys } from "@/ui/hooks";
 import { decryptText } from "../../../Messages/helpers";
 import { toast } from "@/ui/modules/Toaster";
@@ -90,6 +90,12 @@ export function EditForm({ message, close }: Props) {
         </div>
 
         <div className="chat__form">
+          {isLoading && (
+            <div className="form__overlay">
+              <LoadingSpinner />
+            </div>
+          )}
+
           <EmojiPicker onPick={(emoji) => setText((t) => t + emoji)} />
 
           <textarea
