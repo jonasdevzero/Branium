@@ -163,6 +163,7 @@ export function MessageComponent({ message, short, hasBlock }: MessageProps) {
             description: "Deseja deletar permanentemente esta mensagem?",
             confirm: {
               label: "confirmar",
+              theme: "danger",
               onClick: () => messageServices.delete(message.id),
             },
             cancel: { label: "cancelar" },
