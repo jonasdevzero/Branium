@@ -1,18 +1,19 @@
 import { Message } from "@/domain/models";
 import {
   Avatar,
-  Document,
   MessageFilesSkeleton,
   MessageSkeleton,
   Popover,
   PopoverItem,
-  VideoPlayer,
 } from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
 import {
   AudioPlayer,
+  Document,
+  ImageCards,
   MESSAGES_CONTAINER_ID,
+  VideoPlayer,
   countEmojis,
   isAudio,
   isDocument,
@@ -24,7 +25,6 @@ import { messageServices } from "@/ui/services/messages/message";
 import { Alert } from "@/ui/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { ImageCards } from "..";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
 

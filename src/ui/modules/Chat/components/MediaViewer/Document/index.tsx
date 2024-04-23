@@ -2,8 +2,8 @@
 
 import { Button } from "@/ui/components";
 import { getSizeName } from "@/ui/helpers";
-import { downloadFile } from "../../..";
 import "./styles.css";
+import { downloadFile } from "@/ui/modules/Chat/helpers";
 
 interface Props {
   file: File;

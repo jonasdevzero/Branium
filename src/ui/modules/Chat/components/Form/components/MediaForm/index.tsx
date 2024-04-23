@@ -4,13 +4,13 @@ import { Button } from "@/ui/components";
 import {
   AudioPlayer,
   Document,
-  EmojiPicker,
   VideoPlayer,
   getMessageType,
 } from "@/ui/modules/Chat";
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-import { FilesIndicators } from "./components";
+import { EmojiPicker } from "../EmojiPicker";
+import { FilesIndicators } from "../FilesIndicators";
 import "./styles.css";
 
 interface Props {

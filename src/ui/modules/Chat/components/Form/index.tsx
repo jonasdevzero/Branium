@@ -1,10 +1,8 @@
 import { SubmitMessageDTO } from "@/domain/dtos";
 import { Message, MessageFileType } from "@/domain/models";
-import { Button, LoadingSpinner, Popover } from "@/ui/components";
+import { Button, Popover } from "@/ui/components";
+import { useMessages } from "@/ui/hooks";
 import {
-  AudioRecorder,
-  EmojiPicker,
-  MediaForm,
   getMessageType,
   isDocument,
   isImage,
@@ -15,9 +13,8 @@ import {
 } from "@/ui/modules/Chat";
 import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
+import { AudioRecorder, EditForm, EmojiPicker, MediaForm } from "./components";
 import "./styles.css";
-import { useMessages } from "@/ui/hooks";
-import { EditForm } from "./components";
 
 interface FormProps {
   onSubmit(data: SubmitMessageDTO): void;
@@ -214,7 +211,6 @@ export function Form({ onSubmit, youBlocked, blocked, loading }: FormProps) {
           id="message-text"
           className="text"
           placeholder="Digite uma mensagem"
-          autoFocus
           contentEditable="true"
           autoComplete="false"
           value={text}

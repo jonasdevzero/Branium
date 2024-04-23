@@ -8,7 +8,6 @@ export * from "./Room";
 export * from "./Card";
 export * from "./Popover";
 export * from "./NavigationHeader";
-export * from "../modules/Chat/components/MediaViewer";
 export * from "./Modal";
 export * from "./Skeleton";
 export * from "./Loading";

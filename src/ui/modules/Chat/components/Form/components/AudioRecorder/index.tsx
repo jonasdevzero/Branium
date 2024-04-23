@@ -1,8 +1,8 @@
 import { Button } from "@/ui/components";
 import { toast } from "@/ui/modules";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { convertSecondsToMinutes } from "../..";
 import "./styles.css";
+import { convertSecondsToMinutes } from "@/ui/modules/Chat/helpers";
 
 interface Props {
   canRecord: boolean;

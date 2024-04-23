@@ -1,6 +1,5 @@
 import { Message } from "@/domain/models";
 import { useCallback, useEffect, useState } from "react";
-import { EmojiPicker } from "../../..";
 import { Avatar, Button, LoadingSpinner } from "@/ui/components";
 import { useCryptoKeys } from "@/ui/hooks";
 import { decryptText } from "../../../Messages/helpers";
@@ -9,6 +8,7 @@ import "./styles.css";
 import { formatDate } from "@/ui/helpers";
 import { messagesService } from "@/ui/services";
 import { SymmetricCryptographer } from "@/ui/utils";
+import { EmojiPicker } from "../EmojiPicker";
 
 interface Props {
   message: Message;
