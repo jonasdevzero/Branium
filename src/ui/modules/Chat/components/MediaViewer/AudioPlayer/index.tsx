@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/ui/components";
-import { convertSecondsToMinutes } from "@/ui/modules/Chat";
+import { convertSecondsToMinutes } from "@/ui/modules/Chat/helpers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
 

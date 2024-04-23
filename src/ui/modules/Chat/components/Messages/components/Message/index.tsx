@@ -8,25 +8,27 @@ import {
 } from "@/ui/components";
 import { formatDate, formatTime } from "@/ui/helpers";
 import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
-import {
-  AudioPlayer,
-  Document,
-  ImageCards,
-  MESSAGES_CONTAINER_ID,
-  VideoPlayer,
-  countEmojis,
-  isAudio,
-  isDocument,
-  isImage,
-  isOnlyEmoji,
-  isVideo,
-} from "@/ui/modules/Chat";
 import { messageServices } from "@/ui/services/messages/message";
 import { Alert } from "@/ui/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { decryptFile, decryptText } from "../../helpers";
 import "./styles.css";
+import {
+  countEmojis,
+  isAudio,
+  isDocument,
+  isImage,
+  isOnlyEmoji,
+  isVideo,
+} from "@/ui/modules/Chat/helpers";
+import {
+  AudioPlayer,
+  Document,
+  ImageCards,
+  VideoPlayer,
+} from "@/ui/modules/Chat/components";
+import { MESSAGES_CONTAINER_ID } from "@/ui/modules/Chat/constants";
 
 interface MessageProps {
   message: Message;

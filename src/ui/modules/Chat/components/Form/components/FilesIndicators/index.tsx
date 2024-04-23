@@ -1,8 +1,8 @@
 import { Button } from "@/ui/components";
-import { isDocument, isImage } from "@/ui/modules/Chat";
 import Image from "next/image";
 import { useCallback } from "react";
 import "./styles.css";
+import { isDocument, isImage } from "@/ui/modules/Chat/helpers";
 
 interface FileIndicator {
   file: File;

@@ -1,12 +1,13 @@
 import { SubmitMessageDTO } from "@/domain/dtos";
 import { MessageFileType } from "@/domain/models";
 import { Button } from "@/ui/components";
+
 import {
   AudioPlayer,
   Document,
   VideoPlayer,
-  getMessageType,
-} from "@/ui/modules/Chat";
+} from "@/ui/modules/Chat/components";
+import { getMessageType } from "@/ui/modules/Chat/helpers";
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
 import { EmojiPicker } from "../EmojiPicker";

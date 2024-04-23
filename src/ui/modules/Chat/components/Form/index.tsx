@@ -2,6 +2,9 @@ import { SubmitMessageDTO } from "@/domain/dtos";
 import { Message, MessageFileType } from "@/domain/models";
 import { Button, Popover } from "@/ui/components";
 import { useMessages } from "@/ui/hooks";
+
+import { useCallback, useState } from "react";
+import { MaterialSymbol } from "react-material-symbols";
 import {
   getMessageType,
   isDocument,
@@ -10,9 +13,7 @@ import {
   isVideo,
   validateDocuments,
   validateImages,
-} from "@/ui/modules/Chat";
-import { useCallback, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
+} from "../../helpers";
 import { AudioRecorder, EditForm, EmojiPicker, MediaForm } from "./components";
 import "./styles.css";
 
