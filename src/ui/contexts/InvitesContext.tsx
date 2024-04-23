@@ -29,11 +29,11 @@ export function InvitesProvider({ children }: Props) {
 
   useEffect(() => {
     socket.on("invite:new", (invite: Invite) => {
-      setCount((c) => c + 1);
+      setCount(count + 1);
       event.emit("invite:new", invite);
     });
 
-    const onAnswered = () => setCount((c) => c - 1);
+    const onAnswered = () => setCount(count - 1);
 
     event.on("invite:answered", onAnswered);
 
@@ -41,7 +41,7 @@ export function InvitesProvider({ children }: Props) {
       socket.off("invite:new");
       event.off("invite:answered", onAnswered);
     };
-  }, [event, socket]);
+  }, [count, event, socket]);
 
   return (
     <InvitesContext.Provider value={{ count, event }}>

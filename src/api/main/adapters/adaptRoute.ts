@@ -49,7 +49,11 @@ export const adaptRoute = (controller: Controller) => {
 
     let responseBody = null;
 
-    if (typeof httpResponse.body === "string") responseBody = httpResponse.body;
+    if (
+      typeof httpResponse.body === "string" ||
+      typeof httpResponse.body === "number"
+    )
+      responseBody = String(httpResponse.body);
 
     if (typeof httpResponse.body === "object")
       responseBody = JSON.stringify(httpResponse.body);
