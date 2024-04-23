@@ -4,6 +4,7 @@ import { User } from "@/domain/models";
 import { Button, Card, InviteSkeleton, Modal, Room } from "@/ui/components";
 import { useDebounce } from "@/ui/hooks";
 import { messagesService } from "@/ui/services";
+import { Alert } from "@/ui/utils";
 import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 
@@ -14,7 +15,6 @@ export default function Invites() {
 
   const [selectedUser, setSelectedUser] = useState<User>();
   const [message, setMessage] = useState("");
-  const [inviteSentTo, setInviteSentTo] = useState<User>();
 
   const listUsers = useCallback(async (search?: string) => {
     setIsLoading(true);
@@ -45,7 +45,11 @@ export default function Invites() {
       });
 
       listUsers(search);
-      setInviteSentTo(selectedUser);
+
+      Alert.create({
+        title: "Convite enviado",
+        description: `Foi enviado um convite para @${selectedUser.username}, caso ele aceite vocês poderão se comunicar livremente.`,
+      });
     } catch (error) {
       // ...
     } finally {
@@ -139,17 +143,6 @@ export default function Invites() {
 
           <Button onClick={inviteUser}>enviar</Button>
         </div>
-      </Modal>
-
-      <Modal
-        title="Convite enviado"
-        isOpen={!!inviteSentTo}
-        close={() => setInviteSentTo(undefined)}
-      >
-        <p className="text">
-          Foi enviado um convite para @{inviteSentTo?.username}, caso ele aceite
-          vocêm poderão se comunicar livremente.
-        </p>
       </Modal>
     </div>
   );
