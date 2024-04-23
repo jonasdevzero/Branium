@@ -111,7 +111,7 @@ export function SidebarContacts({ search }: Props) {
         onClick={() => router.push(`/channels/contact/${contact.id}`)}
       >
         <Room
-          name={contact.name}
+          name={contact.customName || contact.name}
           username={contact.username}
           image={contact.image}
           type="primary"

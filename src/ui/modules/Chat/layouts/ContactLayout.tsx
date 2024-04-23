@@ -17,6 +17,8 @@ import { MaterialSymbol } from "react-material-symbols";
 import { getFileType } from "../helpers";
 import { Form, Header, Messages, ScrollDown } from "../components";
 import { MESSAGES_CONTAINER_ID } from "../constants";
+import { ContactProfile } from "../components/Sidebar";
+import "../css/layout.css";
 
 interface Props {
   contactId: string;
@@ -24,6 +26,7 @@ interface Props {
 
 export function ContactLayout({ contactId }: Props) {
   const [contact, setContact] = useState<Contact>();
+  const [isProfileOpen, setIsOpenProfile] = useState(false);
 
   const router = useRouter();
 
@@ -233,7 +236,7 @@ export function ContactLayout({ contactId }: Props) {
       {
         label: "perfil",
         icon: <MaterialSymbol icon={"person"} />,
-        onClick: () => {},
+        onClick: () => setIsOpenProfile(true),
       },
       {
         label: contact?.youBlocked ? "desbloquear" : "bloquear",
@@ -272,34 +275,45 @@ export function ContactLayout({ contactId }: Props) {
   }, [onContactBlock, socket]);
 
   return (
-    <>
-      {!!contact ? (
-        <Header
-          name={contact.customName || contact.name}
-          username={contact.username}
-          image={contact.image}
-          options={headerOptions}
-          hasBlock={contact.blocked || contact.youBlocked}
+    <div className="chat__container">
+      <div className="chat__content">
+        {!!contact ? (
+          <Header
+            name={contact.customName || contact.name}
+            username={contact.username}
+            image={contact.image}
+            options={headerOptions}
+            hasBlock={contact.blocked || contact.youBlocked}
+          />
+        ) : (
+          <Header.Skeleton />
+        )}
+
+        <Messages
+          roomId={contactId}
+          roomType="CONTACT"
+          fetchMessages={fetchMessages}
+          hasBlock={contact?.blocked || contact?.youBlocked}
         />
-      ) : (
-        <Header.Skeleton />
+
+        <ScrollDown containerId={MESSAGES_CONTAINER_ID} />
+
+        <Form
+          onSubmit={submitMessage}
+          blocked={contact?.blocked}
+          youBlocked={contact?.youBlocked}
+          loading={!contact}
+        />
+      </div>
+
+      {contact && (
+        <ContactProfile
+          contact={contact}
+          isOpen={isProfileOpen}
+          close={() => setIsOpenProfile(false)}
+          setContact={setContact}
+        />
       )}
-
-      <Messages
-        roomId={contactId}
-        roomType="CONTACT"
-        fetchMessages={fetchMessages}
-        hasBlock={contact?.blocked || contact?.youBlocked}
-      />
-
-      <ScrollDown containerId={MESSAGES_CONTAINER_ID} />
-
-      <Form
-        onSubmit={submitMessage}
-        blocked={contact?.blocked}
-        youBlocked={contact?.youBlocked}
-        loading={!contact}
-      />
-    </>
+    </div>
   );
 }

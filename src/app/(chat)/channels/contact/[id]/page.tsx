@@ -7,9 +7,5 @@ import "./styles.css";
 export default function ContactChannel() {
   const { id: contactId } = useParams<{ id: string }>();
 
-  return (
-    <div className="container">
-      <ContactLayout contactId={contactId} />
-    </div>
-  );
+  return <ContactLayout contactId={contactId} />;
 }

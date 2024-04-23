@@ -58,12 +58,6 @@ input {
   border-radius: 0.5rem;
 }
 
-.container > .scroll__down {
-  position: absolute;
-  bottom: 8rem;
-  right: 2rem;
-}
-
 @media (min-width: 2000px) {
   main {
     min-width: 2000px;

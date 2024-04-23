@@ -284,7 +284,9 @@ export function MessageComponent({ message, short, hasBlock }: MessageProps) {
 
       <div className="message__content">
         <div className="message__info">
-          <h6 className="text">{sender.name}</h6>
+          <h6 className="text" title={`@${sender.username}`}>
+            {sender.name}
+          </h6>
           <span className="description">{formatDate(message.createdAt)}</span>
         </div>
 

@@ -92,10 +92,6 @@
   cursor: pointer;
 }
 
-.message__info > h6:hover {
-  text-decoration: underline;
-}
-
 .message__info > span {
   color: var(--secondary-200);
 }
