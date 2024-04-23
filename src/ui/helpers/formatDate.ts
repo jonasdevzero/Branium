@@ -12,9 +12,12 @@ const timeFormatter = new Intl.DateTimeFormat("pt-BR", {
 });
 
 export function formatDate(date: Date | string | number) {
-  return dateFormatter.format(new Date(date));
+  return dateFormatter
+    .format(new Date(date))
+    .replace(",", " -")
+    .replace(":", "h");
 }
 
 export function formatTime(date: Date | string | number) {
-  return timeFormatter.format(new Date(date));
+  return timeFormatter.format(new Date(date)).replace(":", "h");
 }
