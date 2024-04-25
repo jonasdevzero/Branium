@@ -55,7 +55,9 @@ export function SidebarContacts({ search }: Props) {
     <div ref={listRef} className="sidebar__group room__list">
       {renderContacts()}
 
-      {!contacts.isFirstLoading && contacts.isLoading && <LoadingSpinner />}
+      {!contacts.isFirstLoading && contacts.currentPage > 0 && (
+        <LoadingSpinner />
+      )}
     </div>
   );
 }

@@ -26,6 +26,7 @@ interface ContactsContextProps {
   isLoading: boolean;
   isFirstLoading: boolean;
   isFullLoaded: boolean;
+  currentPage: number;
 
   list(search?: string): Promise<void>;
   nextPage(search?: string): Promise<void>;
@@ -64,25 +65,27 @@ export function ContactsProvider({ children }: Props) {
       if (isLoading) return;
       setIsLoading(true);
 
-      try {
-        // fetch cache
+      const initSearch = search && search !== lastSearch;
 
+      const selectedPage = initSearch || currentPage === -1 ? 0 : currentPage;
+
+      if (initSearch) setCurrentPage(-1);
+
+      try {
         const { pages, content } = await messagesService.contact.list({
           limit: 30,
-          page: currentPage === -1 ? 0 : currentPage,
+          page: selectedPage,
           search,
         });
 
-        setPages(pages);
-        if (currentPage === -1) setCurrentPage(0);
-
-        if (search && search !== lastSearch) {
-          setContacts(content);
-          setCurrentPage(0);
-        } else
-          sortContacts({ contacts: [...contacts, ...content], setContacts });
-
         setLastSearch(search);
+
+        initSearch
+          ? setContacts(content)
+          : sortContacts({ contacts: [...contacts, ...content], setContacts });
+
+        setPages(pages);
+        if (currentPage === -1 || initSearch) setCurrentPage(0);
       } catch (error) {
         toast.error("Não foi possível buscar os contatos!", {
           id: "list-contacts",
@@ -213,6 +216,7 @@ export function ContactsProvider({ children }: Props) {
         isLoading,
         isFirstLoading,
         isFullLoaded,
+        currentPage,
         list,
         nextPage,
         load,
