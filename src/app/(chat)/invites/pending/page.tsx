@@ -183,7 +183,10 @@ export default function InvitesPending() {
         )}
 
         <div className="modal__actions">
-          <Button onClick={() => responseInvite(selectedInvite!.id, false)}>
+          <Button
+            onClick={() => responseInvite(selectedInvite!.id, false)}
+            theme="danger"
+          >
             rejeitar
           </Button>
 
