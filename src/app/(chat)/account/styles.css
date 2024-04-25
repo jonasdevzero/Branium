@@ -1,0 +1,31 @@
+.account__container > form > button[type="submit"] {
+  width: 10rem;
+}
+
+.avatar__upload {
+  display: flex;
+  width: 7.5rem;
+  height: 7.5rem;
+  position: relative;
+}
+
+.avatar__upload > .avatar__container {
+  width: 7.5rem;
+  height: 7.5rem;
+  min-width: 7.5rem;
+  min-height: 7.5rem;
+}
+
+.avatar__upload > .avatar__container > .avatar__name {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+.avatar__upload > .popover > .popover__toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  background-color: var(--primary-900) !important;
+  padding: 0.25rem;
+}

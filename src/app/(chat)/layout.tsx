@@ -1,5 +1,6 @@
 import {
   AuthProvider,
+  ContactsProvider,
   CryptoKeysProvider,
   InvitesProvider,
   MessagesProvider,
@@ -33,10 +34,12 @@ export default function ChatLayout({
             <InvitesProvider>
               <CryptoKeysProvider>
                 <MessagesProvider>
-                  <>
-                    <Sidebar />
-                    {children}
-                  </>
+                  <ContactsProvider>
+                    <>
+                      <Sidebar />
+                      {children}
+                    </>
+                  </ContactsProvider>
                 </MessagesProvider>
               </CryptoKeysProvider>
             </InvitesProvider>

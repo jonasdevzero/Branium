@@ -10,13 +10,16 @@ import {
   useState,
 } from "react";
 import { LoadingContainer } from "../components";
-import { Socket, websocketUrl } from "../services";
+import { Socket, authServices, websocketUrl } from "../services";
 import { KeyPairStorage } from "../utils";
+import { EditProfileDTO } from "@/domain/dtos";
 
 interface AuthContextProps {
   user: User;
   socket: Socket;
   logout(): void;
+  update(): Promise<void>;
+  edit(data: EditProfileDTO): void;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -43,6 +46,11 @@ export function AuthProvider({ children }: Props) {
     router.replace("/login");
   }, [router, socket]);
 
+  const load = useCallback(async () => {
+    const user = await authServices.auth();
+    setUser(user);
+  }, []);
+
   const auth = useCallback(async () => {
     if (status !== "loading") return;
 
@@ -50,19 +58,32 @@ export function AuthProvider({ children }: Props) {
 
     if (!access) return logout();
 
-    const response = await fetch("/api/auth");
+    try {
+      await load();
+      setStatus("authenticated");
+    } catch (error) {
+      logout();
+    }
+  }, [status, logout, load]);
 
-    if (!response.ok) return logout();
+  const edit = useCallback(
+    (data: EditProfileDTO) => {
+      if (!user) return;
 
-    const data = await response.json();
+      const { image, ...rest } = data;
+      let url = image === null ? null : user.image;
 
-    setUser(data);
-    setStatus("authenticated");
-  }, [status, logout]);
+      if (image instanceof File) url = URL.createObjectURL(image);
+
+      setUser({ ...user, ...rest, image: url });
+    },
+    [user]
+  );
 
   useEffect(() => {
     auth();
-  }, [auth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     socket.on("message", (data) => console.log("message:", data));
@@ -82,7 +103,7 @@ export function AuthProvider({ children }: Props) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, socket, logout }}>
+    <AuthContext.Provider value={{ user, socket, logout, update: load, edit }}>
       {children}
     </AuthContext.Provider>
   );

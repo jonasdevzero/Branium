@@ -5,6 +5,7 @@ import { formatDate } from "@/ui/helpers";
 import { useCallback, useState } from "react";
 import { messagesService } from "@/ui/services";
 import { toast } from "@/ui/modules/Toaster";
+import { useContacts } from "@/ui/hooks";
 
 interface Props {
   isOpen: boolean;
@@ -99,6 +100,8 @@ function EditContactNameModal({
   const [customName, setCustomName] = useState(contact.customName || "");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { event } = useContacts();
+
   const edit = useCallback(async () => {
     if (isLoading) return;
     setIsLoading(true);
@@ -109,6 +112,7 @@ function EditContactNameModal({
         name: customName,
       });
 
+      event.emit("contact:edit", { userId: contact.id, customName });
       onEdit(customName);
       close();
     } catch (error) {
@@ -118,7 +122,7 @@ function EditContactNameModal({
     } finally {
       setIsLoading(false);
     }
-  }, [close, contact.id, customName, isLoading, onEdit]);
+  }, [close, contact.id, customName, event, isLoading, onEdit]);
 
   return (
     <Modal isOpen={isOpen} close={close} title="Editar apelido">

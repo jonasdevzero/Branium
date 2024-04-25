@@ -23,9 +23,9 @@ export function SidebarDropdown() {
           toast.info("Em breve estará disponível!", { id: "soon-available" }),
       },
       {
-        label: "editar conta",
-        icon: <MaterialSymbol icon="edit" size={24} />,
-        onClick: () => null,
+        label: "conta",
+        icon: <MaterialSymbol icon="settings" size={24} />,
+        onClick: () => router.push("/account"),
       },
       {
         label: "sair",

@@ -3,7 +3,7 @@ import {
   LoginUserDTO,
   RegisterUserDTO,
 } from "@/domain/dtos";
-import { KeyPair } from "@/domain/models";
+import { KeyPair, User } from "@/domain/models";
 import { Fetch, KeyPairStorage } from "@/ui/utils";
 import { createNestedFormData } from "../helpers";
 
@@ -22,5 +22,9 @@ export const authServices = Object.freeze({
     const keyPair = await Fetch.post<KeyPair>("/api/login", data);
 
     KeyPairStorage.set(keyPair);
+  },
+
+  async auth() {
+    return Fetch.get<User>("/api/auth");
   },
 });

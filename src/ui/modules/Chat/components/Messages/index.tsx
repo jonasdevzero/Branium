@@ -1,11 +1,17 @@
 import {
+  EditedContactDTO,
   EditedMessageDTO,
   NewMessageDTO,
   SuccessMessageDTO,
 } from "@/domain/dtos";
 import { Message, RoomType } from "@/domain/models";
 import { LoadingSpinner } from "@/ui/components";
-import { useCryptoKeys, useMessages, useScrollEnd } from "@/ui/hooks";
+import {
+  useContacts,
+  useCryptoKeys,
+  useMessages,
+  useScrollEnd,
+} from "@/ui/hooks";
 import { Paginated } from "@/ui/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageComponent } from "./components";
@@ -30,6 +36,7 @@ export function Messages({ roomId, roomType, fetchMessages, hasBlock }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cryptoKeys = useCryptoKeys();
   const { event, selectedMessage, selectMessage } = useMessages();
+  const contacts = useContacts();
 
   const scrollContainer = useCallback(() => {
     if (containerRef.current === null) return;
@@ -99,6 +106,18 @@ export function Messages({ roomId, roomType, fetchMessages, hasBlock }: Props) {
   const removeMessage = (messageId: string) =>
     setMessages((m) => m.filter(({ id }) => id !== messageId));
 
+  const onContactEdit = useCallback((data: EditedContactDTO) => {
+    const { userId, ...rest } = data;
+
+    setMessages((m) =>
+      m.map((message) => {
+        if (message.sender.id === userId) Object.assign(message.sender, rest);
+
+        return message;
+      })
+    );
+  }, []);
+
   const navigateToMessage = useCallback(
     async (id: string) => {
       let messageElement = document.getElementById(`message:${id}`);
@@ -159,14 +178,18 @@ export function Messages({ roomId, roomType, fetchMessages, hasBlock }: Props) {
     event.on("message:edit", onEditedMessage);
     event.on("message:delete", removeMessage);
 
+    contacts.event.on("contact:edit", onContactEdit);
+
     return () => {
       event.off("message:new", onNewMessage);
       event.off("message:success", onSuccessMessage);
       event.off("message:fail", removeMessage);
-      event.on("message:edit", onEditedMessage);
+      event.off("message:edit", onEditedMessage);
       event.off("message:delete", removeMessage);
+
+      contacts.event.off("contact:edit", onContactEdit);
     };
-  }, [event, onEditedMessage, onNewMessage]);
+  }, [contacts.event, event, onContactEdit, onEditedMessage, onNewMessage]);
 
   const isFirstLoading = isLoading && currentPage === 0;
 

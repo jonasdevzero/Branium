@@ -55,6 +55,11 @@ form > a {
 form > button[type="submit"] {
   padding: 1rem;
   border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+form > button[type="submit"]:disabled {
+  cursor: inherit;
 }
 
 .form__checkbox {
@@ -130,4 +135,17 @@ form > button[type="submit"] {
 form button .loading__spin {
   border: 3px solid var(--primary-750);
   border-bottom-color: transparent;
+}
+
+.container form {
+  background-color: transparent;
+  padding: 0;
+}
+
+.container .form__label > input {
+  background-color: var(--primary-750);
+}
+
+.container form > button[type="submit"] {
+  padding: 0.5rem 1rem;
 }

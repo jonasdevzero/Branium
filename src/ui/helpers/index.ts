@@ -7,3 +7,4 @@ export * from "./createQueryParams";
 export * from "./getTime";
 export * from "./sleep";
 export * from "./getSizeName";
+export * from "./sortContacts";

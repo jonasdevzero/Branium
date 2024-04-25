@@ -3,7 +3,7 @@
 import { BlockContactDTO, SubmitMessageDTO } from "@/domain/dtos";
 import { Contact } from "@/domain/models";
 import { PopoverItem } from "@/ui/components";
-import { useAuth, useCryptoKeys, useMessages } from "@/ui/hooks";
+import { useAuth, useContacts, useCryptoKeys, useMessages } from "@/ui/hooks";
 import { toast } from "@/ui/modules";
 import { messagesService } from "@/ui/services";
 import {
@@ -14,11 +14,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
-import { getFileType } from "../helpers";
 import { Form, Header, Messages, ScrollDown } from "../components";
-import { MESSAGES_CONTAINER_ID } from "../constants";
 import { ContactProfile } from "../components/Sidebar";
+import { MESSAGES_CONTAINER_ID } from "../constants";
 import "../css/layout.css";
+import { getFileType } from "../helpers";
 
 interface Props {
   contactId: string;
@@ -30,14 +30,15 @@ export function ContactLayout({ contactId }: Props) {
 
   const router = useRouter();
 
-  const { user, socket } = useAuth();
+  const { user } = useAuth();
   const cryptoKeys = useCryptoKeys();
   const messages = useMessages();
+  const contacts = useContacts();
 
   const loadContact = useCallback(async () => {
     try {
       const [data] = await Promise.all([
-        messagesService.contact.load(contactId),
+        contacts.load(contactId),
         cryptoKeys.loadPublicKey(contactId),
       ]);
 
@@ -46,7 +47,7 @@ export function ContactLayout({ contactId }: Props) {
       toast.error("Não foi possível buscar os dados desse contato!");
       router.push("/channels");
     }
-  }, [contactId, cryptoKeys, router]);
+  }, [contactId, contacts, cryptoKeys, router]);
 
   useEffect(() => {
     loadContact();
@@ -267,12 +268,12 @@ export function ContactLayout({ contactId }: Props) {
   );
 
   useEffect(() => {
-    socket.on("contact:block", onContactBlock);
+    contacts.event.on("contact:block", onContactBlock);
 
     return () => {
-      socket.off("contact:block");
+      contacts.event.off("contact:block", onContactBlock);
     };
-  }, [onContactBlock, socket]);
+  }, [contacts.event, onContactBlock]);
 
   return (
     <div className="chat__container">
