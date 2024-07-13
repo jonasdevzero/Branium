@@ -1,25 +1,30 @@
 "use client";
 
-import { User } from "@/domain/models";
-import { Avatar, Button } from "@/ui/components";
-import { useAuth, useCall, useContacts } from "@/ui/hooks";
+import { Button } from "@/ui/components";
+import { useCall } from "@/ui/hooks";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MaterialSymbol } from "react-material-symbols";
-import { audioVisualizer } from "../../helpers/audioVisualizer";
-import { UserPeer } from "../../types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PeerView } from "../PeerView";
 import "./styles.scss";
 
 export function CallView() {
-  const selfRef = useRef<HTMLVideoElement>(null);
-
-  const pathname = usePathname();
-  const { user } = useAuth();
   const { mediaStream, peers, ...call } = useCall();
+  const pathname = usePathname();
 
   const [hasAudio, setHasAudio] = useState(false);
   const [hasVideo, setHasVideo] = useState(false);
-  const [isTalking, setIsTalking] = useState(false);
+  const [isAllMuted, setIsAllMuted] = useState(false);
+
+  const canShow =
+    call.state === "in-call" && mediaStream && pathname === "/call";
+
+  useEffect(() => {
+    if (mediaStream) {
+      setHasAudio(mediaStream.getAudioTracks()[0].enabled);
+      setHasVideo(mediaStream?.getVideoTracks()?.[0]?.enabled);
+      setIsAllMuted(false);
+    }
+  }, [mediaStream]);
 
   const users = useMemo(
     () =>
@@ -30,7 +35,7 @@ export function CallView() {
   );
 
   const sendMessage = useCallback(
-    (data: { audio?: boolean; video?: boolean }) => {
+    (data: { audio?: boolean; video?: boolean; output?: boolean }) => {
       const parsedData = JSON.stringify(data);
 
       peers.forEach(({ channel }) => channel.send(parsedData));
@@ -38,23 +43,22 @@ export function CallView() {
     [peers]
   );
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
+  const toggleOutput = useCallback(() => {
+    if (!mediaStream) return;
 
-    if (mediaStream && selfRef.current) {
-      selfRef.current.srcObject = mediaStream;
-      interval = audioVisualizer(mediaStream, setIsTalking);
-    }
+    sendMessage({ audio: isAllMuted, output: isAllMuted });
 
-    if (mediaStream) {
-      setHasAudio(mediaStream.getAudioTracks()[0].enabled);
-      setHasVideo(mediaStream?.getVideoTracks()?.[0]?.enabled);
-    }
+    mediaStream.getAudioTracks()[0].enabled = isAllMuted;
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [mediaStream]);
+    peers.forEach((peer) => {
+      peer.stream
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = isAllMuted));
+    });
+
+    setHasAudio(isAllMuted);
+    setIsAllMuted(!isAllMuted);
+  }, [isAllMuted, mediaStream, peers, sendMessage]);
 
   const toggleMic = useCallback(() => {
     if (!mediaStream) return;
@@ -65,6 +69,7 @@ export function CallView() {
 
     mediaStream.getAudioTracks()[0].enabled = nextValue;
     setHasAudio((value) => !value);
+    setIsAllMuted(false);
   }, [mediaStream, sendMessage]);
 
   const toggleCamera = useCallback(async () => {
@@ -92,34 +97,12 @@ export function CallView() {
     sendMessage({ video: nextValue });
   }, [call, mediaStream, peers, sendMessage]);
 
-  const canShow =
-    call.state === "in-call" && mediaStream && pathname === "/call";
-
   return (
     <div className={`call-container ${canShow ? " call-container--show" : ""}`}>
       <div className="call-container__users">
         {users}
 
-        <div className={`call-user${isTalking ? " call-user--active" : ""}`}>
-          <video
-            ref={selfRef}
-            autoPlay
-            disablePictureInPicture
-            controls={false}
-            muted
-            className={!hasVideo ? "disabled" : ""}
-          ></video>
-
-          <div className="call-user__info">
-            <Avatar {...user} alt={`foto de ${user.name}`} />
-          </div>
-
-          <div className="call-user__options">
-            <span className="text" title={`@${user.username}`}>
-              {user.name}
-            </span>
-          </div>
-        </div>
+        <PeerView.Self hasVideo={hasVideo} />
       </div>
 
       <div className="call-container__control">
@@ -130,7 +113,10 @@ export function CallView() {
         <span className="call-container__control__line"></span>
 
         <div className="call-container__control__group">
-          <Button.Icon icon={"headset"} />
+          <Button.Icon
+            icon={isAllMuted ? "headset_off" : "headset"}
+            onClick={toggleOutput}
+          />
 
           <Button.Icon icon={"screen_share"} />
 
@@ -148,80 +134,6 @@ export function CallView() {
         <span className="call-container__control__line"></span>
 
         <Button.Icon icon="call_end" onClick={call.leave} />
-      </div>
-    </div>
-  );
-}
-
-interface PeerProps extends UserPeer {}
-
-function PeerView({ id, stream, channel }: PeerProps) {
-  const ref = useRef<HTMLVideoElement>(null);
-  const [user, setUser] = useState<User>();
-  const [hasAudio, setHasAudio] = useState(stream.getAudioTracks()[0]?.enabled);
-  const [hasVideo, setHasVideo] = useState(
-    "getVideoTracks" in stream && stream.getVideoTracks()[0]?.enabled
-  );
-  const [isTalking, setIsTalking] = useState(false);
-
-  const { load: loadContact } = useContacts();
-
-  useEffect(() => {
-    loadContact(id).then(setUser);
-  }, [id, loadContact]);
-
-  useEffect(() => {
-    if (ref.current) ref.current.srcObject = stream;
-
-    channel.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-
-        if (typeof message.audio === "boolean") {
-          setHasAudio(message.audio);
-          return;
-        }
-
-        if (typeof message.video === "boolean") {
-          setHasVideo(message.video);
-          return;
-        }
-      } catch (error) {}
-    };
-
-    const interval = audioVisualizer(stream, setIsTalking);
-
-    return () => {
-      clearInterval(interval);
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div className={`call-user${isTalking ? " call-user--active" : ""}`}>
-      <video
-        ref={ref}
-        autoPlay
-        disablePictureInPicture
-        controls={false}
-        className={!hasVideo ? "disabled" : ""}
-      ></video>
-
-      {user && (
-        <div className="call-user__info">
-          <Avatar {...user} alt={`foto de ${user.name}`} />
-        </div>
-      )}
-
-      <div className="call-user__options">
-        {user && (
-          <span className="text" title={`@${user.username}`}>
-            {user.name}
-          </span>
-        )}
-
-        <MaterialSymbol icon={hasAudio ? "mic" : "mic_off"} />
       </div>
     </div>
   );
