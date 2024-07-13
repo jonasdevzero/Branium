@@ -47,16 +47,20 @@ export class Socket {
     this.lostConnection = false;
 
     this.raw.onmessage = (e) => {
-      let { event, message } = JSON.parse(e.data);
+      try {
+        let { event, message } = JSON.parse(e.data);
 
-      message = message.map((m: unknown, i: number) =>
-        m === `${event}::callback:${i}`
-          ? (...args: unknown[]) => this.emit(m, ...args)
-          : m
-      );
+        message = message.map((m: unknown, i: number) =>
+          m === `${event}::callback:${i}`
+            ? (...args: unknown[]) => this.emit(m, ...args)
+            : m
+        );
 
-      const eventFn = this[kEvents].get(event) || function () {};
-      eventFn(...message);
+        const eventFn = this[kEvents].get(event) || function () {};
+        eventFn(...message);
+      } catch (error) {
+        // ...
+      }
     };
 
     this.raw.onerror = (e) => {

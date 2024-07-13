@@ -280,9 +280,13 @@ export function ContactLayout({ contactId }: Props) {
       <div className="chat__content">
         {!!contact ? (
           <Header
-            name={contact.customName || contact.name}
-            username={contact.username}
-            image={contact.image}
+            channel={{
+              id: contactId,
+              type: "CONTACT",
+              name: contact.customName || contact.name,
+              username: contact.username,
+              image: contact.image,
+            }}
             options={headerOptions}
             hasBlock={contact.blocked || contact.youBlocked}
           />

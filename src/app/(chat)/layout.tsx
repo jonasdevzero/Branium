@@ -1,3 +1,4 @@
+import { Sidebar } from "@/ui/components";
 import {
   AuthProvider,
   ContactsProvider,
@@ -6,11 +7,12 @@ import {
   MessagesProvider,
 } from "@/ui/contexts";
 import { Toaster } from "@/ui/modules";
+import { CallProvider } from "@/ui/modules/Call";
+import { CallView } from "@/ui/modules/Call/components";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "react-material-symbols/outlined";
 import "./globals.css";
-import { Sidebar } from "@/ui/components";
 
 const nunitoSans = Nunito_Sans({ subsets: ["latin"] });
 
@@ -35,10 +37,14 @@ export default function ChatLayout({
               <CryptoKeysProvider>
                 <MessagesProvider>
                   <ContactsProvider>
-                    <>
-                      <Sidebar />
-                      {children}
-                    </>
+                    <CallProvider>
+                      <>
+                        <Sidebar />
+                        {children}
+
+                        <CallView />
+                      </>
+                    </CallProvider>
                   </ContactsProvider>
                 </MessagesProvider>
               </CryptoKeysProvider>

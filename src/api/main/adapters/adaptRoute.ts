@@ -1,13 +1,13 @@
 import { Controller, HttpRequest } from "@/api/presentation/protocols";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
   params: Record<string, string>;
 }
 
 export const adaptRoute = (controller: Controller) => {
-  return async (request: Request, params: Params) => {
+  return async (request: NextRequest, params: Params) => {
     const { method } = request;
     const headersList = headers();
 
@@ -32,9 +32,7 @@ export const adaptRoute = (controller: Controller) => {
       ["post", "put", "patch"].includes(method.toLowerCase());
 
     if (canLoadBody && request.body) {
-      const readable = await request.body.getReader().read();
-
-      const body = JSON.parse(readable.value?.toString() || "{}");
+      const body = await request.json();
 
       Object.assign(httpRequest, { body });
     }

@@ -1,5 +1,5 @@
 "use client";
-import { useAuth, useInvites } from "@/ui/hooks";
+import { useAuth, useCall, useInvites } from "@/ui/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
@@ -15,21 +15,33 @@ export function Sidebar() {
 
   const { user } = useAuth();
   const invitesContext = useInvites();
+  const call = useCall();
 
   const renderExtraGroup = useCallback(() => {
-    const canShow = pathname !== "/invites/pending" && invitesContext.count > 0;
+    const canShow =
+      (pathname !== "/invites/pending" && invitesContext.count > 0) ||
+      call.state === "in-call";
 
     if (!canShow) return;
 
     return (
       <div className="sidebar__group">
-        <Card.Small onClick={() => router.push("/invites/pending")}>
-          <MaterialSymbol icon="mail" size={24} color="#fff" />
-          {invitesContext.count} novo(s) convite(s)
-        </Card.Small>
+        {invitesContext.count > 0 && (
+          <Card.Small onClick={() => router.push("/invites/pending")}>
+            <MaterialSymbol icon="mail" size={24} color="#fff" />
+            {invitesContext.count} novo(s) convite(s)
+          </Card.Small>
+        )}
+
+        {call.state === "in-call" && (
+          <Card.Small onClick={() => router.push("/call")}>
+            <MaterialSymbol icon="phone_in_talk" size={24} color="#fff" />
+            em chamada
+          </Card.Small>
+        )}
       </div>
     );
-  }, [invitesContext.count, pathname, router]);
+  }, [call.state, invitesContext.count, pathname, router]);
 
   return (
     <aside className="sidebar">

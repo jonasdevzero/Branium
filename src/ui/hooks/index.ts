@@ -6,3 +6,4 @@ export * from "./useInvites";
 export * from "./useCryptoKeys";
 export * from "./useMessages";
 export * from "./useContacts";
+export * from "./useCall";

@@ -1,0 +1,53 @@
+.call__await {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+
+  background-color: var(--primary-800);
+}
+
+.call__await > .income__caller,
+.call__await > .call__target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.call__await > .income__caller > .avatar__container,
+.call__await > .call__target > .avatar__container {
+  width: 7.5rem;
+  height: 7.5rem;
+}
+
+.call__await > .income__caller > .avatar__container,
+.call__await > .call__target > .avatar__container {
+  width: 7.5rem;
+  height: 7.5rem;
+}
+
+.call__await > .income__caller > .info,
+.call__await > .call__target > .info {
+  text-align: center;
+}
+
+.call__await > .await__options {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.call__await > .await__options > .icon__button {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+
+  background-color: var(--primary-850) !important;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}

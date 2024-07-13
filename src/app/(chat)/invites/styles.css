@@ -12,6 +12,10 @@
   gap: 0.25rem;
 }
 
+.invites__title > h3 {
+  text-align: start;
+}
+
 .invites__title > p {
   color: var(--secondary-100);
 }
