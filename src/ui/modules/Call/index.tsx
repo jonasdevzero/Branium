@@ -2,7 +2,7 @@
 
 import { useAuth, useContacts } from "@/ui/hooks";
 import { Alert } from "@/ui/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -14,15 +14,28 @@ import { toast } from "../Toaster";
 import { Peer } from "./WebRTC";
 import { CallingView, IncomeCallView } from "./components";
 import { Call, UserPeer } from "./types";
+import EventEmitter from "events";
+
+interface PeerScreen {
+  userId: string;
+  streamId: string | null;
+  stream?: MediaStream;
+}
 
 interface CallContextProps {
   state: Call.State;
   mediaStream: MediaStream | undefined;
+  screenStream: MediaStream | undefined;
+
   peers: UserPeer[];
+  screens: PeerScreen[];
 
   start(data: Call.Start): void;
-  loadMediaStream(media: Call.Media): Promise<MediaStream | null>;
   leave(): void;
+
+  loadMedia(media: Call.Media): Promise<MediaStream | null>;
+  setScreenStream(stream: MediaStream | undefined): void;
+  setupPeerScreen(screen: PeerScreen): void;
 }
 
 export const CallContext = createContext({} as CallContextProps);
@@ -33,14 +46,20 @@ interface Props {
 
 export function CallProvider({ children }: Props) {
   const [state, setState] = useState<Call.State>("disabled");
+
   const [peers, setPeers] = useState<UserPeer[]>([]);
+  const [screens, setScreens] = useState<PeerScreen[]>([]);
 
   const [mediaStream, setMediaStream] = useState<MediaStream>();
+  const [screenStream, setScreenStream] = useState<MediaStream>();
+
   const [callingTarget, setCallingTarget] = useState<Call.CallingTarget>();
   const [incomeCall, setIncomeCall] = useState<Call.Income>();
+
   const [answerTimeout, setAnswerTimeout] = useState<NodeJS.Timeout>();
 
   const router = useRouter();
+  const pathname = usePathname();
   const { socket } = useAuth();
   const { load: loadContact } = useContacts();
 
@@ -59,13 +78,52 @@ export function CallProvider({ children }: Props) {
     [loadContact]
   );
 
+  const setupPeerScreen = useCallback(
+    (screen: PeerScreen) => {
+      if (screen.streamId === null) {
+        setScreens((screens) =>
+          screens.filter((s) => s.userId !== screen.userId)
+        );
+
+        return;
+      }
+
+      const exists = screens.some((s) => s.userId === screen.userId);
+
+      if (exists) {
+        setScreens((screens) =>
+          screens.map((s) => {
+            if (s.userId === screen.userId) return screen;
+            return s;
+          })
+        );
+      } else {
+        setScreens([...screens, screen]);
+      }
+    },
+    [screens]
+  );
+
   const createPeer = useCallback(
     (id: string, localStream: MediaStream): UserPeer => {
       const peer = new Peer();
       const remoteStream = new MediaStream();
       const channel = peer.createDataChannel("data");
+      const events = new EventEmitter();
+
+      let screenStreamId: string | null = null;
+
+      events.on("screen-stream", (streamId) => (screenStreamId = streamId));
 
       peer.on("ontrack", (event): void => {
+        const stream = event.streams[0];
+
+        if (stream.id === screenStreamId) {
+          setupPeerScreen({ userId: id, streamId: screenStreamId, stream });
+
+          return;
+        }
+
         remoteStream.addTrack(event.track);
       });
 
@@ -94,13 +152,14 @@ export function CallProvider({ children }: Props) {
 
       return {
         id,
+        events,
         peer,
         answered: false,
         stream: remoteStream,
         channel,
       };
     },
-    [removePeer, socket]
+    [removePeer, setupPeerScreen, socket]
   );
 
   const loadMedia = useCallback(async (media: Call.Media) => {
@@ -139,6 +198,23 @@ export function CallProvider({ children }: Props) {
     return offers;
   }, []);
 
+  const clear = useCallback(() => {
+    clearTimeout(answerTimeout);
+
+    setPeers([]);
+    setScreens([]);
+
+    if (screenStream) {
+      screenStream.getTracks().forEach((track) => track.stop());
+    }
+
+    closeMedia();
+    setScreenStream(undefined);
+    setState("disabled");
+
+    if (pathname === "/chat") router.push("/channels");
+  }, [answerTimeout, closeMedia, pathname, router, screenStream]);
+
   const cancel = useCallback(async () => {
     const hasAnswered = peers.some((peer) => peer.answered);
     if (hasAnswered) return;
@@ -147,15 +223,13 @@ export function CallProvider({ children }: Props) {
 
     socket.emit("call:cancel", users);
 
-    closeMedia();
-
-    clearTimeout(answerTimeout);
-    setPeers([]);
-    setState("disabled");
-  }, [answerTimeout, closeMedia, peers, socket]);
+    clear();
+  }, [peers, socket, clear]);
 
   const start = useCallback(
     async (data: Call.Start) => {
+      if (state !== "disabled") return;
+
       const localStream = await loadMedia(data.media);
       if (!localStream) return;
 
@@ -213,6 +287,7 @@ export function CallProvider({ children }: Props) {
       loadContact,
       loadMedia,
       socket,
+      state,
     ]
   );
 
@@ -279,15 +354,12 @@ export function CallProvider({ children }: Props) {
 
           socket.emit("call:leave", users);
 
-          router.push("/channels");
-          setPeers([]);
-          setState("disabled");
-          closeMedia();
+          clear();
         },
       },
       cancel: { label: "cancelar" },
     });
-  }, [closeMedia, peers, router, socket, state]);
+  }, [peers, socket, state, clear]);
 
   const onIncome = useCallback(
     (data: Call.Income) => {
@@ -312,17 +384,11 @@ export function CallProvider({ children }: Props) {
     (from: string) => {
       if (!incomeCall || incomeCall.from !== from) return;
 
-      clearTimeout(answerTimeout);
-      setAnswerTimeout(undefined);
-
-      setIncomeCall(undefined);
-      setPeers([]);
-      setState("disabled");
-      closeMedia();
+      clear();
 
       toast.info("Ligação cancelada!", { id: "call:canceled" });
     },
-    [answerTimeout, closeMedia, incomeCall]
+    [incomeCall, clear]
   );
 
   const onConnection = useCallback(
@@ -407,9 +473,7 @@ export function CallProvider({ children }: Props) {
       const updatedPeers = peers.filter((peer) => peer.id !== userId);
 
       if (updatedPeers.length === 0) {
-        setState("disabled");
-        setPeers([]);
-        closeMedia();
+        clear();
 
         toast.info("Ligação rejeitada!", {
           id: "call:declined",
@@ -418,7 +482,7 @@ export function CallProvider({ children }: Props) {
 
       setPeers(updatedPeers);
     },
-    [answerTimeout, closeMedia, peers, state]
+    [answerTimeout, peers, state, clear]
   );
 
   const onListUsers = useCallback(
@@ -467,10 +531,7 @@ export function CallProvider({ children }: Props) {
       if (updatedUsers.length === 0) {
         peers.forEach(({ peer }) => peer.close());
 
-        setPeers([]);
-        setState("disabled");
-        closeMedia();
-        router.push("/channels");
+        clear();
 
         toast.info("Ligação encerrada!", { id: "call:leave" });
 
@@ -480,7 +541,7 @@ export function CallProvider({ children }: Props) {
       userPeer.peer.close();
       setPeers(updatedUsers);
     },
-    [closeMedia, peers, router]
+    [peers, clear]
   );
 
   useEffect(() => {
@@ -518,7 +579,11 @@ export function CallProvider({ children }: Props) {
     () => ({
       state,
       mediaStream,
+      screenStream,
+
       peers,
+      screens,
+
       start: (data: Call.Start) => {
         Alert.create({
           title: "Iniciar uma chamada?",
@@ -533,9 +598,22 @@ export function CallProvider({ children }: Props) {
         });
       },
       leave,
-      loadMediaStream: loadMedia,
+
+      loadMedia,
+      setScreenStream,
+      setupPeerScreen,
     }),
-    [leave, loadMedia, mediaStream, peers, start, state]
+    [
+      leave,
+      loadMedia,
+      mediaStream,
+      peers,
+      screenStream,
+      screens,
+      setupPeerScreen,
+      start,
+      state,
+    ]
   );
 
   return (

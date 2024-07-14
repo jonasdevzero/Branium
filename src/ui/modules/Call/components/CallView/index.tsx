@@ -1,22 +1,38 @@
 "use client";
 
 import { Button } from "@/ui/components";
-import { useCall } from "@/ui/hooks";
+import { useAuth, useCall } from "@/ui/hooks";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PeerView } from "../PeerView";
 import "./styles.scss";
 
 export function CallView() {
-  const { mediaStream, peers, ...call } = useCall();
-  const pathname = usePathname();
-
   const [hasAudio, setHasAudio] = useState(false);
   const [hasVideo, setHasVideo] = useState(false);
   const [isAllMuted, setIsAllMuted] = useState(false);
 
+  const { user } = useAuth();
+  const pathname = usePathname();
+
+  const {
+    mediaStream,
+    screenStream,
+
+    peers,
+    screens,
+
+    setScreenStream,
+    ...call
+  } = useCall();
+
   const canShow =
     call.state === "in-call" && mediaStream && pathname === "/call";
+
+  const hasScreen = useMemo(
+    () => !!screenStream || screens.some((s) => !!s.stream),
+    [screenStream, screens]
+  );
 
   useEffect(() => {
     if (mediaStream) {
@@ -34,8 +50,19 @@ export function CallView() {
     [peers]
   );
 
+  const screensPeers = useMemo(
+    () =>
+      screens
+        .filter(({ stream }) => !!stream)
+        .map(({ streamId, stream }) => {
+          if (!stream) return;
+          return <PeerView.Screen key={streamId} stream={stream} />;
+        }),
+    [screens]
+  );
+
   const sendMessage = useCallback(
-    (data: { audio?: boolean; video?: boolean; output?: boolean }) => {
+    (data: any) => {
       const parsedData = JSON.stringify(data);
 
       peers.forEach(({ channel }) => channel.send(parsedData));
@@ -65,7 +92,7 @@ export function CallView() {
 
     const nextValue = !mediaStream.getAudioTracks()[0].enabled;
 
-    sendMessage({ audio: nextValue });
+    sendMessage({ audio: nextValue, output: nextValue || undefined });
 
     mediaStream.getAudioTracks()[0].enabled = nextValue;
     setHasAudio((value) => !value);
@@ -76,7 +103,7 @@ export function CallView() {
     if (!mediaStream) return;
 
     if (typeof mediaStream.getVideoTracks()[0] === "undefined") {
-      const stream = await call.loadMediaStream({ audio: false, video: true });
+      const stream = await call.loadMedia({ audio: false, video: true });
 
       if (!stream) return;
 
@@ -97,12 +124,61 @@ export function CallView() {
     sendMessage({ video: nextValue });
   }, [call, mediaStream, peers, sendMessage]);
 
+  const toggleShareScreen = useCallback(async () => {
+    if (screenStream) {
+      sendMessage({ screenId: null });
+
+      screenStream.getTracks().forEach((track) => track.stop());
+      setScreenStream(undefined);
+
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false,
+      });
+
+      sendMessage({ screenId: stream.id });
+
+      stream.getTracks().forEach((track) => {
+        track.onended = () => {
+          setScreenStream(undefined);
+          sendMessage({ screenId: null });
+        };
+
+        peers.forEach(({ peer }) => peer.addTrack(track, stream));
+      });
+
+      setScreenStream(stream);
+    } catch (error) {
+      // ...
+    }
+  }, [peers, screenStream, sendMessage, setScreenStream]);
+
   return (
     <div className={`call-container ${canShow ? " call-container--show" : ""}`}>
-      <div className="call-container__users">
-        {users}
+      <div className="call-container__peers">
+        {hasScreen && (
+          <div className="call-container__screens">
+            {screenStream && (
+              <PeerView.Screen username={user.username} stream={screenStream} />
+            )}
+            {screensPeers}
+          </div>
+        )}
 
-        <PeerView.Self hasVideo={hasVideo} />
+        <div
+          className={`
+            call-container__users
+            ${hasScreen && "call-container__users--short"}
+          `}
+        >
+          {users}
+
+          <PeerView.Self hasVideo={hasVideo} />
+        </div>
       </div>
 
       <div className="call-container__control">
@@ -118,7 +194,10 @@ export function CallView() {
             onClick={toggleOutput}
           />
 
-          <Button.Icon icon={"screen_share"} />
+          <Button.Icon
+            icon={screenStream ? "stop_screen_share" : "screen_share"}
+            onClick={toggleShareScreen}
+          />
 
           <Button.Icon
             icon={hasAudio ? "mic" : "mic_off"}
