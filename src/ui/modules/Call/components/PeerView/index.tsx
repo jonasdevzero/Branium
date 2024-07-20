@@ -1,6 +1,6 @@
 import { User } from "@/domain/models";
 import { Avatar } from "@/ui/components";
-import { useAuth, useCall, useContacts } from "@/ui/hooks";
+import { useAuth, useCall, useContacts, useResizable } from "@/ui/hooks";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { MaterialSymbol } from "react-material-symbols";
 import { audioVisualizer } from "../../helpers/audioVisualizer";
@@ -10,7 +10,8 @@ import "./styles.scss";
 interface PeerProps extends UserPeer {}
 
 export function PeerView({ id, stream, channel, events }: PeerProps) {
-  const ref = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [user, setUser] = useState<User>();
   const [hasAudio, setHasAudio] = useState(stream.getAudioTracks()[0]?.enabled);
   const [hasVideo, setHasVideo] = useState(
@@ -21,10 +22,6 @@ export function PeerView({ id, stream, channel, events }: PeerProps) {
 
   const { load: loadContact } = useContacts();
   const { setupPeerScreen } = useCall();
-
-  useEffect(() => {
-    loadContact(id).then(setUser);
-  }, [id, loadContact]);
 
   const onMessage = useCallback(
     (event: MessageEvent) => {
@@ -47,11 +44,15 @@ export function PeerView({ id, stream, channel, events }: PeerProps) {
   );
 
   useEffect(() => {
+    loadContact(id).then(setUser);
+  }, [id, loadContact]);
+
+  useEffect(() => {
     channel.onmessage = onMessage;
   }, [channel, onMessage]);
 
   useEffect(() => {
-    if (ref.current) ref.current.srcObject = stream;
+    if (videoRef.current) videoRef.current.srcObject = stream;
 
     const interval = audioVisualizer(stream, setIsTalking);
 
@@ -62,10 +63,26 @@ export function PeerView({ id, stream, channel, events }: PeerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useResizable(containerRef, ({ width }) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    width < 400
+      ? container.classList.add("call-peer--md")
+      : container.classList.remove("call-peer--md");
+
+    width < 300
+      ? container.classList.add("call-peer--sm")
+      : container.classList.remove("call-peer--sm");
+  });
+
   return (
-    <div className={`call-peer${isTalking ? " call-peer--active" : ""}`}>
+    <div
+      ref={containerRef}
+      className={`call-peer${isTalking ? " call-peer--active" : ""}`}
+    >
       <video
-        ref={ref}
+        ref={videoRef}
         autoPlay
         disablePictureInPicture
         controls={false}
@@ -100,7 +117,8 @@ interface SelfPeerViewProps {
 
 PeerView.Self = forwardRef<HTMLDivElement, SelfPeerViewProps>(
   ({ hasVideo }, ref) => {
-    const selfRef = useRef<HTMLVideoElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     const [isTalking, setIsTalking] = useState(false);
 
@@ -110,8 +128,8 @@ PeerView.Self = forwardRef<HTMLDivElement, SelfPeerViewProps>(
     useEffect(() => {
       let interval: NodeJS.Timeout;
 
-      if (mediaStream && selfRef.current) {
-        selfRef.current.srcObject = mediaStream;
+      if (mediaStream && videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
         interval = audioVisualizer(mediaStream, setIsTalking);
       }
 
@@ -120,13 +138,26 @@ PeerView.Self = forwardRef<HTMLDivElement, SelfPeerViewProps>(
       };
     }, [mediaStream]);
 
+    useResizable(containerRef, ({ width }) => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      width < 400
+        ? container.classList.add("call-peer--md")
+        : container.classList.remove("call-peer--md");
+
+      width < 300
+        ? container.classList.add("call-peer--sm")
+        : container.classList.remove("call-peer--sm");
+    });
+
     return (
       <div
-        ref={ref}
+        ref={containerRef}
         className={`call-peer${isTalking ? " call-peer--active" : ""}`}
       >
         <video
-          ref={selfRef}
+          ref={videoRef}
           autoPlay
           disablePictureInPicture
           controls={false}
