@@ -30,3 +30,11 @@ Develop asymmetric encryption that works for the web and is secure enough, why? 
 ## 🎥 Video Demo
 
 [![DEMO](https://img.youtube.com/vi/KeWRhSol1oY/0.jpg)](https://www.youtube.com/watch?v=KeWRhSol1oY)
+
+## Achitecture
+
+This project consists of 3 micro services:
+
+- [Athentication](https://github.com/jonasdevzero/BraniumAuthentication)
+- [Keys](https://github.com/jonasdevzero/BraniumKeys)
+- [Messages](https://github.com/jonasdevzero/BraniumMessages)
