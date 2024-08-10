@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <h1>Branium</h1>
+  <p>WebChat With E2E</p>
+</div>
 
-## Getting Started
+## About
 
-First, run the development server:
+Branium is more than just a regular chat, it is a robust and secure communication platform, designed to serve users who are aware of the security and privacy of their conversations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔥 Main Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+✨ End-to-End Encryption: Your text messages, images, videos, files and audios are protected by a solid layer of encryption, ensuring that only you and the recipient can access the content.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+✨ Microservices Structure: Branium is built on a microservices architecture, all of them with secure connections using TLS (Transport Layer Security), providing more security and fluidity to the end user.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+✨ Cutting-Edge Technologies: Branium's microservices were developed using NodeJS with TypeScript under the Clean Arch architecture, ensuring efficiency, maintainability and scalability. Furthermore, the frontend was built using NextJS 14 and TypeScript, ensuring an elegant and fluid user interface.
 
-## Learn More
+## 🌩 Main Challenge
 
-To learn more about Next.js, take a look at the following resources:
+Develop asymmetric encryption that works for the web and is secure enough, why? Because users can access it from different machines. But what impact does this have? On the private key used to encrypt the messages.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- ✅ End-to-end encryption
+- ✅ Private chat
+- ✅ Full messages (text, image, audio, video, documents and replies)
+- ✅ Voice/video calling
+- 🚧 Groups
 
-## Deploy on Vercel
+## 🎥 Video Demo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[![DEMO](https://img.youtube.com/vi/KeWRhSol1oY/0.jpg)](https://www.youtube.com/watch?v=KeWRhSol1oY)
