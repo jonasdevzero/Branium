@@ -1,6 +1,6 @@
 "use client";
-import { Form } from "@/ui/components";
-import { authenticationService } from "@/ui/services";
+import { Button, Form } from "@/ui/components";
+import { authServices } from "@/ui/services";
 import { RegisterUserDTO } from "@/domain/dtos";
 import { ApiError } from "@/domain/models";
 import { registerUserSchema } from "@/ui/validators";
@@ -38,7 +38,7 @@ export default function Register() {
       setIsLoading(true);
 
       try {
-        await authenticationService.registerUser(data);
+        await authServices.registerUser(data);
         setSuccess(true);
       } catch (error) {
         const err = error as ApiError;
@@ -104,9 +104,9 @@ export default function Register() {
         </Form.Checkbox>
       </fieldset>
 
-      <button type="submit" className="text" disabled={isLoading}>
+      <Button type="submit" className="text" isLoading={isLoading}>
         cadastrar
-      </button>
+      </Button>
     </Form>
   );
 }

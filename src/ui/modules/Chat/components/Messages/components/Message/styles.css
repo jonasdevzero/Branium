@@ -1,0 +1,183 @@
+.message {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  gap: 0.5rem;
+
+  padding: 0.25rem 1rem;
+  border-radius: 0.25rem;
+
+  transition: background-color 0.2s ease;
+}
+
+.message:is(:hover, :focus) {
+  background-color: var(--primary-750);
+}
+
+.message--full + .message--full {
+  margin-top: 1.5rem;
+}
+
+.message--short + .message--full {
+  margin-top: 1.5rem;
+}
+
+.message--short {
+  padding-left: 4.5rem;
+}
+
+.message--selected {
+  background-color: var(--primary-700);
+  border-left: 2px solid var(--secondary-200);
+}
+
+.message__time {
+  display: none;
+  justify-content: center;
+  width: 3.125rem;
+
+  color: var(--secondary-200);
+
+  padding-top: 0.25rem;
+}
+
+.message--short:is(:hover, :focus) {
+  padding-left: 1rem;
+}
+
+.message--short:is(:hover, :focus) .message__time {
+  display: inherit;
+}
+
+.message > .avatar__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.message p {
+  max-width: 80%;
+  word-break: break-all;
+}
+
+.message__pending {
+  display: flex;
+  justify-content: center;
+  width: 3.125rem;
+}
+
+.message__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  width: 100%;
+  max-width: 40rem;
+}
+
+.message__content > .skeleton__box {
+  background-color: var(--primary-850);
+  animation: 1s skeleton_loading ease-out infinite;
+}
+
+.message__info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.message__info > h6 {
+  color: var(--secondary-100);
+  cursor: pointer;
+}
+
+.message__info > span {
+  color: var(--secondary-200);
+}
+
+.message__content > p {
+  width: 100%;
+}
+
+.message__content > p.text__emoji--1 {
+  font-size: 4rem;
+  line-height: 4.5rem;
+}
+
+.message__content > p.text__emoji--2 {
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+
+.message__content > p.text__emoji--3 {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+.message__content > p.text__emoji--4 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.message > .popover {
+  display: none;
+  position: absolute;
+  top: 0.125rem;
+  right: 0.25rem;
+}
+
+.message > .popover > .button {
+  background-color: var(--primary-850) !important;
+  padding: 1px;
+  border-radius: 0.25rem;
+}
+
+.message:is(:hover, :focus) > .popover {
+  display: inherit;
+}
+
+.message > .popover > .popover__list {
+  width: 13.5rem;
+
+  padding: 0;
+}
+
+.message__reply {
+  display: flex;
+  flex-direction: column;
+  width: 14rem;
+  gap: 0.25rem;
+
+  background-color: var(--primary-850);
+  padding: 0.5rem;
+  border-left: 2px solid var(--secondary-0);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.message__reply > .reply__username {
+  color: var(--secondary-200);
+}
+
+.message__reply > .reply__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.message:is(:hover, :focus) > .message__reply {
+  background-color: var(--primary-900);
+}
+
+.message__edited {
+  position: absolute;
+  bottom: 50%;
+  right: 2.5rem;
+  transform: translateY(50%);
+
+  color: var(--secondary-200);
+  font-style: italic;
+
+  user-select: none;
+}

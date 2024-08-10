@@ -1,4 +1,4 @@
-import { Form } from "@/ui/components";
+import { Button, Form } from "@/ui/components";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,9 +15,9 @@ export default function RecoverPassword() {
         <Form.Input field="email" name="email" />
       </fieldset>
 
-      <button type="submit" className="text">
+      <Button type="submit" className="text">
         recuperar
-      </button>
+      </Button>
     </Form>
   );
 }

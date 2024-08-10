@@ -1,0 +1,22 @@
+.chat__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 4rem;
+  min-height: 4rem;
+
+  background-color: var(--primary-750);
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+}
+
+.chat__header > .actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.chat__header .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}

@@ -1,0 +1,26 @@
+.room__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  gap: 0.75rem;
+
+  overflow: hidden;
+}
+
+.room__info {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.room__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.room__username {
+  color: var(--secondary-200);
+}

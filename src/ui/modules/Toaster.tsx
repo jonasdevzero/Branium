@@ -16,4 +16,10 @@ interface ToastOptions {
 export const toast = {
   error: (message: string, options?: ToastOptions) =>
     toastSonner.error(message, options),
+
+  info: (message: string, options?: ToastOptions) =>
+    toastSonner.info(message, options),
+
+  success: (message: string, options?: ToastOptions) =>
+    toastSonner.success(message, options),
 };

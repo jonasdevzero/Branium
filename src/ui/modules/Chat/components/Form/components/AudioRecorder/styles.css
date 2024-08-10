@@ -1,0 +1,37 @@
+.record__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 1rem;
+
+  padding: 2rem;
+}
+
+.record__container > .record__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.record__actions > .button > .icon {
+  font-size: 3rem;
+  color: var(--secondary-0);
+
+  transition: color 0.2s ease;
+}
+
+.record__actions > .button > .icon:is(:focus, :hover) {
+  color: var(--secondary-200);
+}
+
+.record__actions > .stop__recording > .icon:is(:focus, :hover) {
+  color: var(--danger-500);
+}
+
+.record__container > .audio__visualizer {
+  padding: 0 0.5rem;
+  border-bottom: 2px solid var(--secondary-0);
+}

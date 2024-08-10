@@ -1,24 +1,65 @@
-import { Form } from "@/ui/components";
-import { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Branium | Login",
-  description: "The WebChat with 'E2E'",
-};
+import { LoginUserDTO } from "@/domain/dtos";
+import { ApiError } from "@/domain/models";
+import { Button, Form } from "@/ui/components";
+import { toast } from "@/ui/modules";
+import { authServices } from "@/ui/services";
+import { hasCookie } from "cookies-next";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function Login() {
-  return (
-    <Form title="Entrar">
-      <fieldset>
-        <Form.Input field="username" name="username" />
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-        <Form.Input field="senha" name="password" />
+  useEffect(() => {
+    if (hasCookie("access")) router.replace("/channels");
+  }, [router]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginUserDTO>();
+
+  const onSubmit = useCallback(
+    async (data: LoginUserDTO) => {
+      if (isLoading) return;
+      setIsLoading(true);
+
+      try {
+        await authServices.login(data);
+        router.replace("/channels");
+      } catch (e) {
+        const error = e as ApiError;
+
+        if (error.statusCode >= 400 && error.statusCode < 500)
+          toast.error("username ou senha inválida");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoading, router]
+  );
+
+  return (
+    <Form title="Entrar" onSubmit={handleSubmit(onSubmit)}>
+      <fieldset>
+        <Form.Input
+          field="username"
+          error={errors.username?.message}
+          {...register("username")}
+        />
+
+        <Form.Input field="senha" {...register("password")} type="password" />
       </fieldset>
 
-      <button type="submit" className="text">
+      <Button type="submit" className="text" isLoading={isLoading}>
         entrar
-      </button>
+      </Button>
 
       <Link href={"/recover-password"}>Esqueceu a senha?</Link>
     </Form>

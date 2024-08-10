@@ -1,0 +1,69 @@
+.files__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 1rem;
+
+  padding: 2rem;
+}
+
+.files__form > .chat__form {
+  max-width: 40rem;
+}
+
+.files__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  height: 90%;
+  gap: 1rem;
+}
+
+.files__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.files__content > img {
+  width: fit-content !important;
+  max-width: 100%;
+  left: 50% !important;
+  transform: translateX(-50%);
+
+  object-fit: contain;
+}
+
+.files__content > .video__player {
+  width: fit-content;
+  height: fit-content;
+  max-width: 100%;
+}
+
+.files__container > button {
+  min-width: 4rem;
+  min-height: 4rem;
+
+  background-color: var(--primary-800);
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 900;
+  transition: opacity 0.2s ease;
+}
+
+.files__container > button:is(:hover, :focus) {
+  opacity: 0.7;
+}
+
+.files__container > button > span {
+  font-size: 2rem;
+  color: var(--secondary-0);
+}

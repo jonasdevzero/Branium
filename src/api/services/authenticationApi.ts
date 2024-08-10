@@ -7,7 +7,6 @@ const agent = new https.Agent({
   rejectUnauthorized: true,
   requestCert: true,
   scheduling: "fifo",
-  passphrase: ENV.AUTHENTICATION_PASSPHRASE,
   cert: ENV.CERT,
   key: ENV.KEY,
   ca: ENV.CA,

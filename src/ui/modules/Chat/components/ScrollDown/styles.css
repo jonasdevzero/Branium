@@ -1,0 +1,25 @@
+.scroll__down {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  background-color: var(--primary-850) !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+
+.scroll__down:hover {
+  opacity: 0.7;
+}
+
+.scroll__down--hidden {
+  display: none !important;
+}
+
+.scroll__down .icon {
+  font-size: 1.5rem;
+  color: var(--secondary-0);
+}

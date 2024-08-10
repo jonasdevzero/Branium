@@ -1,0 +1,43 @@
+.message__images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: min-content 1fr;
+  gap: 0.25rem;
+  align-items: center;
+  position: relative;
+}
+
+.message__images > img {
+  width: 100% !important;
+  max-width: 12rem !important;
+  height: auto !important;
+  max-height: 10rem !important;
+
+  object-fit: cover;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.message__images > .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12rem;
+  height: 10rem;
+
+  background-color: #00000080 !important;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.message__images > .button:is(:hover, :focus) {
+  background-color: #00000090;
+}
+
+.message__images > .button > .icon {
+  font-size: 2.5rem;
+  color: var(--secondary-0);
+}
